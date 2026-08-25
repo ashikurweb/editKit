@@ -1,6 +1,6 @@
 {
   "name": "@editkit/ui",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "EditKit UI Components — Modern Toolbar, Floating Bubble Menu, Table Menu, 2D Color Picker & Pure CSS Theme Engine.",
   "type": "module",
   "main": "./src/index.ts",
@@ -19,12 +19,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ashikurweb/editKit.git",
+    "url": "https://github.com/ashikurweb/editKit-text-editor.git",
     "directory": "packages/ui"
   },
-  "homepage": "https://github.com/ashikurweb/editKit#readme",
+  "homepage": "https://github.com/ashikurweb/editKit-text-editor#readme",
   "bugs": {
-    "url": "https://github.com/ashikurweb/editKit/issues"
+    "url": "https://github.com/ashikurweb/editKit-text-editor/issues"
   },
   "keywords": [
     "editkit",

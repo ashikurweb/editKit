@@ -1,6 +1,6 @@
 {
   "name": "@editkit/svelte",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Official Svelte Rich Text Editor Action with First-Class Tables, 2D Color Picker & Zero Dependencies for Svelte 3/4/5 (Runes) & SvelteKit.",
   "type": "module",
   "main": "./src/index.ts",
@@ -18,12 +18,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ashikurweb/editKit.git",
+    "url": "https://github.com/ashikurweb/editKit-text-editor.git",
     "directory": "packages/svelte"
   },
-  "homepage": "https://github.com/ashikurweb/editKit#readme",
+  "homepage": "https://github.com/ashikurweb/editKit-text-editor#readme",
   "bugs": {
-    "url": "https://github.com/ashikurweb/editKit/issues"
+    "url": "https://github.com/ashikurweb/editKit-text-editor/issues"
   },
   "keywords": [
     "editkit",

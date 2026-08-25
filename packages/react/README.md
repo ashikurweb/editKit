@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ashikurweb/editKit/master/assets/editkit-preview.png" alt="EditKit React Editor Preview" width="100%" />
+  <img src="https://raw.githubusercontent.com/ashikurweb/editKit-text-editor/master/assets/editkit-preview.png" alt="EditKit React Editor Preview" width="100%" />
 </p>
 
 ---

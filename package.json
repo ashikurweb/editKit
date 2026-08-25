@@ -1,8 +1,16 @@
 {
   "name": "editkit",
   "private": true,
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "EditKit — Premium Framework-Agnostic Rich Text Editor",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ashikurweb/editKit-text-editor.git"
+  },
+  "homepage": "https://github.com/ashikurweb/editKit-text-editor#readme",
+  "bugs": {
+    "url": "https://github.com/ashikurweb/editKit-text-editor/issues"
+  },
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
