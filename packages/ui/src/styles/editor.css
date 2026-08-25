@@ -3131,32 +3131,6 @@
   opacity: 0.9;
 }
 
-/* FAQ Item */
-.editkit-content .editkit-faq-item {
-  margin: 14px 0;
-  border: 1px solid var(--editkit-border);
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--editkit-surface-hover);
-}
-.editkit-content .editkit-faq-question {
-  font-weight: 600;
-  font-size: 14px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--editkit-border);
-  background: var(--editkit-surface-elevated);
-  color: var(--editkit-text);
-}
-.editkit-content .editkit-faq-answer {
-  padding: 12px 16px;
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--editkit-text-muted);
-}
-.editkit-content .editkit-faq-answer p {
-  margin: 0;
-}
-
 /* Feature Row */
 .editkit-content .editkit-feature-row {
   display: flex;
@@ -5762,4 +5736,177 @@
 .editkit-btn-edit-close:hover {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.08);
+}
+
+/* ==========================================================================
+   23. FAQ BLOCK COMPONENT (SCREENSHOTS 1, 2 MATCH)
+   ========================================================================== */
+
+.editkit-content .editkit-faq-block {
+  margin: 16px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px dashed transparent;
+  position: relative;
+  transition: all 0.15s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.editkit-content .editkit-faq-block:hover {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.editkit-content .editkit-faq-block.editkit-faq-block--focused {
+  border: 1px dashed #d97706;
+  background: rgba(217, 119, 6, 0.02);
+}
+
+/* ── FAQ Block Top-Right Delete Button ── */
+.editkit-faq-block-delete {
+  position: absolute;
+  top: -10px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  z-index: 20;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.editkit-content .editkit-faq-block.editkit-faq-block--focused .editkit-faq-block-delete {
+  display: flex;
+}
+
+.editkit-faq-block-delete:hover {
+  transform: scale(1.1);
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+/* ── FAQ Items Container ── */
+.editkit-faq-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+/* ── FAQ Single Item Card ── */
+.editkit-faq-item {
+  display: flex;
+  position: relative;
+  border-radius: 8px;
+  background: #181920;
+  border: 1px solid #282a36;
+  overflow: hidden;
+  padding: 12px 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.editkit-faq-item:hover {
+  border-color: #383b4c;
+  background: #1b1d26;
+}
+
+/* ── Amber Vertical Accent Strip (Screenshot Match) ── */
+.editkit-faq-accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3.5px;
+  background: #f59e0b;
+  border-radius: 4px 0 0 4px;
+}
+
+/* ── FAQ Content ── */
+.editkit-faq-content {
+  flex: 1;
+  margin-left: 8px;
+  margin-right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.editkit-faq-question {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #f1f5f9;
+  outline: none;
+  cursor: text;
+  user-select: text;
+  line-height: 1.3;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.editkit-faq-answer {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: #94a3b8;
+  outline: none;
+  cursor: text;
+  user-select: text;
+  line-height: 1.45;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ── Delete Question ✕ Button ── */
+.editkit-faq-item-delete {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.editkit-faq-item-delete:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+}
+
+/* ── + Add Question Button ── */
+.editkit-faq-add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.05);
+  color: #f59e0b;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.editkit-faq-add-btn:hover {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: #f59e0b;
+  transform: translateY(-0.5px);
 }

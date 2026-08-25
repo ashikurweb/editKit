@@ -17,6 +17,7 @@ import { DecorativeDividerMenu } from './DecorativeDividerMenu';
 import { SectionHeadingMenu } from './SectionHeadingMenu';
 import { PullQuoteMenu } from './PullQuoteMenu';
 import { ButtonBlockMenu } from './ButtonBlockMenu';
+import { FAQBlockManager } from './FAQBlockManager';
 import { SignatureModal } from './SignatureModal';
 import { TooltipManager } from './Tooltip';
 
@@ -79,6 +80,7 @@ export class EditKitToolbar {
   private secHeadingMenu: SectionHeadingMenu;
   private pullQuoteMenu: PullQuoteMenu;
   private buttonBlockMenu: ButtonBlockMenu;
+  private faqManager: FAQBlockManager;
   private openDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
@@ -112,6 +114,7 @@ export class EditKitToolbar {
     this.pullQuoteMenu.mount(editor.root as HTMLElement);
     this.buttonBlockMenu = new ButtonBlockMenu(editor);
     this.buttonBlockMenu.mount(editor.root as HTMLElement);
+    this.faqManager = new FAQBlockManager(editor);
 
     TooltipManager.init();
 
@@ -1566,14 +1569,44 @@ export class EditKitToolbar {
   }
 
   private _insertFAQBlock(): void {
-    const html = `
-      <div class="editkit-faq-item">
-        <div class="editkit-faq-question" contenteditable="true">Frequently Asked Question?</div>
-        <div class="editkit-faq-answer">
-          <p>Write your detailed answer here. This FAQ item is fully customizable.</p>
-        </div>
-      </div><p><br></p>`;
-    document.execCommand('insertHTML', false, html);
+    const faqBlock = this.faqManager.createFAQBlockElement();
+
+    const p = document.createElement('p');
+    p.innerHTML = '<br>';
+
+    const block = this.editor.commands.getActiveBlock?.() || null;
+    const contentEl = this.editor.contentEl;
+
+    const frag = document.createDocumentFragment();
+    frag.appendChild(faqBlock);
+    frag.appendChild(p);
+
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && contentEl.contains(sel.anchorNode)) {
+      const range = sel.getRangeAt(0);
+      range.collapse(false);
+      range.insertNode(frag);
+    } else if (block && block !== contentEl && block.parentNode) {
+      block.parentNode.insertBefore(frag, block.nextSibling);
+    } else {
+      contentEl.appendChild(frag);
+    }
+
+    this.editor.emit('update', { editor: this.editor });
+    this.faqManager.selectBlock(faqBlock);
+
+    // Focus inside first question
+    const firstQ = faqBlock.querySelector('.editkit-faq-question') as HTMLElement;
+    if (firstQ) {
+      setTimeout(() => {
+        const r = document.createRange();
+        r.selectNodeContents(firstQ);
+        r.collapse(false);
+        const s = window.getSelection();
+        s?.removeAllRanges();
+        s?.addRange(r);
+      }, 20);
+    }
   }
 
   private _insert2ColGrid(): void {
