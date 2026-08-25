@@ -8,6 +8,24 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "editkit",
+    "vue",
+    "vue3",
+    "vue-editor",
+    "wysiwyg",
+    "nuxt"
+  ],
+  "license": "MIT",
+  "author": "Ashikur",
   "peerDependencies": {
     "vue": "^3.0.0"
   },

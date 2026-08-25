@@ -8,6 +8,24 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "editkit",
+    "react",
+    "react-editor",
+    "wysiwyg",
+    "rich-text",
+    "nextjs"
+  ],
+  "license": "MIT",
+  "author": "Ashikur",
   "peerDependencies": {
     "react": ">=16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-dom": ">=16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
