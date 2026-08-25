@@ -383,7 +383,8 @@
 }
 
 .vellora-tb-dropdown-menu--compact {
-  min-width: 140px;
+  min-width: 160px;
+  white-space: nowrap;
 }
 
 .vellora-tb-dropdown-menu--align {
@@ -426,6 +427,7 @@
   text-align: left;
   transition: background 0.1s ease;
   position: relative;
+  white-space: nowrap;
 }
 
 .vellora-tb-menu-item:hover {
@@ -448,6 +450,7 @@
   width: 16px;
   font-size: 12px;
   font-weight: 600;
+  flex-shrink: 0;
 }
 .vellora-tb-menu-prefix svg {
   width: 14px;
@@ -456,6 +459,7 @@
 
 .vellora-tb-menu-label {
   flex: 1;
+  white-space: nowrap;
 }
 
 .vellora-tb-menu-arrow {
@@ -1864,4 +1868,269 @@
 .vellora-link-action-btn--unlink:hover {
   color: #ef4444;
   background: rgba(239, 68, 68, 0.15);
+}
+
+/* ════════════════════════════════════════════
+   Math Modal & Mathematical Typography
+   ════════════════════════════════════════════ */
+
+.vellora-math-modal {
+  max-width: 540px;
+}
+
+.vellora-modal-title {
+  margin: 0 0 14px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.vellora-math-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.vellora-math-chip {
+  background: #1e202b;
+  border: 1px solid #2d3040;
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vellora-math-chip:hover {
+  background: #2b2e3e;
+  color: #ffffff;
+  border-color: #7c3aed;
+  transform: translateY(-1px);
+}
+
+.vellora-math-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.vellora-math-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8e94a6;
+}
+
+.vellora-math-textarea {
+  background: #0f1015;
+  border: 1px solid #282a36;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: var(--vellora-font-mono, monospace);
+  font-size: 13px;
+  color: #ffffff;
+  outline: none;
+  resize: vertical;
+  min-height: 60px;
+  transition: border-color 0.15s ease;
+}
+
+.vellora-math-textarea:focus {
+  border-color: #7c3aed;
+}
+
+.vellora-math-preview-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.vellora-math-preview {
+  background: #111218;
+  border: 1px solid #282a36;
+  border-radius: 8px;
+  padding: 14px;
+  text-align: center;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.vellora-math-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.vellora-math-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.vellora-math-cancel-btn {
+  background: transparent;
+  border: 1px solid #333644;
+  color: #a0a5b8;
+  font-weight: 600;
+  font-size: 12.5px;
+  font-family: inherit;
+  padding: 7px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vellora-math-cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.vellora-math-submit-btn {
+  background: #7c3aed;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 12.5px;
+  font-family: inherit;
+  padding: 7px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vellora-math-submit-btn:hover {
+  background: #6d28d9;
+}
+
+.vellora-math-del-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  font-weight: 600;
+  font-size: 12px;
+  font-family: inherit;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vellora-math-del-btn:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+.vellora-math-del-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ── Content Rendered Mathematical Elements ── */
+
+.vellora-content .vellora-math-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.2em 0;
+  padding: 16px 20px;
+  background: #111218;
+  border: 1px solid #232530;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 1.15em;
+  color: #f1f5f9;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.vellora-content .vellora-math-block:hover {
+  border-color: #7c3aed;
+  background: #151722;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.15);
+}
+
+.vellora-content .vellora-math-inline {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 3px;
+  padding: 2px 6px;
+  background: #15161f;
+  border: 1px solid #2a2d3d;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.95em;
+  color: #e2e8f0;
+  transition: all 0.15s ease;
+}
+
+.vellora-content .vellora-math-inline:hover {
+  border-color: #7c3aed;
+  background: #1c1a2c;
+  color: #ffffff;
+}
+
+.vellora-math-rendered {
+  font-family: 'Cambria Math', 'Latin Modern Math', 'STIX Two Math', 'Times New Roman', serif;
+  font-style: italic;
+  letter-spacing: 0.5px;
+}
+
+.vellora-math-frac {
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: middle;
+  text-align: center;
+  padding: 0 4px;
+  font-size: 0.9em;
+}
+
+.vellora-math-num {
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+}
+
+.vellora-math-den {
+  padding-top: 1px;
+}
+
+.vellora-math-sqrt {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 2px;
+}
+
+.vellora-math-sqrt-sym {
+  font-size: 1.1em;
+  margin-right: 1px;
+}
+
+.vellora-math-sqrt-body {
+  border-top: 1px solid currentColor;
+  padding-top: 1px;
+}
+
+.vellora-math-symbol {
+  font-size: 1.25em;
+  font-style: normal;
+  vertical-align: -2px;
+  padding: 0 2px;
+}
+
+.vellora-math-func {
+  font-style: normal;
+  font-weight: 500;
+  padding: 0 2px;
 }

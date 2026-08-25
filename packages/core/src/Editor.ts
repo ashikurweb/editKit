@@ -451,6 +451,7 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
     insertImage: (opts: { src: string; alt?: string; title?: string }) => this._insertImage(opts),
     setLink: (opts: { url: string; target?: string }) => this._setLink(opts),
     unsetLink: () => this._unsetLink(),
+    insertMath: (opts: { latex: string; type: 'block' | 'inline' }) => this._insertMath(opts),
 
     // ── History ──
     undo: () => this._undo(),
@@ -1500,6 +1501,88 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
     document.execCommand('unlink', false);
     this._saveHistory();
     this._emitUpdate();
+  }
+
+  private _insertMath(opts: { latex: string; type: 'block' | 'inline' }): HTMLElement {
+    this._ensureFocus();
+    const sel = window.getSelection();
+
+    if (opts.type === 'block') {
+      const el = document.createElement('div');
+      el.classList.add('vellora-math-block');
+      el.setAttribute('data-math', opts.latex);
+      el.setAttribute('contenteditable', 'false');
+      el.innerHTML = this._renderMath(opts.latex);
+
+      const block = this._getActiveBlock() || this.contentEl;
+      if (block === this.contentEl) {
+        this.contentEl.appendChild(el);
+      } else {
+        block.parentNode!.insertBefore(el, block.nextSibling);
+      }
+
+      if (!el.nextElementSibling || el.nextElementSibling.tagName !== 'P') {
+        const p = document.createElement('p');
+        p.innerHTML = '<br>';
+        el.parentNode!.insertBefore(p, el.nextSibling);
+      }
+
+      this._saveHistory();
+      this._emitUpdate();
+      return el;
+    } else {
+      const el = document.createElement('span');
+      el.classList.add('vellora-math-inline');
+      el.setAttribute('data-math', opts.latex);
+      el.setAttribute('contenteditable', 'false');
+      el.innerHTML = this._renderMath(opts.latex);
+
+      if (sel && sel.rangeCount > 0 && this.contentEl.contains(sel.anchorNode)) {
+        const range = sel.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(el);
+        range.setStartAfter(el);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } else {
+        this.contentEl.appendChild(el);
+      }
+
+      this._saveHistory();
+      this._emitUpdate();
+      return el;
+    }
+  }
+
+  private _renderMath(latex: string): string {
+    let html = latex;
+    html = html.replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, '<span class="vellora-math-frac"><span class="vellora-math-num">$1</span><span class="vellora-math-den">$2</span></span>');
+    html = html.replace(/\\sqrt\s*\{([^{}]+)\}/g, '<span class="vellora-math-sqrt"><span class="vellora-math-sqrt-sym">√</span><span class="vellora-math-sqrt-body">$1</span></span>');
+    html = html.replace(/\\int/g, '<span class="vellora-math-symbol">∫</span>');
+    html = html.replace(/\\sum/g, '<span class="vellora-math-symbol">∑</span>');
+    html = html.replace(/\\prod/g, '<span class="vellora-math-symbol">∏</span>');
+    html = html.replace(/\\lim/g, '<span class="vellora-math-func">lim</span>');
+    html = html.replace(/\\infty/g, '∞');
+    html = html.replace(/\\partial/g, '∂');
+    html = html.replace(/\\nabla/g, '∇');
+    html = html.replace(/\\alpha/g, 'α');
+    html = html.replace(/\\beta/g, 'β');
+    html = html.replace(/\\gamma/g, 'γ');
+    html = html.replace(/\\theta/g, 'θ');
+    html = html.replace(/\\pi/g, 'π');
+    html = html.replace(/\\pm/g, '±');
+    html = html.replace(/\\times/g, '×');
+    html = html.replace(/\\div/g, '÷');
+    html = html.replace(/\\leq/g, '≤');
+    html = html.replace(/\\geq/g, '≥');
+    html = html.replace(/\\neq/g, '≠');
+    html = html.replace(/\\approx/g, '≈');
+    html = html.replace(/\^\{([^{}]+)\}/g, '<sup>$1</sup>');
+    html = html.replace(/\^([a-zA-Z0-9])/g, '<sup>$1</sup>');
+    html = html.replace(/_\{([^{}]+)\}/g, '<sub>$1</sub>');
+    html = html.replace(/_([a-zA-Z0-9])/g, '<sub>$1</sub>');
+    return `<span class="vellora-math-rendered">${html}</span>`;
   }
 
   // ═══════════════════════════════════════════

@@ -8,6 +8,7 @@ import { icons } from './icons';
 import { ColorPickerPopover } from './ColorPicker';
 import { ImageModal } from './ImageModal';
 import { LinkPopover } from './LinkPopover';
+import { MathModal } from './MathModal';
 
 export interface ToolbarConfig {
   container?: HTMLElement;
@@ -29,6 +30,7 @@ export class VelloraToolbar {
   private editor: VelloraEditor;
   private imageModal: ImageModal;
   private linkPopover: LinkPopover;
+  private mathModal: MathModal;
   private openDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
@@ -44,6 +46,7 @@ export class VelloraToolbar {
     this.editor = editor;
     this.imageModal = new ImageModal(editor);
     this.linkPopover = new LinkPopover(editor);
+    this.mathModal = new MathModal(editor);
 
     this.element = document.createElement('div');
     this.element.classList.add('vellora-toolbar');
@@ -130,7 +133,7 @@ export class VelloraToolbar {
     leftGroup.appendChild(this._createImageButton());
     leftGroup.appendChild(this._createTableGridDropdown());
     leftGroup.appendChild(this._createBtn('chart', 'Insert Chart', () => this._insertChartMock()));
-    leftGroup.appendChild(this._createBtn('math', 'Formula / Math', () => this._insertMathMock()));
+    leftGroup.appendChild(this._createMathDropdown());
     leftGroup.appendChild(this._createLinkButton());
     leftGroup.appendChild(this._createEmojiDropdown());
     leftGroup.appendChild(this._createSymbolDropdown());
@@ -729,6 +732,48 @@ export class VelloraToolbar {
     return this._createBtn('image', 'Insert Image', () => {
       this.imageModal.show('dropzone');
     });
+  }
+
+  // ── Math / Equation Dropdown (Exact match to Screenshot) ──
+  private _createMathDropdown(): HTMLElement {
+    const wrap = document.createElement('div');
+    wrap.classList.add('vellora-tb-dropdown-wrap');
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.classList.add('vellora-tb-btn');
+    trigger.setAttribute('title', 'Formula / Equation');
+    trigger.innerHTML = icons.math;
+
+    const menu = document.createElement('div');
+    menu.classList.add('vellora-tb-dropdown-menu', 'vellora-tb-dropdown-menu--compact');
+
+    const items = [
+      { id: 'block', icon: icons.mathBlock, label: 'Block equation', action: () => this.mathModal.show('block') },
+      { id: 'inline', icon: icons.mathInline, label: 'Inline equation', action: () => this.mathModal.show('inline') },
+    ];
+
+    for (const it of items) {
+      const itBtn = document.createElement('button');
+      itBtn.type = 'button';
+      itBtn.classList.add('vellora-tb-menu-item');
+      itBtn.innerHTML = `<span class="vellora-tb-menu-prefix">${it.icon}</span> <span class="vellora-tb-menu-label">${it.label}</span>`;
+      itBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        this._closeDropdown();
+        it.action();
+      });
+      menu.appendChild(itBtn);
+    }
+
+    trigger.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      this._toggleDropdown(wrap);
+    });
+
+    wrap.appendChild(trigger);
+    wrap.appendChild(menu);
+    return wrap;
   }
 
   // ── Link Button ──

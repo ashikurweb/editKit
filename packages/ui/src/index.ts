@@ -10,4 +10,5 @@ export { ColorPickerPopover, EDDYTER_EXACT_PALETTE } from './ColorPicker';
 export { ImageModal } from './ImageModal';
 export { ImageFloatingMenu } from './ImageFloatingMenu';
 export { LinkPopover } from './LinkPopover';
+export { MathModal, formatMathFormula } from './MathModal';
 export { icons } from './icons';
