@@ -75,6 +75,8 @@ export class EditKitToolbar {
   private boldBtn?: HTMLElement;
   private italicBtn?: HTMLElement;
   private alignTrigger?: HTMLElement;
+  private alignIconSpan?: HTMLElement;
+  private _currentAlign: string = 'left';
   private clearAllBtn?: HTMLButtonElement;
 
   constructor(editor: EditKitEditor, config: ToolbarConfig = {}) {
@@ -326,6 +328,7 @@ export class EditKitToolbar {
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       this._toggleDropdown(wrap);
     });
 
@@ -366,6 +369,7 @@ export class EditKitToolbar {
 
       it.addEventListener('mousedown', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         this.editor.commands.setFontFamily(font);
         if (this.fontLabel) this.fontLabel.textContent = font;
         this._closeDropdown();
@@ -376,6 +380,7 @@ export class EditKitToolbar {
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       this._toggleDropdown(wrap);
     });
 
@@ -455,6 +460,7 @@ export class EditKitToolbar {
       itBtn.innerHTML = `<span class="editkit-tb-menu-prefix">${it.icon}</span> <span class="editkit-tb-menu-label">${it.label}</span>`;
       itBtn.addEventListener('mousedown', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         it.action();
         this._closeDropdown();
       });
@@ -463,6 +469,7 @@ export class EditKitToolbar {
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       this._toggleDropdown(wrap);
     });
 
@@ -488,6 +495,7 @@ export class EditKitToolbar {
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       this._toggleDropdown(wrap);
     });
 
@@ -505,7 +513,17 @@ export class EditKitToolbar {
     trigger.classList.add('editkit-tb-btn', 'editkit-tb-btn--chevron');
     trigger.setAttribute('data-editkit-tooltip', 'Text Alignment & Line Height');
     trigger.setAttribute('aria-label', 'Text Alignment & Line Height');
-    trigger.innerHTML = `${icons.alignLeft} <span class="editkit-tb-chevron-sm">${icons.chevronDown}</span>`;
+
+    this.alignIconSpan = document.createElement('span');
+    this.alignIconSpan.classList.add('editkit-tb-align-icon');
+    this.alignIconSpan.innerHTML = icons.alignLeft;
+
+    const chevron = document.createElement('span');
+    chevron.classList.add('editkit-tb-chevron-sm');
+    chevron.innerHTML = icons.chevronDown;
+
+    trigger.appendChild(this.alignIconSpan);
+    trigger.appendChild(chevron);
     this.alignTrigger = trigger;
 
     const menu = document.createElement('div');
@@ -526,6 +544,7 @@ export class EditKitToolbar {
       it.innerHTML = `<span class="editkit-tb-menu-prefix">${a.icon}</span> <span>${a.label}</span>`;
       it.addEventListener('mousedown', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         a.action();
         this._syncStates();
         this._closeDropdown();
@@ -557,6 +576,7 @@ export class EditKitToolbar {
       lhBtn.textContent = lh;
       lhBtn.addEventListener('mousedown', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         this.editor.commands.setLineHeight(lh);
         this._syncStates();
         this._closeDropdown();
@@ -570,6 +590,7 @@ export class EditKitToolbar {
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       this._toggleDropdown(wrap);
     });
 
@@ -705,6 +726,7 @@ export class EditKitToolbar {
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       this._toggleDropdown(wrap);
     });
 
@@ -757,6 +779,7 @@ export class EditKitToolbar {
 
         cell.addEventListener('mousedown', (e) => {
           e.preventDefault();
+          e.stopPropagation();
           this.editor.commands.insertTable({ rows: r + 1, cols: c + 1, withHeaderRow: true });
           this._closeDropdown();
         });
@@ -776,6 +799,7 @@ export class EditKitToolbar {
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       this._toggleDropdown(wrap);
     });
 
@@ -830,6 +854,7 @@ export class EditKitToolbar {
       itBtn.innerHTML = `<span class="editkit-tb-menu-prefix">${it.icon}</span> <span class="editkit-tb-menu-label">${it.label}</span>`;
       itBtn.addEventListener('mousedown', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         this._closeDropdown();
         it.action();
       });
@@ -838,6 +863,7 @@ export class EditKitToolbar {
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       this._toggleDropdown(wrap);
     });
 
@@ -875,6 +901,7 @@ export class EditKitToolbar {
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       const willOpen = !wrap.classList.contains('editkit-tb-dropdown-wrap--open');
       this._toggleDropdown(wrap);
       if (willOpen) {
@@ -903,6 +930,7 @@ export class EditKitToolbar {
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       const willOpen = !wrap.classList.contains('editkit-tb-dropdown-wrap--open');
       this._toggleDropdown(wrap);
       if (willOpen) {
@@ -947,6 +975,7 @@ export class EditKitToolbar {
       b.textContent = it.label;
       b.addEventListener('mousedown', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         it.action();
         this._closeDropdown();
       });
@@ -955,6 +984,7 @@ export class EditKitToolbar {
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       this._toggleDropdown(wrap);
     });
 
@@ -1041,8 +1071,9 @@ export class EditKitToolbar {
       justify: icons.alignJustify,
     };
 
-    if (this.alignTrigger) {
-      this.alignTrigger.innerHTML = `${alignIconMap[activeAlign] || icons.alignLeft} <span class="editkit-tb-chevron-sm">${icons.chevronDown}</span>`;
+    if (this.alignIconSpan && this._currentAlign !== activeAlign) {
+      this.alignIconSpan.innerHTML = alignIconMap[activeAlign] || icons.alignLeft;
+      this._currentAlign = activeAlign;
     }
 
     const alignButtons = this.element.querySelectorAll('[data-align-id]');
