@@ -1,9 +1,9 @@
 // ============================================================
-// Vellora — Complete Eddyter-Inspired Premium Toolbar
+// EditKit — Complete EditKit-Inspired Premium Toolbar
 // Exact match for the design in the screenshots
 // ============================================================
 
-import type { VelloraEditor, BulletListStyle, NumberedListStyle } from '@vellora/core';
+import type { EditKitEditor, BulletListStyle, NumberedListStyle } from '@editkit/core';
 import { icons } from './icons';
 import { ColorPickerPopover } from './ColorPicker';
 import { EmojiPicker } from './EmojiPicker';
@@ -56,9 +56,9 @@ const FONT_FAMILIES = [
   'System UI',
 ];
 
-export class VelloraToolbar {
+export class EditKitToolbar {
   readonly element: HTMLElement;
-  private editor: VelloraEditor;
+  private editor: EditKitEditor;
   private config: ToolbarConfig;
   private imageModal: ImageModal;
   private linkPopover: LinkPopover;
@@ -77,7 +77,7 @@ export class VelloraToolbar {
   private alignTrigger?: HTMLElement;
   private clearAllBtn?: HTMLButtonElement;
 
-  constructor(editor: VelloraEditor, config: ToolbarConfig = {}) {
+  constructor(editor: EditKitEditor, config: ToolbarConfig = {}) {
     this.editor = editor;
     this.config = config;
     this.imageModal = new ImageModal(editor);
@@ -87,7 +87,7 @@ export class VelloraToolbar {
     TooltipManager.init();
 
     this.element = document.createElement('div');
-    this.element.classList.add('vellora-toolbar');
+    this.element.classList.add('editkit-toolbar');
     this.element.setAttribute('role', 'toolbar');
     this.element.setAttribute('aria-label', 'Editor formatting toolbar');
 
@@ -127,7 +127,7 @@ export class VelloraToolbar {
     this.element.innerHTML = '';
 
     const leftGroup = document.createElement('div');
-    leftGroup.classList.add('vellora-toolbar-group');
+    leftGroup.classList.add('editkit-toolbar-group');
 
     const f = this.config.features || {};
     const isEnabled = (key: keyof ToolbarFeaturesConfig, fallback: boolean = true): boolean => {
@@ -144,14 +144,14 @@ export class VelloraToolbar {
       this.undoBtn = this._createBtn('undo', 'Undo', () => this.editor.commands.undo(), undefined, '⌘Z');
       const canUndo = this.editor.can().undo();
       this.undoBtn.disabled = !canUndo;
-      this.undoBtn.classList.toggle('vellora-tb-btn--disabled', !canUndo);
+      this.undoBtn.classList.toggle('editkit-tb-btn--disabled', !canUndo);
       group1.push(this.undoBtn);
     }
     if (showHistory && isEnabled('redo')) {
       this.redoBtn = this._createBtn('redo', 'Redo', () => this.editor.commands.redo(), undefined, '⌘⇧Z');
       const canRedo = this.editor.can().redo();
       this.redoBtn.disabled = !canRedo;
-      this.redoBtn.classList.toggle('vellora-tb-btn--disabled', !canRedo);
+      this.redoBtn.classList.toggle('editkit-tb-btn--disabled', !canRedo);
       group1.push(this.redoBtn);
     }
     if (group1.length > 0) sections.push(group1);
@@ -211,7 +211,7 @@ export class VelloraToolbar {
         }
       });
       this.clearAllBtn.disabled = true;
-      this.clearAllBtn.classList.add('vellora-tb-btn--disabled');
+      this.clearAllBtn.classList.add('editkit-tb-btn--disabled');
       group7.push(this.clearAllBtn);
     }
     if (isEnabled('comment')) group7.push(this._createBtn('comment', 'Add Comment', () => this._addCommentMock()));
@@ -234,8 +234,8 @@ export class VelloraToolbar {
   private _createBtn(iconKey: string, tooltip: string, action: () => void, activeKey?: string, shortcut?: string): HTMLButtonElement {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.classList.add('vellora-tb-btn');
-    btn.setAttribute('data-vellora-tooltip', tooltip);
+    btn.classList.add('editkit-tb-btn');
+    btn.setAttribute('data-editkit-tooltip', tooltip);
     btn.setAttribute('aria-label', tooltip);
     if (shortcut) btn.setAttribute('data-tooltip-shortcut', shortcut);
     btn.innerHTML = icons[iconKey] || iconKey;
@@ -243,7 +243,7 @@ export class VelloraToolbar {
 
     btn.addEventListener('mousedown', (e) => {
       e.preventDefault();
-      if (btn.disabled || btn.classList.contains('vellora-tb-btn--disabled')) return;
+      if (btn.disabled || btn.classList.contains('editkit-tb-btn--disabled')) return;
       action();
       this._syncStates();
     });
@@ -253,31 +253,31 @@ export class VelloraToolbar {
 
   private _createDivider(): HTMLElement {
     const d = document.createElement('div');
-    d.classList.add('vellora-tb-divider');
+    d.classList.add('editkit-tb-divider');
     return d;
   }
 
   // ── 1. Block Selector Dropdown: ¶ Normal ˅ ──
   private _createBlockDropdown(): HTMLElement {
     const wrap = document.createElement('div');
-    wrap.classList.add('vellora-tb-dropdown-wrap');
+    wrap.classList.add('editkit-tb-dropdown-wrap');
 
     const trigger = document.createElement('button');
     trigger.type = 'button';
-    trigger.classList.add('vellora-tb-pill-btn');
-    trigger.setAttribute('data-vellora-tooltip', 'Text Style');
+    trigger.classList.add('editkit-tb-pill-btn');
+    trigger.setAttribute('data-editkit-tooltip', 'Text Style');
     trigger.setAttribute('aria-label', 'Text Style');
 
     const iconSpan = document.createElement('span');
-    iconSpan.classList.add('vellora-tb-icon-sm');
+    iconSpan.classList.add('editkit-tb-icon-sm');
     iconSpan.innerHTML = icons.pilcrow;
 
     this.blockLabel = document.createElement('span');
-    this.blockLabel.classList.add('vellora-tb-pill-text');
+    this.blockLabel.classList.add('editkit-tb-pill-text');
     this.blockLabel.textContent = 'Normal';
 
     const chevron = document.createElement('span');
-    chevron.classList.add('vellora-tb-chevron');
+    chevron.classList.add('editkit-tb-chevron');
     chevron.innerHTML = icons.chevronDown;
 
     trigger.appendChild(iconSpan);
@@ -285,7 +285,7 @@ export class VelloraToolbar {
     trigger.appendChild(chevron);
 
     const menu = document.createElement('div');
-    menu.classList.add('vellora-tb-dropdown-menu', 'vellora-tb-dropdown-menu--block');
+    menu.classList.add('editkit-tb-dropdown-menu', 'editkit-tb-dropdown-menu--block');
 
     const items = [
       { id: 'paragraph', icon: icons.pilcrow, label: 'Normal', action: () => this.editor.commands.paragraph() },
@@ -300,15 +300,15 @@ export class VelloraToolbar {
     for (const it of items) {
       const itemBtn = document.createElement('button');
       itemBtn.type = 'button';
-      itemBtn.classList.add('vellora-tb-menu-item');
+      itemBtn.classList.add('editkit-tb-menu-item');
       itemBtn.setAttribute('data-block-id', it.id);
 
       const prefix = document.createElement('span');
-      prefix.classList.add('vellora-tb-menu-prefix');
+      prefix.classList.add('editkit-tb-menu-prefix');
       prefix.innerHTML = it.icon;
 
       const label = document.createElement('span');
-      label.classList.add('vellora-tb-menu-label');
+      label.classList.add('editkit-tb-menu-label');
       label.textContent = it.label;
 
       itemBtn.appendChild(prefix);
@@ -317,7 +317,7 @@ export class VelloraToolbar {
       itemBtn.addEventListener('mousedown', (e) => {
         e.preventDefault();
         it.action();
-        this.blockLabel.textContent = it.label;
+        if (this.blockLabel) this.blockLabel.textContent = it.label;
         this._closeDropdown();
       });
 
@@ -337,37 +337,37 @@ export class VelloraToolbar {
   // ── 2. Font Family Dropdown: DM Sans ˅ ──
   private _createFontDropdown(): HTMLElement {
     const wrap = document.createElement('div');
-    wrap.classList.add('vellora-tb-dropdown-wrap');
+    wrap.classList.add('editkit-tb-dropdown-wrap');
 
     const trigger = document.createElement('button');
     trigger.type = 'button';
-    trigger.classList.add('vellora-tb-pill-btn', 'vellora-tb-pill-btn--font');
+    trigger.classList.add('editkit-tb-pill-btn', 'editkit-tb-pill-btn--font');
 
     this.fontLabel = document.createElement('span');
-    this.fontLabel.classList.add('vellora-tb-pill-text');
+    this.fontLabel.classList.add('editkit-tb-pill-text');
     this.fontLabel.textContent = this.editor.commands.getFontFamily();
 
     const chevron = document.createElement('span');
-    chevron.classList.add('vellora-tb-chevron');
+    chevron.classList.add('editkit-tb-chevron');
     chevron.innerHTML = icons.chevronDown;
 
     trigger.appendChild(this.fontLabel);
     trigger.appendChild(chevron);
 
     const menu = document.createElement('div');
-    menu.classList.add('vellora-tb-dropdown-menu');
+    menu.classList.add('editkit-tb-dropdown-menu');
 
     for (const font of FONT_FAMILIES) {
       const it = document.createElement('button');
       it.type = 'button';
-      it.classList.add('vellora-tb-menu-item');
+      it.classList.add('editkit-tb-menu-item');
       it.style.fontFamily = `"${font}", sans-serif`;
       it.textContent = font;
 
       it.addEventListener('mousedown', (e) => {
         e.preventDefault();
         this.editor.commands.setFontFamily(font);
-        this.fontLabel.textContent = font;
+        if (this.fontLabel) this.fontLabel.textContent = font;
         this._closeDropdown();
       });
 
@@ -387,34 +387,34 @@ export class VelloraToolbar {
   // ── 3. Font Size Stepper: - 14 + ──
   private _createFontSizeStepper(): HTMLElement {
     const wrap = document.createElement('div');
-    wrap.classList.add('vellora-tb-stepper-wrap');
+    wrap.classList.add('editkit-tb-stepper-wrap');
 
     const minus = document.createElement('button');
     minus.type = 'button';
-    minus.classList.add('vellora-tb-stepper-btn');
-    minus.setAttribute('data-vellora-tooltip', 'Decrease Font Size');
+    minus.classList.add('editkit-tb-stepper-btn');
+    minus.setAttribute('data-editkit-tooltip', 'Decrease Font Size');
     minus.setAttribute('aria-label', 'Decrease Font Size');
     minus.innerHTML = icons.minus;
     minus.addEventListener('mousedown', (e) => {
       e.preventDefault();
       this.editor.commands.decreaseFontSize();
-      this.sizeDisplay.textContent = String(this.editor.commands.getFontSize());
+      if (this.sizeDisplay) this.sizeDisplay.textContent = String(this.editor.commands.getFontSize());
     });
 
     this.sizeDisplay = document.createElement('span');
-    this.sizeDisplay.classList.add('vellora-tb-stepper-val');
+    this.sizeDisplay.classList.add('editkit-tb-stepper-val');
     this.sizeDisplay.textContent = String(this.editor.commands.getFontSize());
 
     const plus = document.createElement('button');
     plus.type = 'button';
-    plus.classList.add('vellora-tb-stepper-btn');
-    plus.setAttribute('data-vellora-tooltip', 'Increase Font Size');
+    plus.classList.add('editkit-tb-stepper-btn');
+    plus.setAttribute('data-editkit-tooltip', 'Increase Font Size');
     plus.setAttribute('aria-label', 'Increase Font Size');
     plus.innerHTML = icons.plus;
     plus.addEventListener('mousedown', (e) => {
       e.preventDefault();
       this.editor.commands.increaseFontSize();
-      this.sizeDisplay.textContent = String(this.editor.commands.getFontSize());
+      if (this.sizeDisplay) this.sizeDisplay.textContent = String(this.editor.commands.getFontSize());
     });
 
     wrap.appendChild(minus);
@@ -423,20 +423,20 @@ export class VelloraToolbar {
     return wrap;
   }
 
-  // ── 3.5. Character Formatting Dropdown: [Icon] ˅ (Exact EDDYTER Match) ──
+  // ── 3.5. Character Formatting Dropdown: [Icon] ˅ (Exact EDITKIT Match) ──
   private _createFormatDropdown(): HTMLElement {
     const wrap = document.createElement('div');
-    wrap.classList.add('vellora-tb-dropdown-wrap');
+    wrap.classList.add('editkit-tb-dropdown-wrap');
 
     const trigger = document.createElement('button');
     trigger.type = 'button';
-    trigger.classList.add('vellora-tb-btn', 'vellora-tb-btn--chevron');
-    trigger.setAttribute('data-vellora-tooltip', 'More Formatting');
+    trigger.classList.add('editkit-tb-btn', 'editkit-tb-btn--chevron');
+    trigger.setAttribute('data-editkit-tooltip', 'More Formatting');
     trigger.setAttribute('aria-label', 'More Formatting');
-    trigger.innerHTML = `${icons.keyboard} <span class="vellora-tb-chevron-sm">${icons.chevronDown}</span>`;
+    trigger.innerHTML = `${icons.keyboard} <span class="editkit-tb-chevron-sm">${icons.chevronDown}</span>`;
 
     const menu = document.createElement('div');
-    menu.classList.add('vellora-tb-dropdown-menu', 'vellora-tb-dropdown-menu--format');
+    menu.classList.add('editkit-tb-dropdown-menu', 'editkit-tb-dropdown-menu--format');
 
     const items = [
       { id: 'italic', icon: icons.italic, label: 'Italic', action: () => this.editor.commands.italic() },
@@ -450,9 +450,9 @@ export class VelloraToolbar {
     for (const it of items) {
       const itBtn = document.createElement('button');
       itBtn.type = 'button';
-      itBtn.classList.add('vellora-tb-menu-item');
+      itBtn.classList.add('editkit-tb-menu-item');
       itBtn.setAttribute('data-format-id', it.id);
-      itBtn.innerHTML = `<span class="vellora-tb-menu-prefix">${it.icon}</span> <span class="vellora-tb-menu-label">${it.label}</span>`;
+      itBtn.innerHTML = `<span class="editkit-tb-menu-prefix">${it.icon}</span> <span class="editkit-tb-menu-label">${it.label}</span>`;
       itBtn.addEventListener('mousedown', (e) => {
         e.preventDefault();
         it.action();
@@ -474,14 +474,14 @@ export class VelloraToolbar {
   // ── 4. Color Dropdown with Popover: A ˅ ──
   private _createColorDropdown(): HTMLElement {
     const wrap = document.createElement('div');
-    wrap.classList.add('vellora-tb-dropdown-wrap');
+    wrap.classList.add('editkit-tb-dropdown-wrap');
 
     const trigger = document.createElement('button');
     trigger.type = 'button';
-    trigger.classList.add('vellora-tb-btn', 'vellora-tb-btn--color');
-    trigger.setAttribute('data-vellora-tooltip', 'Text & Highlight Color');
+    trigger.classList.add('editkit-tb-btn', 'editkit-tb-btn--color');
+    trigger.setAttribute('data-editkit-tooltip', 'Text & Highlight Color');
     trigger.setAttribute('aria-label', 'Text & Highlight Color');
-    trigger.innerHTML = `${icons.textColor} <span class="vellora-tb-color-indicator"></span>`;
+    trigger.innerHTML = `${icons.textColor} <span class="editkit-tb-color-indicator"></span>`;
 
     const popover = new ColorPickerPopover(this.editor, undefined, () => this._closeDropdown());
     wrap.appendChild(popover.element);
@@ -495,21 +495,21 @@ export class VelloraToolbar {
     return wrap;
   }
 
-  // ── 5. Alignment Dropdown: ≡ ˅ (Exact EDDYTER Match) ──
+  // ── 5. Alignment Dropdown: ≡ ˅ (Exact EDITKIT Match) ──
   private _createAlignDropdown(): HTMLElement {
     const wrap = document.createElement('div');
-    wrap.classList.add('vellora-tb-dropdown-wrap');
+    wrap.classList.add('editkit-tb-dropdown-wrap');
 
     const trigger = document.createElement('button');
     trigger.type = 'button';
-    trigger.classList.add('vellora-tb-btn', 'vellora-tb-btn--chevron');
-    trigger.setAttribute('data-vellora-tooltip', 'Text Alignment & Line Height');
+    trigger.classList.add('editkit-tb-btn', 'editkit-tb-btn--chevron');
+    trigger.setAttribute('data-editkit-tooltip', 'Text Alignment & Line Height');
     trigger.setAttribute('aria-label', 'Text Alignment & Line Height');
-    trigger.innerHTML = `${icons.alignLeft} <span class="vellora-tb-chevron-sm">${icons.chevronDown}</span>`;
+    trigger.innerHTML = `${icons.alignLeft} <span class="editkit-tb-chevron-sm">${icons.chevronDown}</span>`;
     this.alignTrigger = trigger;
 
     const menu = document.createElement('div');
-    menu.classList.add('vellora-tb-dropdown-menu', 'vellora-tb-dropdown-menu--align');
+    menu.classList.add('editkit-tb-dropdown-menu', 'editkit-tb-dropdown-menu--align');
 
     const aligns = [
       { id: 'left', icon: icons.alignLeft, label: 'Left Align', action: () => this.editor.commands.alignLeft() },
@@ -521,9 +521,9 @@ export class VelloraToolbar {
     for (const a of aligns) {
       const it = document.createElement('button');
       it.type = 'button';
-      it.classList.add('vellora-tb-menu-item');
+      it.classList.add('editkit-tb-menu-item');
       it.setAttribute('data-align-id', a.id);
-      it.innerHTML = `<span class="vellora-tb-menu-prefix">${a.icon}</span> <span>${a.label}</span>`;
+      it.innerHTML = `<span class="editkit-tb-menu-prefix">${a.icon}</span> <span>${a.label}</span>`;
       it.addEventListener('mousedown', (e) => {
         e.preventDefault();
         a.action();
@@ -535,24 +535,24 @@ export class VelloraToolbar {
 
     // ── Line Height Flyout Item (Exact match from screenshot) ──
     const lhWrap = document.createElement('div');
-    lhWrap.classList.add('vellora-tb-submenu-wrap');
+    lhWrap.classList.add('editkit-tb-submenu-wrap');
 
     const lhItem = document.createElement('div');
-    lhItem.classList.add('vellora-tb-menu-item', 'vellora-tb-menu-item--has-sub');
+    lhItem.classList.add('editkit-tb-menu-item', 'editkit-tb-menu-item--has-sub');
     lhItem.innerHTML = `
-      <span class="vellora-tb-menu-label">Line Height</span>
-      <span class="vellora-tb-menu-arrow">${icons.chevronRight}</span>
+      <span class="editkit-tb-menu-label">Line Height</span>
+      <span class="editkit-tb-menu-arrow">${icons.chevronRight}</span>
     `;
 
     const lhSub = document.createElement('div');
-    lhSub.classList.add('vellora-tb-submenu', 'vellora-tb-submenu--lh');
+    lhSub.classList.add('editkit-tb-submenu', 'editkit-tb-submenu--lh');
 
     const lineHeights = ['1', '1.15', '1.5', '2', '2.5', '3'];
 
     for (const lh of lineHeights) {
       const lhBtn = document.createElement('button');
       lhBtn.type = 'button';
-      lhBtn.classList.add('vellora-tb-menu-item');
+      lhBtn.classList.add('editkit-tb-menu-item');
       lhBtn.setAttribute('data-lineheight-id', lh);
       lhBtn.textContent = lh;
       lhBtn.addEventListener('mousedown', (e) => {
@@ -581,32 +581,32 @@ export class VelloraToolbar {
   // ── 6. Lists Dropdown with nested submenus as in Screenshot 3 ──
   private _createListDropdown(): HTMLElement {
     const wrap = document.createElement('div');
-    wrap.classList.add('vellora-tb-dropdown-wrap');
+    wrap.classList.add('editkit-tb-dropdown-wrap');
 
     const trigger = document.createElement('button');
     trigger.type = 'button';
-    trigger.classList.add('vellora-tb-btn', 'vellora-tb-btn--chevron');
-    trigger.setAttribute('data-vellora-tooltip', 'Lists & Quotes');
+    trigger.classList.add('editkit-tb-btn', 'editkit-tb-btn--chevron');
+    trigger.setAttribute('data-editkit-tooltip', 'Lists & Quotes');
     trigger.setAttribute('aria-label', 'Lists & Quotes');
-    trigger.innerHTML = `${icons.bulletList} <span class="vellora-tb-chevron-sm">${icons.chevronDown}</span>`;
+    trigger.innerHTML = `${icons.bulletList} <span class="editkit-tb-chevron-sm">${icons.chevronDown}</span>`;
 
     const menu = document.createElement('div');
-    menu.classList.add('vellora-tb-dropdown-menu', 'vellora-tb-dropdown-menu--lists');
+    menu.classList.add('editkit-tb-dropdown-menu', 'editkit-tb-dropdown-menu--lists');
 
     // Bulleted list flyout item
     const bulletWrap = document.createElement('div');
-    bulletWrap.classList.add('vellora-tb-submenu-wrap');
+    bulletWrap.classList.add('editkit-tb-submenu-wrap');
 
     const bulletItem = document.createElement('div');
-    bulletItem.classList.add('vellora-tb-menu-item', 'vellora-tb-menu-item--has-sub');
+    bulletItem.classList.add('editkit-tb-menu-item', 'editkit-tb-menu-item--has-sub');
     bulletItem.innerHTML = `
-      <span class="vellora-tb-menu-prefix">${icons.bulletList}</span>
-      <span class="vellora-tb-menu-label">Bulleted list</span>
-      <span class="vellora-tb-menu-arrow">${icons.chevronRight}</span>
+      <span class="editkit-tb-menu-prefix">${icons.bulletList}</span>
+      <span class="editkit-tb-menu-label">Bulleted list</span>
+      <span class="editkit-tb-menu-arrow">${icons.chevronRight}</span>
     `;
 
     const bulletSub = document.createElement('div');
-    bulletSub.classList.add('vellora-tb-submenu');
+    bulletSub.classList.add('editkit-tb-submenu');
 
     const bulletStyles: Array<{ id: BulletListStyle; icon: string; label: string }> = [
       { id: 'default', icon: '●', label: 'Default' },
@@ -617,8 +617,8 @@ export class VelloraToolbar {
     for (const bs of bulletStyles) {
       const bBtn = document.createElement('button');
       bBtn.type = 'button';
-      bBtn.classList.add('vellora-tb-menu-item');
-      bBtn.innerHTML = `<span class="vellora-tb-bullet-symbol">${bs.icon}</span> <span>${bs.label}</span>`;
+      bBtn.classList.add('editkit-tb-menu-item');
+      bBtn.innerHTML = `<span class="editkit-tb-bullet-symbol">${bs.icon}</span> <span>${bs.label}</span>`;
       bBtn.addEventListener('mousedown', (e) => {
         e.preventDefault();
         this.editor.commands.bulletList(bs.id);
@@ -632,18 +632,18 @@ export class VelloraToolbar {
 
     // Numbered list flyout item
     const numWrap = document.createElement('div');
-    numWrap.classList.add('vellora-tb-submenu-wrap');
+    numWrap.classList.add('editkit-tb-submenu-wrap');
 
     const numItem = document.createElement('div');
-    numItem.classList.add('vellora-tb-menu-item', 'vellora-tb-menu-item--has-sub');
+    numItem.classList.add('editkit-tb-menu-item', 'editkit-tb-menu-item--has-sub');
     numItem.innerHTML = `
-      <span class="vellora-tb-menu-prefix">${icons.orderedList}</span>
-      <span class="vellora-tb-menu-label">Numbered list</span>
-      <span class="vellora-tb-menu-arrow">${icons.chevronRight}</span>
+      <span class="editkit-tb-menu-prefix">${icons.orderedList}</span>
+      <span class="editkit-tb-menu-label">Numbered list</span>
+      <span class="editkit-tb-menu-arrow">${icons.chevronRight}</span>
     `;
 
     const numSub = document.createElement('div');
-    numSub.classList.add('vellora-tb-submenu');
+    numSub.classList.add('editkit-tb-submenu');
 
     const numStyles: Array<{ id: NumberedListStyle; label: string }> = [
       { id: 'decimal', label: '1. 1, 2, 3' },
@@ -654,7 +654,7 @@ export class VelloraToolbar {
     for (const ns of numStyles) {
       const nBtn = document.createElement('button');
       nBtn.type = 'button';
-      nBtn.classList.add('vellora-tb-menu-item');
+      nBtn.classList.add('editkit-tb-menu-item');
       nBtn.textContent = ns.label;
       nBtn.addEventListener('mousedown', (e) => {
         e.preventDefault();
@@ -670,8 +670,8 @@ export class VelloraToolbar {
     // Check list
     const checkItem = document.createElement('button');
     checkItem.type = 'button';
-    checkItem.classList.add('vellora-tb-menu-item');
-    checkItem.innerHTML = `<span class="vellora-tb-menu-prefix">${icons.taskList}</span> <span>Check list</span>`;
+    checkItem.classList.add('editkit-tb-menu-item');
+    checkItem.innerHTML = `<span class="editkit-tb-menu-prefix">${icons.taskList}</span> <span>Check list</span>`;
     checkItem.addEventListener('mousedown', (e) => {
       e.preventDefault();
       this.editor.commands.taskList();
@@ -682,8 +682,8 @@ export class VelloraToolbar {
     // Quote
     const quoteItem = document.createElement('button');
     quoteItem.type = 'button';
-    quoteItem.classList.add('vellora-tb-menu-item');
-    quoteItem.innerHTML = `<span class="vellora-tb-menu-prefix">${icons.blockquote}</span> <span>Quote</span>`;
+    quoteItem.classList.add('editkit-tb-menu-item');
+    quoteItem.innerHTML = `<span class="editkit-tb-menu-prefix">${icons.blockquote}</span> <span>Quote</span>`;
     quoteItem.addEventListener('mousedown', (e) => {
       e.preventDefault();
       this.editor.commands.blockquote();
@@ -694,8 +694,8 @@ export class VelloraToolbar {
     // Code block
     const codeItem = document.createElement('button');
     codeItem.type = 'button';
-    codeItem.classList.add('vellora-tb-menu-item');
-    codeItem.innerHTML = `<span class="vellora-tb-menu-prefix">${icons.codeBlock}</span> <span>Code block</span>`;
+    codeItem.classList.add('editkit-tb-menu-item');
+    codeItem.innerHTML = `<span class="editkit-tb-menu-prefix">${icons.codeBlock}</span> <span>Code block</span>`;
     codeItem.addEventListener('mousedown', (e) => {
       e.preventDefault();
       this.editor.commands.codeBlock();
@@ -716,27 +716,27 @@ export class VelloraToolbar {
   // ── 7. Table Inserter with Visual NxM Hover Grid ──
   private _createTableGridDropdown(): HTMLElement {
     const wrap = document.createElement('div');
-    wrap.classList.add('vellora-tb-dropdown-wrap');
+    wrap.classList.add('editkit-tb-dropdown-wrap');
 
     const trigger = document.createElement('button');
     trigger.type = 'button';
-    trigger.classList.add('vellora-tb-btn');
-    trigger.setAttribute('data-vellora-tooltip', 'Insert Table');
+    trigger.classList.add('editkit-tb-btn');
+    trigger.setAttribute('data-editkit-tooltip', 'Insert Table');
     trigger.setAttribute('aria-label', 'Insert Table');
     trigger.innerHTML = icons.table;
 
     const menu = document.createElement('div');
-    menu.classList.add('vellora-tb-dropdown-menu', 'vellora-tb-table-picker');
+    menu.classList.add('editkit-tb-dropdown-menu', 'editkit-tb-table-picker');
 
     const header = document.createElement('div');
-    header.classList.add('vellora-tb-table-picker-header');
-    header.innerHTML = `<span>Insert Table</span> <span class="vellora-tb-table-size-text">3 × 3</span>`;
+    header.classList.add('editkit-tb-table-picker-header');
+    header.innerHTML = `<span>Insert Table</span> <span class="editkit-tb-table-size-text">3 × 3</span>`;
 
-    const sizeText = header.querySelector('.vellora-tb-table-size-text') as HTMLElement;
+    const sizeText = header.querySelector('.editkit-tb-table-size-text') as HTMLElement;
 
     // 6x6 Grid of cells
     const grid = document.createElement('div');
-    grid.classList.add('vellora-tb-table-grid');
+    grid.classList.add('editkit-tb-table-grid');
 
     const cells: HTMLElement[][] = [];
     const MAX_R = 6;
@@ -746,7 +746,7 @@ export class VelloraToolbar {
       cells[r] = [];
       for (let c = 0; c < MAX_C; c++) {
         const cell = document.createElement('div');
-        cell.classList.add('vellora-tb-grid-cell');
+        cell.classList.add('editkit-tb-grid-cell');
         cell.setAttribute('data-row', String(r + 1));
         cell.setAttribute('data-col', String(c + 1));
 
@@ -788,9 +788,9 @@ export class VelloraToolbar {
     for (let r = 0; r < cells.length; r++) {
       for (let c = 0; c < cells[r].length; c++) {
         if (r <= targetR && c <= targetC) {
-          cells[r][c].classList.add('vellora-tb-grid-cell--active');
+          cells[r][c].classList.add('editkit-tb-grid-cell--active');
         } else {
-          cells[r][c].classList.remove('vellora-tb-grid-cell--active');
+          cells[r][c].classList.remove('editkit-tb-grid-cell--active');
         }
       }
     }
@@ -806,17 +806,17 @@ export class VelloraToolbar {
   // ── Math / Equation Dropdown (Exact match to Screenshot) ──
   private _createMathDropdown(): HTMLElement {
     const wrap = document.createElement('div');
-    wrap.classList.add('vellora-tb-dropdown-wrap');
+    wrap.classList.add('editkit-tb-dropdown-wrap');
 
     const trigger = document.createElement('button');
     trigger.type = 'button';
-    trigger.classList.add('vellora-tb-btn');
-    trigger.setAttribute('data-vellora-tooltip', 'Formula / Equation');
+    trigger.classList.add('editkit-tb-btn');
+    trigger.setAttribute('data-editkit-tooltip', 'Formula / Equation');
     trigger.setAttribute('aria-label', 'Formula / Equation');
     trigger.innerHTML = icons.math;
 
     const menu = document.createElement('div');
-    menu.classList.add('vellora-tb-dropdown-menu', 'vellora-tb-dropdown-menu--compact');
+    menu.classList.add('editkit-tb-dropdown-menu', 'editkit-tb-dropdown-menu--compact');
 
     const items = [
       { id: 'block', icon: icons.mathBlock, label: 'Block equation', action: () => this.mathModal.show('block') },
@@ -826,8 +826,8 @@ export class VelloraToolbar {
     for (const it of items) {
       const itBtn = document.createElement('button');
       itBtn.type = 'button';
-      itBtn.classList.add('vellora-tb-menu-item');
-      itBtn.innerHTML = `<span class="vellora-tb-menu-prefix">${it.icon}</span> <span class="vellora-tb-menu-label">${it.label}</span>`;
+      itBtn.classList.add('editkit-tb-menu-item');
+      itBtn.innerHTML = `<span class="editkit-tb-menu-prefix">${it.icon}</span> <span class="editkit-tb-menu-label">${it.label}</span>`;
       itBtn.addEventListener('mousedown', (e) => {
         e.preventDefault();
         this._closeDropdown();
@@ -854,15 +854,15 @@ export class VelloraToolbar {
     return btn;
   }
 
-  // ── Emoji Picker Dropdown (Exact match to Eddyter Screenshot) ──
+  // ── Emoji Picker Dropdown (Exact match to EditKit Screenshot) ──
   private _createEmojiDropdown(): HTMLElement {
     const wrap = document.createElement('div');
-    wrap.classList.add('vellora-tb-dropdown-wrap');
+    wrap.classList.add('editkit-tb-dropdown-wrap');
 
     const trigger = document.createElement('button');
     trigger.type = 'button';
-    trigger.classList.add('vellora-tb-btn');
-    trigger.setAttribute('data-vellora-tooltip', 'Insert Emoji');
+    trigger.classList.add('editkit-tb-btn');
+    trigger.setAttribute('data-editkit-tooltip', 'Insert Emoji');
     trigger.setAttribute('aria-label', 'Insert Emoji');
     trigger.innerHTML = icons.emoji;
 
@@ -875,7 +875,7 @@ export class VelloraToolbar {
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();
-      const willOpen = !wrap.classList.contains('vellora-tb-dropdown-wrap--open');
+      const willOpen = !wrap.classList.contains('editkit-tb-dropdown-wrap--open');
       this._toggleDropdown(wrap);
       if (willOpen) {
         picker.focusSearch();
@@ -888,12 +888,12 @@ export class VelloraToolbar {
   // ── Symbol / Omega Dropdown (Rich Special Characters Picker) ──
   private _createSymbolDropdown(): HTMLElement {
     const wrap = document.createElement('div');
-    wrap.classList.add('vellora-tb-dropdown-wrap');
+    wrap.classList.add('editkit-tb-dropdown-wrap');
 
     const trigger = document.createElement('button');
     trigger.type = 'button';
-    trigger.classList.add('vellora-tb-btn');
-    trigger.setAttribute('data-vellora-tooltip', 'Special Characters');
+    trigger.classList.add('editkit-tb-btn');
+    trigger.setAttribute('data-editkit-tooltip', 'Special Characters');
     trigger.setAttribute('aria-label', 'Special Characters');
     trigger.innerHTML = icons.omega;
 
@@ -903,7 +903,7 @@ export class VelloraToolbar {
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();
-      const willOpen = !wrap.classList.contains('vellora-tb-dropdown-wrap--open');
+      const willOpen = !wrap.classList.contains('editkit-tb-dropdown-wrap--open');
       this._toggleDropdown(wrap);
       if (willOpen) {
         symbolPicker.focusSearch();
@@ -918,17 +918,17 @@ export class VelloraToolbar {
   // ── More Add: + ˅ ──
   private _createMoreDropdown(): HTMLElement {
     const wrap = document.createElement('div');
-    wrap.classList.add('vellora-tb-dropdown-wrap');
+    wrap.classList.add('editkit-tb-dropdown-wrap');
 
     const trigger = document.createElement('button');
     trigger.type = 'button';
-    trigger.classList.add('vellora-tb-btn', 'vellora-tb-btn--chevron');
-    trigger.setAttribute('data-vellora-tooltip', 'More Insert Items');
+    trigger.classList.add('editkit-tb-btn', 'editkit-tb-btn--chevron');
+    trigger.setAttribute('data-editkit-tooltip', 'More Insert Items');
     trigger.setAttribute('aria-label', 'More Insert Items');
-    trigger.innerHTML = `${icons.plus} <span class="vellora-tb-chevron-sm">${icons.chevronDown}</span>`;
+    trigger.innerHTML = `${icons.plus} <span class="editkit-tb-chevron-sm">${icons.chevronDown}</span>`;
 
     const menu = document.createElement('div');
-    menu.classList.add('vellora-tb-dropdown-menu');
+    menu.classList.add('editkit-tb-dropdown-menu');
 
     const items = [
       { label: 'Subscript (X₂)', action: () => this.editor.commands.subscript() },
@@ -943,7 +943,7 @@ export class VelloraToolbar {
     for (const it of items) {
       const b = document.createElement('button');
       b.type = 'button';
-      b.classList.add('vellora-tb-menu-item');
+      b.classList.add('editkit-tb-menu-item');
       b.textContent = it.label;
       b.addEventListener('mousedown', (e) => {
         e.preventDefault();
@@ -984,19 +984,19 @@ export class VelloraToolbar {
 
   // ── Dropdown Toggle & Close ──
   private _toggleDropdown(wrap: HTMLElement): void {
-    if (wrap.classList.contains('vellora-tb-dropdown-wrap--open')) {
+    if (wrap.classList.contains('editkit-tb-dropdown-wrap--open')) {
       this._closeDropdown();
     } else {
       this._closeDropdown();
       this._syncStates();
-      wrap.classList.add('vellora-tb-dropdown-wrap--open');
+      wrap.classList.add('editkit-tb-dropdown-wrap--open');
       this.openDropdown = wrap;
     }
   }
 
   private _closeDropdown(): void {
     if (this.openDropdown) {
-      this.openDropdown.classList.remove('vellora-tb-dropdown-wrap--open');
+      this.openDropdown.classList.remove('editkit-tb-dropdown-wrap--open');
       this.openDropdown = null;
     }
   }
@@ -1007,23 +1007,23 @@ export class VelloraToolbar {
     if (this.undoBtn) {
       const canUndo = this.editor.can().undo();
       this.undoBtn.disabled = !canUndo;
-      this.undoBtn.classList.toggle('vellora-tb-btn--disabled', !canUndo);
+      this.undoBtn.classList.toggle('editkit-tb-btn--disabled', !canUndo);
     }
     if (this.redoBtn) {
       const canRedo = this.editor.can().redo();
       this.redoBtn.disabled = !canRedo;
-      this.redoBtn.classList.toggle('vellora-tb-btn--disabled', !canRedo);
+      this.redoBtn.classList.toggle('editkit-tb-btn--disabled', !canRedo);
     }
 
     if (this.boldBtn) {
-      this.boldBtn.classList.toggle('vellora-tb-btn--active', this.editor.isActive('bold'));
+      this.boldBtn.classList.toggle('editkit-tb-btn--active', this.editor.isActive('bold'));
     }
 
     const formatItems = this.element.querySelectorAll('[data-format-id]');
     formatItems.forEach(b => {
       const id = b.getAttribute('data-format-id');
       if (id) {
-        b.classList.toggle('vellora-tb-menu-item--active', this.editor.isActive(id));
+        b.classList.toggle('editkit-tb-menu-item--active', this.editor.isActive(id));
       }
     });
 
@@ -1042,13 +1042,13 @@ export class VelloraToolbar {
     };
 
     if (this.alignTrigger) {
-      this.alignTrigger.innerHTML = `${alignIconMap[activeAlign] || icons.alignLeft} <span class="vellora-tb-chevron-sm">${icons.chevronDown}</span>`;
+      this.alignTrigger.innerHTML = `${alignIconMap[activeAlign] || icons.alignLeft} <span class="editkit-tb-chevron-sm">${icons.chevronDown}</span>`;
     }
 
     const alignButtons = this.element.querySelectorAll('[data-align-id]');
     alignButtons.forEach(b => {
       const id = b.getAttribute('data-align-id');
-      b.classList.toggle('vellora-tb-menu-item--active', id === activeAlign);
+      b.classList.toggle('editkit-tb-menu-item--active', id === activeAlign);
     });
 
     // 2. Sync Line Height items
@@ -1056,7 +1056,7 @@ export class VelloraToolbar {
     const lhButtons = this.element.querySelectorAll('[data-lineheight-id]');
     lhButtons.forEach(b => {
       const id = b.getAttribute('data-lineheight-id');
-      b.classList.toggle('vellora-tb-menu-item--active', id === curLH);
+      b.classList.toggle('editkit-tb-menu-item--active', id === curLH);
     });
 
     // 3. Sync Block type items
@@ -1071,7 +1071,7 @@ export class VelloraToolbar {
     const blockButtons = this.element.querySelectorAll('[data-block-id]');
     blockButtons.forEach(b => {
       const id = b.getAttribute('data-block-id');
-      b.classList.toggle('vellora-tb-menu-item--active', id === activeBlock);
+      b.classList.toggle('editkit-tb-menu-item--active', id === activeBlock);
     });
 
     if (this.blockLabel) {
@@ -1096,7 +1096,7 @@ export class VelloraToolbar {
     if (this.clearAllBtn) {
       const isAll = this._isAllContentSelected();
       this.clearAllBtn.disabled = !isAll;
-      this.clearAllBtn.classList.toggle('vellora-tb-btn--disabled', !isAll);
+      this.clearAllBtn.classList.toggle('editkit-tb-btn--disabled', !isAll);
     }
   }
 
@@ -1161,6 +1161,6 @@ export class VelloraToolbar {
   }
 }
 
-export function createToolbar(editor: VelloraEditor, config: ToolbarConfig = {}): VelloraToolbar {
-  return new VelloraToolbar(editor, config);
+export function createToolbar(editor: EditKitEditor, config: ToolbarConfig = {}): EditKitToolbar {
+  return new EditKitToolbar(editor, config);
 }

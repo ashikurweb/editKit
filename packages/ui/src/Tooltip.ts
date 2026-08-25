@@ -1,5 +1,5 @@
 // ============================================================
-// Vellora — Custom Global Floating Tooltip System
+// EditKit — Custom Global Floating Tooltip System
 // Pixel-perfect glassmorphic tooltips with shortcut badges
 // Spring bubble animation, theme-aware (dark & light)
 // ============================================================
@@ -27,15 +27,15 @@ export class TooltipManager {
 
   private _createDOM(): void {
     this.tooltipEl = document.createElement('div');
-    this.tooltipEl.classList.add('vellora-tooltip');
+    this.tooltipEl.classList.add('editkit-tooltip');
     this.tooltipEl.setAttribute('role', 'tooltip');
     this.tooltipEl.setAttribute('aria-hidden', 'true');
 
     this.textEl = document.createElement('span');
-    this.textEl.classList.add('vellora-tooltip-text');
+    this.textEl.classList.add('editkit-tooltip-text');
 
     this.shortcutEl = document.createElement('kbd');
-    this.shortcutEl.classList.add('vellora-tooltip-shortcut');
+    this.shortcutEl.classList.add('editkit-tooltip-shortcut');
 
     this.tooltipEl.appendChild(this.textEl);
     this.tooltipEl.appendChild(this.shortcutEl);
@@ -46,7 +46,7 @@ export class TooltipManager {
   private _bindEvents(): void {
     // Use mouseenter/mouseleave via delegation on capture phase
     document.addEventListener('mouseover', (e) => {
-      const target = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-vellora-tooltip]');
+      const target = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-editkit-tooltip]');
       if (target) {
         this._cancelHide();
         this._scheduleShow(target);
@@ -54,7 +54,7 @@ export class TooltipManager {
     }, true);
 
     document.addEventListener('mouseout', (e) => {
-      const target = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-vellora-tooltip]');
+      const target = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-editkit-tooltip]');
       if (target && this.activeTarget === target) {
         const related = e.relatedTarget as HTMLElement | null;
         // Only hide if we truly left the tooltip target
@@ -101,20 +101,20 @@ export class TooltipManager {
   }
 
   private _show(target: HTMLElement): void {
-    const text = target.getAttribute('data-vellora-tooltip');
+    const text = target.getAttribute('data-editkit-tooltip');
     if (!text) return;
 
     // Don't show tooltip if target is inside an open dropdown
-    const inOpenDropdown = target.closest('.vellora-tb-dropdown-wrap--open');
-    if (inOpenDropdown && !target.classList.contains('vellora-tb-btn')) return;
+    const inOpenDropdown = target.closest('.editkit-tb-dropdown-wrap--open');
+    if (inOpenDropdown && !target.classList.contains('editkit-tb-btn')) return;
 
     this.activeTarget = target;
     this.textEl.textContent = text;
 
     // Sync theme
-    const themeHost = target.closest('[data-vellora-theme]') || document.querySelector('[data-vellora-theme]') || document.documentElement;
-    const theme = themeHost.getAttribute('data-vellora-theme') || 'dark';
-    this.tooltipEl.setAttribute('data-vellora-theme', theme);
+    const themeHost = target.closest('[data-editkit-theme]') || document.querySelector('[data-editkit-theme]') || document.documentElement;
+    const theme = themeHost.getAttribute('data-editkit-theme') || 'dark';
+    this.tooltipEl.setAttribute('data-editkit-theme', theme);
 
     // Shortcut badge
     const shortcut = target.getAttribute('data-tooltip-shortcut');
@@ -140,7 +140,7 @@ export class TooltipManager {
     this.tooltipEl.style.removeProperty('opacity');
     this.tooltipEl.style.removeProperty('visibility');
     this.tooltipEl.style.removeProperty('display');
-    this.tooltipEl.classList.add('vellora-tooltip--visible');
+    this.tooltipEl.classList.add('editkit-tooltip--visible');
   }
 
   private _position(target: HTMLElement): void {
@@ -171,7 +171,7 @@ export class TooltipManager {
     this._clearShowTimer();
     this._cancelHide();
     this.activeTarget = null;
-    this.tooltipEl.classList.remove('vellora-tooltip--visible');
+    this.tooltipEl.classList.remove('editkit-tooltip--visible');
   }
 
   private _clearShowTimer(): void {

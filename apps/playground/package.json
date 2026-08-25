@@ -1,5 +1,5 @@
 {
-  "name": "@vellora/playground",
+  "name": "@editkit/playground",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vellora/core": "workspace:*",
-    "@vellora/ui": "workspace:*"
+    "@editkit/core": "workspace:*",
+    "@editkit/ui": "workspace:*"
   },
   "devDependencies": {
     "vite": "^6.3.5",

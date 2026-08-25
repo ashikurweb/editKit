@@ -1,12 +1,12 @@
 {
-  "name": "eddyter",
+  "name": "editkit",
   "private": true,
   "version": "1.0.0",
-  "description": "Eddyter — Premium Framework-Agnostic Rich Text Editor",
+  "description": "EditKit — Premium Framework-Agnostic Rich Text Editor",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "playground": "pnpm --filter @eddyter/playground dev",
+    "playground": "pnpm --filter @editkit/playground dev",
     "clean": "turbo run clean"
   },
   "devDependencies": {

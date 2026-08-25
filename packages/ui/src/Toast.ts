@@ -1,9 +1,9 @@
 // ============================================================
-// Vellora — Global Reusable Toast Notification Component
+// EditKit — Global Reusable Toast Notification Component
 // Supports warning, success, info, and error notifications
 // ============================================================
 
-import type { VelloraEditor } from '@vellora/core';
+import type { EditKitEditor } from '@editkit/core';
 import { icons } from './icons';
 
 export type ToastType = 'warning' | 'success' | 'info' | 'error';
@@ -21,7 +21,7 @@ export class Toast {
   /**
    * Displays a global toast notification within the editor container
    */
-  static show(editor: VelloraEditor, options: ToastOptions | string): HTMLElement {
+  static show(editor: EditKitEditor, options: ToastOptions | string): HTMLElement {
     const opts: ToastOptions = typeof options === 'string'
       ? { message: options, type: 'warning', duration: 2500 }
       : { type: 'warning', duration: 2500, ...options };
@@ -34,7 +34,7 @@ export class Toast {
     }
 
     const toast = document.createElement('div');
-    toast.classList.add('vellora-toast', `vellora-toast--${opts.type}`);
+    toast.classList.add('editkit-toast', `editkit-toast--${opts.type}`);
     toast.setAttribute('role', 'alert');
     toast.setAttribute('aria-live', 'polite');
 
@@ -44,8 +44,8 @@ export class Toast {
     else if (opts.type === 'info') iconSvg = icons.sparkles;
 
     toast.innerHTML = `
-      <span class="vellora-toast-icon">${iconSvg}</span>
-      <span class="vellora-toast-msg">${opts.message}</span>
+      <span class="editkit-toast-icon">${iconSvg}</span>
+      <span class="editkit-toast-msg">${opts.message}</span>
     `;
 
     const targetContainer = editor.root || document.body;
@@ -71,7 +71,7 @@ export class Toast {
     const target = toastEl || this.activeToast;
     if (!target) return;
 
-    target.classList.add('vellora-toast--hiding');
+    target.classList.add('editkit-toast--hiding');
     setTimeout(() => {
       target.remove();
       if (this.activeToast === target) {
@@ -82,6 +82,6 @@ export class Toast {
 }
 
 /** Convenience helper function */
-export function showToast(editor: VelloraEditor, options: ToastOptions | string): HTMLElement {
+export function showToast(editor: EditKitEditor, options: ToastOptions | string): HTMLElement {
   return Toast.show(editor, options);
 }

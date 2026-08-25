@@ -1,8 +1,8 @@
 // ============================================================
-// @vellora/core — Public API
+// @editkit/core — Public API
 // ============================================================
 
-export { VelloraEditor, createEditor } from './Editor';
+export { EditKitEditor, createEditor } from './Editor';
 export { EventEmitter } from './events';
 export { Extension, ExtensionManager } from './Extension';
 export type {
@@ -12,8 +12,8 @@ export type {
   CustomToolbarItem,
 } from './Extension';
 export type {
-  VelloraConfig,
-  VelloraEvents,
+  EditKitConfig,
+  EditKitEvents,
   EditorJSON,
   NodeJSON,
   MarkJSON,

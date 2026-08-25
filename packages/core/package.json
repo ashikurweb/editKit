@@ -1,7 +1,7 @@
 {
-  "name": "@vellora/core",
+  "name": "@editkit/core",
   "version": "1.0.0",
-  "description": "Vellora core editor engine — zero dependencies, framework agnostic",
+  "description": "EditKit core editor engine — zero dependencies, framework agnostic",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",

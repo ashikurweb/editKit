@@ -4,9 +4,9 @@ import path from 'path';
 export default defineConfig({
   resolve: {
     alias: {
-      '@vellora/core': path.resolve(__dirname, '../../packages/core/src'),
-      '@vellora/ui/styles': path.resolve(__dirname, '../../packages/ui/src/styles/editor.css'),
-      '@vellora/ui': path.resolve(__dirname, '../../packages/ui/src'),
+      '@editkit/core': path.resolve(__dirname, '../../packages/core/src'),
+      '@editkit/ui/styles': path.resolve(__dirname, '../../packages/ui/src/styles/editor.css'),
+      '@editkit/ui': path.resolve(__dirname, '../../packages/ui/src'),
     },
   },
   server: {

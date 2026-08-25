@@ -1,12 +1,12 @@
 // ============================================================
-// @vellora/ui — Public API
+// @editkit/ui — Public API
 // ============================================================
 
-export { VelloraToolbar, createToolbar } from './Toolbar';
+export { EditKitToolbar, createToolbar } from './Toolbar';
 export type { ToolbarConfig, ToolbarFeaturesConfig } from './Toolbar';
 export { BubbleMenu } from './BubbleMenu';
 export { TableFloatingMenu } from './TableFloatingMenu';
-export { ColorPickerPopover, EDDYTER_EXACT_PALETTE } from './ColorPicker';
+export { ColorPickerPopover, EDITKIT_EXACT_PALETTE } from './ColorPicker';
 export { Modal } from './Modal';
 export type { ModalOptions } from './Modal';
 export { Toast, showToast } from './Toast';

@@ -1,16 +1,16 @@
 // ============================================================
-// Vellora — In-Place Floating Link Popover & Hover Preview/Editor
+// EditKit — In-Place Floating Link Popover & Hover Preview/Editor
 // Supports hover preview on existing links + direct in-place editing
 // Warning popup toast if user attempts to link with no text selected
 // ============================================================
 
-import type { VelloraEditor } from '@vellora/core';
+import type { EditKitEditor } from '@editkit/core';
 import { icons } from './icons';
 import { showToast } from './Toast';
 
 export class LinkPopover {
   readonly element: HTMLElement;
-  private editor: VelloraEditor;
+  private editor: EditKitEditor;
   private savedRange: Range | null = null;
   private targetAnchor: HTMLAnchorElement | null = null;
   private mode: 'preview' | 'edit' = 'edit';
@@ -21,12 +21,12 @@ export class LinkPopover {
   private hideTimeout: any = null;
   private onCloseCallback?: () => void;
 
-  constructor(editor: VelloraEditor, onClose?: () => void) {
+  constructor(editor: EditKitEditor, onClose?: () => void) {
     this.editor = editor;
     this.onCloseCallback = onClose;
 
     this.element = document.createElement('div');
-    this.element.classList.add('vellora-link-popover');
+    this.element.classList.add('editkit-link-popover');
     this.element.setAttribute('role', 'dialog');
     this.element.setAttribute('aria-label', 'Link menu');
 
@@ -49,7 +49,7 @@ export class LinkPopover {
 
     // Link URL display with external open icon
     const linkPreview = document.createElement('a');
-    linkPreview.classList.add('vellora-link-preview-url');
+    linkPreview.classList.add('editkit-link-preview-url');
     linkPreview.href = url;
     linkPreview.target = '_blank';
     linkPreview.rel = 'noopener noreferrer';
@@ -60,12 +60,12 @@ export class LinkPopover {
 
     // Divider
     const div1 = document.createElement('div');
-    div1.classList.add('vellora-link-popover-divider');
+    div1.classList.add('editkit-link-popover-divider');
 
     // Edit button (✎)
     const editBtn = document.createElement('button');
     editBtn.type = 'button';
-    editBtn.classList.add('vellora-link-action-btn', 'vellora-link-action-btn--edit');
+    editBtn.classList.add('editkit-link-action-btn', 'editkit-link-action-btn--edit');
     editBtn.setAttribute('title', 'Edit link');
     editBtn.setAttribute('aria-label', 'Edit link');
     editBtn.innerHTML = `${icons.edit} <span>Edit</span>`;
@@ -82,12 +82,12 @@ export class LinkPopover {
 
     // Divider
     const div2 = document.createElement('div');
-    div2.classList.add('vellora-link-popover-divider');
+    div2.classList.add('editkit-link-popover-divider');
 
     // Unlink button (🗑)
     const unlinkBtn = document.createElement('button');
     unlinkBtn.type = 'button';
-    unlinkBtn.classList.add('vellora-link-action-btn', 'vellora-link-action-btn--unlink');
+    unlinkBtn.classList.add('editkit-link-action-btn', 'editkit-link-action-btn--unlink');
     unlinkBtn.setAttribute('title', 'Remove link');
     unlinkBtn.setAttribute('aria-label', 'Remove link');
     unlinkBtn.innerHTML = icons.unlink || icons.trash;
@@ -110,14 +110,14 @@ export class LinkPopover {
 
     this.inputEl = document.createElement('input');
     this.inputEl.type = 'url';
-    this.inputEl.classList.add('vellora-link-input');
+    this.inputEl.classList.add('editkit-link-input');
     this.inputEl.placeholder = 'https://';
     this.inputEl.value = existingHref || 'https://';
 
     // Green check apply button
     const applyBtn = document.createElement('button');
     applyBtn.type = 'button';
-    applyBtn.classList.add('vellora-link-apply-btn');
+    applyBtn.classList.add('editkit-link-apply-btn');
     applyBtn.setAttribute('title', 'Apply Link (Enter)');
     applyBtn.setAttribute('aria-label', 'Apply Link');
     applyBtn.innerHTML = icons.check;
@@ -130,7 +130,7 @@ export class LinkPopover {
     // Close / Cancel button
     const cancelBtn = document.createElement('button');
     cancelBtn.type = 'button';
-    cancelBtn.classList.add('vellora-link-cancel-btn');
+    cancelBtn.classList.add('editkit-link-cancel-btn');
     cancelBtn.setAttribute('title', 'Cancel (Esc)');
     cancelBtn.setAttribute('aria-label', 'Cancel');
     cancelBtn.innerHTML = icons.close;
@@ -293,7 +293,7 @@ export class LinkPopover {
 
   hide(): void {
     if (this.isVisible) {
-      this.element.classList.remove('vellora-link-popover--visible');
+      this.element.classList.remove('editkit-link-popover--visible');
       this.isVisible = false;
       this.targetAnchor = null;
       this.mode = 'edit';
@@ -311,7 +311,7 @@ export class LinkPopover {
       this.editor.root.appendChild(this.element);
     }
 
-    this.element.classList.add('vellora-link-popover--visible');
+    this.element.classList.add('editkit-link-popover--visible');
     this.isVisible = true;
 
     const rootRect = this.editor.root.getBoundingClientRect();

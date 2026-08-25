@@ -1,9 +1,9 @@
 // ============================================================
-// Vellora — Plugin & Extension Architecture
+// EditKit — Plugin & Extension Architecture
 // Framework-Agnostic & Fully Extensible
 // ============================================================
 
-import type { VelloraEditor } from './Editor';
+import type { EditKitEditor } from './Editor';
 
 export interface ExtensionOptions {
   [key: string]: any;
@@ -14,7 +14,7 @@ export interface ExtensionCommandMap {
 }
 
 export interface KeyboardShortcutMap {
-  [keyCombo: string]: (editor: VelloraEditor, event: KeyboardEvent) => boolean | void;
+  [keyCombo: string]: (editor: EditKitEditor, event: KeyboardEvent) => boolean | void;
 }
 
 export interface CustomToolbarItem {
@@ -23,21 +23,21 @@ export interface CustomToolbarItem {
   icon?: string;
   group?: 'history' | 'block' | 'font' | 'inline' | 'list' | 'insert' | 'custom' | 'right';
   tooltip?: string;
-  onClick?: (editor: VelloraEditor) => void;
-  isActive?: (editor: VelloraEditor) => boolean;
-  isDisabled?: (editor: VelloraEditor) => boolean;
+  onClick?: (editor: EditKitEditor) => void;
+  isActive?: (editor: EditKitEditor) => boolean;
+  isDisabled?: (editor: EditKitEditor) => boolean;
   dropdown?: Array<{
     id: string;
     label: string;
     icon?: string;
-    onClick?: (editor: VelloraEditor) => void;
-    isActive?: (editor: VelloraEditor) => boolean;
+    onClick?: (editor: EditKitEditor) => void;
+    isActive?: (editor: EditKitEditor) => boolean;
   }>;
 }
 
 export abstract class Extension<Options extends ExtensionOptions = ExtensionOptions> {
   readonly options: Options;
-  editor!: VelloraEditor;
+  editor!: EditKitEditor;
 
   constructor(options: Partial<Options> = {} as Partial<Options>) {
     this.options = { ...this.defaultOptions(), ...options } as Options;
@@ -50,19 +50,19 @@ export abstract class Extension<Options extends ExtensionOptions = ExtensionOpti
   }
 
   /** Called when the extension is bound to an editor */
-  onInit(_editor: VelloraEditor): void {}
+  onInit(_editor: EditKitEditor): void {}
 
   /** Called when the editor content or state changes */
-  onUpdate(_editor: VelloraEditor): void {}
+  onUpdate(_editor: EditKitEditor): void {}
 
   /** Called when the selection changes */
-  onSelectionChange(_editor: VelloraEditor): void {}
+  onSelectionChange(_editor: EditKitEditor): void {}
 
   /** Called when editor is destroyed */
-  onDestroy(_editor: VelloraEditor): void {}
+  onDestroy(_editor: EditKitEditor): void {}
 
   /** Define custom commands this extension provides to `editor.commands` */
-  defineCommands?(_editor: VelloraEditor): ExtensionCommandMap;
+  defineCommands?(_editor: EditKitEditor): ExtensionCommandMap;
 
   /** Define custom keyboard shortcuts */
   defineKeyboardShortcuts?(): KeyboardShortcutMap;
@@ -73,16 +73,16 @@ export abstract class Extension<Options extends ExtensionOptions = ExtensionOpti
 
 export class ExtensionManager {
   private extensions: Map<string, Extension> = new Map();
-  private editor: VelloraEditor;
+  private editor: EditKitEditor;
 
-  constructor(editor: VelloraEditor, initialExtensions: Extension[] = []) {
+  constructor(editor: EditKitEditor, initialExtensions: Extension[] = []) {
     this.editor = editor;
     initialExtensions.forEach(ext => this.register(ext));
   }
 
   register(extension: Extension): void {
     if (this.extensions.has(extension.name)) {
-      console.warn(`[Vellora] Extension "${extension.name}" already registered. Replacing.`);
+      console.warn(`[EditKit] Extension "${extension.name}" already registered. Replacing.`);
       this.unregister(extension.name);
     }
 
@@ -92,7 +92,7 @@ export class ExtensionManager {
     try {
       extension.onInit(this.editor);
     } catch (err) {
-      console.error(`[Vellora] Error initializing extension "${extension.name}":`, err);
+      console.error(`[EditKit] Error initializing extension "${extension.name}":`, err);
     }
 
     // Register custom commands if any
@@ -110,7 +110,7 @@ export class ExtensionManager {
       try {
         ext.onDestroy(this.editor);
       } catch (err) {
-        console.error(`[Vellora] Error destroying extension "${extensionName}":`, err);
+        console.error(`[EditKit] Error destroying extension "${extensionName}":`, err);
       }
       this.extensions.delete(extensionName);
     }

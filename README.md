@@ -1,4 +1,4 @@
-# Vellora Editor ✨
+# EditKit Editor ✨
 
 <p align="center">
   <strong>A Premium, Framework-Agnostic, Zero-Dependency Rich Text Editor SDK</strong>
@@ -16,7 +16,7 @@
 
 ## 🚀 Overview
 
-**Vellora Editor** is a modern, extensible rich text editor built **100% from scratch** in TypeScript with **zero external dependencies**. Inspired by the high-end **EDDYTER** aesthetic, it features first-class tables, an interactive 2D HSV color picker, floating selection bubble toolbars, custom plugin architecture, and CSS-variable-driven dark & light themes.
+**EditKit Editor** is a modern, extensible rich text editor built **100% from scratch** in TypeScript with **zero external dependencies**. Inspired by the high-end **EDITKIT** aesthetic, it features first-class tables, an interactive 2D HSV color picker, floating selection bubble toolbars, custom plugin architecture, and CSS-variable-driven dark & light themes.
 
 ---
 
@@ -57,13 +57,13 @@ Install the packages via your preferred package manager:
 
 ```bash
 # Using pnpm (recommended)
-pnpm add @vellora/core @vellora/ui
+pnpm add @editkit/core @editkit/ui
 
 # Using npm
-npm install @vellora/core @vellora/ui
+npm install @editkit/core @editkit/ui
 
 # Using yarn
-yarn add @vellora/core @vellora/ui
+yarn add @editkit/core @editkit/ui
 ```
 
 ---
@@ -73,9 +73,9 @@ yarn add @vellora/core @vellora/ui
 ### 1. Vanilla JavaScript / TypeScript
 
 ```ts
-import { createEditor } from '@vellora/core';
-import { createToolbar, BubbleMenu, TableFloatingMenu } from '@vellora/ui';
-import '@vellora/ui/styles';
+import { createEditor } from '@editkit/core';
+import { createToolbar, BubbleMenu, TableFloatingMenu } from '@editkit/ui';
+import '@editkit/ui/styles';
 
 // 1. Create Editor Instance
 const editor = createEditor({
@@ -83,7 +83,7 @@ const editor = createEditor({
   defaultFontFamily: 'DM Sans',
   defaultFontSize: 14,
   placeholder: 'Start writing...',
-  content: '<p>Welcome to Vellora Editor!</p>',
+  content: '<p>Welcome to EditKit Editor!</p>',
   onUpdate: (editor) => {
     console.log('HTML:', editor.getHTML());
     console.log('JSON:', editor.getJSON());
@@ -110,13 +110,13 @@ editor.mount(document.getElementById('editor-container')!);
 
 ```tsx
 import React, { useEffect, useRef } from 'react';
-import { createEditor, VelloraEditor } from '@vellora/core';
-import { createToolbar, BubbleMenu, TableFloatingMenu } from '@vellora/ui';
-import '@vellora/ui/styles';
+import { createEditor, EditKitEditor } from '@editkit/core';
+import { createToolbar, BubbleMenu, TableFloatingMenu } from '@editkit/ui';
+import '@editkit/ui/styles';
 
-export const VelloraReactEditor: React.FC = () => {
+export const EditKitReactEditor: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const editorRef = useRef<VelloraEditor | null>(null);
+  const editorRef = useRef<EditKitEditor | null>(null);
 
   useEffect(() => {
     if (!containerRef.current || editorRef.current) return;
@@ -162,12 +162,12 @@ export const VelloraReactEditor: React.FC = () => {
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-import { createEditor, VelloraEditor } from '@vellora/core';
-import { createToolbar, BubbleMenu, TableFloatingMenu } from '@vellora/ui';
-import '@vellora/ui/styles';
+import { createEditor, EditKitEditor } from '@editkit/core';
+import { createToolbar, BubbleMenu, TableFloatingMenu } from '@editkit/ui';
+import '@editkit/ui/styles';
 
 const editorContainer = ref<HTMLElement | null>(null);
-let editor: VelloraEditor | null = null;
+let editor: EditKitEditor | null = null;
 
 onMounted(() => {
   if (!editorContainer.value) return;
@@ -204,12 +204,12 @@ onBeforeUnmount(() => {
 ```svelte
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { createEditor, type VelloraEditor } from '@vellora/core';
-  import { createToolbar, BubbleMenu, TableFloatingMenu } from '@vellora/ui';
-  import '@vellora/ui/styles';
+  import { createEditor, type EditKitEditor } from '@editkit/core';
+  import { createToolbar, BubbleMenu, TableFloatingMenu } from '@editkit/ui';
+  import '@editkit/ui/styles';
 
   let container: HTMLElement;
-  let editor: VelloraEditor;
+  let editor: EditKitEditor;
 
   onMount(() => {
     editor = createEditor({
@@ -243,17 +243,17 @@ onBeforeUnmount(() => {
 
 ## 🔌 Custom Plugins & Extensions
 
-You can extend Vellora with custom business logic, shortcuts, and toolbar buttons:
+You can extend EditKit with custom business logic, shortcuts, and toolbar buttons:
 
 ```ts
-import { Extension, type VelloraEditor } from '@vellora/core';
+import { Extension, type EditKitEditor } from '@editkit/core';
 
 export class MentionsExtension extends Extension {
   get name() {
     return 'mentions';
   }
 
-  onInit(editor: VelloraEditor) {
+  onInit(editor: EditKitEditor) {
     console.log('Mentions extension loaded');
   }
 
@@ -265,7 +265,7 @@ export class MentionsExtension extends Extension {
     };
   }
 
-  defineCommands(editor: VelloraEditor) {
+  defineCommands(editor: EditKitEditor) {
     return {
       insertMention: (name: string) => {
         document.execCommand('insertHTML', false, `<span class="mention">@${name}</span>`);
@@ -284,21 +284,21 @@ const editor = createEditor({
 
 ## 🎨 CSS Variable Theming
 
-Vellora uses standard CSS variables. You can completely customize its theme in plain CSS without touching TypeScript:
+EditKit uses standard CSS variables. You can completely customize its theme in plain CSS without touching TypeScript:
 
 ```css
 /* Custom Theme Override */
-[data-vellora],
-[data-vellora-theme="dark"] {
-  --vellora-bg: #0c0d10;
-  --vellora-card-bg: #141519;
-  --vellora-toolbar-bg: #18191e;
-  --vellora-border: #23252f;
-  --vellora-border-focus: #7c3aed;
-  --vellora-primary: #7c3aed;
-  --vellora-table-header-bg: #2d3342;
-  --vellora-table-header-text: #e2e8f0;
-  --vellora-font: 'DM Sans', sans-serif;
+[data-editkit],
+[data-editkit-theme="dark"] {
+  --editkit-bg: #0c0d10;
+  --editkit-card-bg: #141519;
+  --editkit-toolbar-bg: #18191e;
+  --editkit-border: #23252f;
+  --editkit-border-focus: #7c3aed;
+  --editkit-primary: #7c3aed;
+  --editkit-table-header-bg: #2d3342;
+  --editkit-table-header-text: #e2e8f0;
+  --editkit-font: 'DM Sans', sans-serif;
 }
 ```
 
@@ -366,8 +366,8 @@ To run and contribute to the editor locally:
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/ashikurweb/vellora-editor.git
-cd vellora-editor
+git clone https://github.com/ashikurweb/editkit-editor.git
+cd editkit-editor
 
 # 2. Install dependencies
 pnpm install

@@ -1,6 +1,6 @@
 /* ==========================================================================
-   Vellora — Enterprise-Grade Headless & Rich-Text Editor Design System
-   Exact 100% match for Eddyter Architecture & Typography (Dark & Light)
+   EditKit — Enterprise-Grade Headless & Rich-Text Editor Design System
+   Exact 100% match for EditKit Architecture & Typography (Dark & Light)
    Pure Modular CSS + Comprehensive CSS Custom Properties Design Tokens
    ========================================================================== */
 
@@ -10,112 +10,112 @@
    01. DESIGN TOKENS & CSS VARIABLES
    ========================================================================== */
 
-[data-vellora],
-[data-vellora-theme="dark"] {
+[data-editkit],
+[data-editkit-theme="dark"] {
   /* Surfaces & Backgrounds */
-  --vellora-bg: #0c0d10;
-  --vellora-card-bg: #141519;
-  --vellora-toolbar-bg: #18191e;
-  --vellora-surface-hover: #22242c;
-  --vellora-surface-active: #323543;
-  --vellora-surface-elevated: #1e2027;
-  --vellora-popup-bg: #15161e;
-  --vellora-popup-border: #262936;
+  --editkit-bg: #0c0d10;
+  --editkit-card-bg: #141519;
+  --editkit-toolbar-bg: #18191e;
+  --editkit-surface-hover: #22242c;
+  --editkit-surface-active: #323543;
+  --editkit-surface-elevated: #1e2027;
+  --editkit-popup-bg: #15161e;
+  --editkit-popup-border: #262936;
 
   /* Text & Labels */
-  --vellora-text: #e6e8ee;
-  --vellora-text-muted: #8b90a0;
-  --vellora-text-dim: #5a5f70;
-  --vellora-placeholder: #454955;
+  --editkit-text: #e6e8ee;
+  --editkit-text-muted: #8b90a0;
+  --editkit-text-dim: #5a5f70;
+  --editkit-placeholder: #454955;
 
   /* Borders & Dividers */
-  --vellora-border: #23252f;
-  --vellora-border-hover: #323543;
-  --vellora-border-focus: #7c3aed;
-  --vellora-divider: #23252f;
+  --editkit-border: #23252f;
+  --editkit-border-hover: #323543;
+  --editkit-border-focus: #7c3aed;
+  --editkit-divider: #23252f;
 
   /* Brand / Accent / AI */
-  --vellora-primary: #7c3aed;
-  --vellora-primary-hover: #6d28d9;
-  --vellora-primary-light: rgba(124, 58, 237, 0.15);
-  --vellora-ai-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
-  --vellora-selection: rgba(124, 58, 237, 0.25);
+  --editkit-primary: #7c3aed;
+  --editkit-primary-hover: #6d28d9;
+  --editkit-primary-light: rgba(124, 58, 237, 0.15);
+  --editkit-ai-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --editkit-selection: rgba(124, 58, 237, 0.25);
 
   /* Table Specific (Screenshot 2 exact slate tint) */
-  --vellora-table-header-bg: #2d3342;
-  --vellora-table-header-text: #e2e8f0;
-  --vellora-table-border: #2a2d39;
-  --vellora-table-cell-hover: rgba(124, 58, 237, 0.08);
+  --editkit-table-header-bg: #2d3342;
+  --editkit-table-header-text: #e2e8f0;
+  --editkit-table-border: #2a2d39;
+  --editkit-table-cell-hover: rgba(124, 58, 237, 0.08);
 
   /* Typography */
-  --vellora-font: 'DM Sans', 'Inter', -apple-system, sans-serif;
-  --vellora-font-mono: 'Fira Code', monospace;
-  --vellora-font-size: 14px;
-  --vellora-line-height: 1.7;
+  --editkit-font: 'DM Sans', 'Inter', -apple-system, sans-serif;
+  --editkit-font-mono: 'Fira Code', monospace;
+  --editkit-font-size: 14px;
+  --editkit-line-height: 1.7;
 
   /* Shadows & Radii */
-  --vellora-shadow-popup: 0 12px 32px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4);
-  --vellora-shadow-floating: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --vellora-shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --vellora-radius-card: 14px;
-  --vellora-radius-btn: 6px;
-  --vellora-radius-pill: 9999px;
+  --editkit-shadow-popup: 0 12px 32px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4);
+  --editkit-shadow-floating: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --editkit-shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --editkit-radius-card: 14px;
+  --editkit-radius-btn: 6px;
+  --editkit-radius-pill: 9999px;
 }
 
-[data-vellora-theme="light"] {
+[data-editkit-theme="light"] {
   /* ── Clean White Surfaces ── */
-  --vellora-bg: #ffffff;
-  --vellora-card-bg: #ffffff;
-  --vellora-toolbar-bg: #fafafa;
-  --vellora-surface-hover: #f4f4f5;
-  --vellora-surface-active: #e4e4e7;
-  --vellora-surface-elevated: #fafafa;
-  --vellora-popup-bg: #ffffff;
-  --vellora-popup-border: #e4e4e7;
+  --editkit-bg: #ffffff;
+  --editkit-card-bg: #ffffff;
+  --editkit-toolbar-bg: #fafafa;
+  --editkit-surface-hover: #f4f4f5;
+  --editkit-surface-active: #e4e4e7;
+  --editkit-surface-elevated: #fafafa;
+  --editkit-popup-bg: #ffffff;
+  --editkit-popup-border: #e4e4e7;
 
   /* ── Crisp Neutral Text ── */
-  --vellora-text: #18181b;
-  --vellora-text-muted: #71717a;
-  --vellora-text-dim: #a1a1aa;
-  --vellora-placeholder: #d4d4d8;
+  --editkit-text: #18181b;
+  --editkit-text-muted: #71717a;
+  --editkit-text-dim: #a1a1aa;
+  --editkit-placeholder: #d4d4d8;
 
   /* ── Cool Gray Borders ── */
-  --vellora-border: #e4e4e7;
-  --vellora-border-hover: #d4d4d8;
-  --vellora-border-focus: #6366f1;
-  --vellora-divider: #f4f4f5;
+  --editkit-border: #e4e4e7;
+  --editkit-border-hover: #d4d4d8;
+  --editkit-border-focus: #6366f1;
+  --editkit-divider: #f4f4f5;
 
   /* ── Indigo Accent ── */
-  --vellora-primary: #6366f1;
-  --vellora-primary-hover: #4f46e5;
-  --vellora-primary-light: rgba(99, 102, 241, 0.06);
-  --vellora-ai-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
-  --vellora-selection: rgba(99, 102, 241, 0.10);
+  --editkit-primary: #6366f1;
+  --editkit-primary-hover: #4f46e5;
+  --editkit-primary-light: rgba(99, 102, 241, 0.06);
+  --editkit-ai-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --editkit-selection: rgba(99, 102, 241, 0.10);
 
   /* ── Table ── */
-  --vellora-table-header-bg: #fafafa;
-  --vellora-table-header-text: #27272a;
-  --vellora-table-border: #e4e4e7;
-  --vellora-table-cell-hover: rgba(99, 102, 241, 0.04);
+  --editkit-table-header-bg: #fafafa;
+  --editkit-table-header-text: #27272a;
+  --editkit-table-border: #e4e4e7;
+  --editkit-table-cell-hover: rgba(99, 102, 241, 0.04);
 
   /* ── Minimal Shadows ── */
-  --vellora-shadow-popup: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
-  --vellora-shadow-floating: 0 4px 12px rgba(0, 0, 0, 0.06);
-  --vellora-shadow-card: 0 0 0 1px rgba(0, 0, 0, 0.05);
+  --editkit-shadow-popup: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+  --editkit-shadow-floating: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --editkit-shadow-card: 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 /* ==========================================================================
    02. CORE EDITOR CONTAINER CARD
    ========================================================================== */
 
-.vellora {
-  font-family: var(--vellora-font);
-  font-size: var(--vellora-font-size);
-  color: var(--vellora-text);
-  background: var(--vellora-card-bg);
-  border: 1px solid var(--vellora-border);
-  border-radius: var(--vellora-radius-card);
-  box-shadow: var(--vellora-shadow-card);
+.editkit {
+  font-family: var(--editkit-font);
+  font-size: var(--editkit-font-size);
+  color: var(--editkit-text);
+  background: var(--editkit-card-bg);
+  border: 1px solid var(--editkit-border);
+  border-radius: var(--editkit-radius-card);
+  box-shadow: var(--editkit-shadow-card);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -125,36 +125,36 @@
   box-sizing: border-box;
 }
 
-.vellora *,
-.vellora *::before,
-.vellora *::after {
+.editkit *,
+.editkit *::before,
+.editkit *::after {
   box-sizing: border-box;
 }
 
-.vellora--focused {
-  border-color: var(--vellora-border-hover);
+.editkit--focused {
+  border-color: var(--editkit-border-hover);
 }
 
 /* ==========================================================================
    03. TOOLBAR & CONTROLS
    ========================================================================== */
 
-.vellora-toolbar {
+.editkit-toolbar {
   display: flex;
   align-items: center;
   gap: 0;
   padding: 6px 10px;
-  background: var(--vellora-toolbar-bg);
-  border-bottom: 1px solid var(--vellora-border);
-  border-top-left-radius: var(--vellora-radius-card);
-  border-top-right-radius: var(--vellora-radius-card);
+  background: var(--editkit-toolbar-bg);
+  border-bottom: 1px solid var(--editkit-border);
+  border-top-left-radius: var(--editkit-radius-card);
+  border-top-right-radius: var(--editkit-radius-card);
   user-select: none;
   overflow: visible;
   position: relative;
   z-index: 30;
 }
 
-.vellora-toolbar-group {
+.editkit-toolbar-group {
   display: flex;
   align-items: center;
   gap: 3px;
@@ -162,7 +162,7 @@
 }
 
 /* Base Toolbar Icon Button */
-.vellora-tb-btn {
+.editkit-tb-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -170,9 +170,9 @@
   height: 28px;
   padding: 0;
   border: none;
-  border-radius: var(--vellora-radius-btn);
+  border-radius: var(--editkit-radius-btn);
   background: transparent;
-  color: var(--vellora-text);
+  color: var(--editkit-text);
   cursor: pointer;
   transition: all 0.15s ease;
   position: relative;
@@ -180,132 +180,132 @@
   opacity: 0.9;
 }
 
-.vellora-tb-btn:hover:not(:disabled):not(.vellora-tb-btn--disabled) {
-  background: var(--vellora-surface-hover);
-  color: var(--vellora-text);
+.editkit-tb-btn:hover:not(:disabled):not(.editkit-tb-btn--disabled) {
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text);
   opacity: 1;
 }
 
-.vellora-tb-btn:active:not(:disabled):not(.vellora-tb-btn--disabled) {
-  background: var(--vellora-surface-active);
+.editkit-tb-btn:active:not(:disabled):not(.editkit-tb-btn--disabled) {
+  background: var(--editkit-surface-active);
   transform: scale(0.95);
   opacity: 1;
 }
 
 /* ── Distinct Disabled State (Undo/Redo/Clear etc) ── */
-.vellora-tb-btn:disabled,
-.vellora-tb-btn--disabled {
+.editkit-tb-btn:disabled,
+.editkit-tb-btn--disabled {
   opacity: 0.22 !important;
-  color: var(--vellora-text-muted) !important;
+  color: var(--editkit-text-muted) !important;
   cursor: not-allowed !important;
   filter: grayscale(1);
 }
 
-.vellora-tb-btn:disabled:hover,
-.vellora-tb-btn--disabled:hover {
+.editkit-tb-btn:disabled:hover,
+.editkit-tb-btn--disabled:hover {
   background: transparent !important;
-  color: var(--vellora-text-muted) !important;
+  color: var(--editkit-text-muted) !important;
   transform: none !important;
   box-shadow: none !important;
 }
 
-.vellora-tb-btn--active {
-  background: var(--vellora-surface-active);
-  color: var(--vellora-text);
+.editkit-tb-btn--active {
+  background: var(--editkit-surface-active);
+  color: var(--editkit-text);
   opacity: 1;
 }
 
-.vellora-tb-btn--chevron {
+.editkit-tb-btn--chevron {
   width: auto;
   padding: 0 4px 0 6px;
   gap: 2px;
 }
 
-.vellora-tb-chevron-sm {
+.editkit-tb-chevron-sm {
   opacity: 0.5;
   display: inline-flex;
 }
 
-.vellora-tb-chevron-sm svg {
+.editkit-tb-chevron-sm svg {
   width: 12px;
   height: 12px;
 }
 
 /* Toolbar Divider */
-.vellora-tb-divider {
+.editkit-tb-divider {
   width: 1px;
   height: 18px;
-  background: var(--vellora-divider);
+  background: var(--editkit-divider);
   margin: 0 4px;
   flex-shrink: 0;
 }
 
 /* Pill Buttons (Block Type & Font Family Selectors) */
-.vellora-tb-pill-btn {
+.editkit-tb-pill-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   height: 28px;
   padding: 0 8px;
-  border: 1px solid var(--vellora-border);
-  border-radius: var(--vellora-radius-btn);
-  background: var(--vellora-card-bg);
-  color: var(--vellora-text);
-  font-family: var(--vellora-font);
+  border: 1px solid var(--editkit-border);
+  border-radius: var(--editkit-radius-btn);
+  background: var(--editkit-card-bg);
+  color: var(--editkit-text);
+  font-family: var(--editkit-font);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.vellora-tb-pill-btn:hover {
-  background: var(--vellora-surface-hover);
-  border-color: var(--vellora-border-hover);
+.editkit-tb-pill-btn:hover {
+  background: var(--editkit-surface-hover);
+  border-color: var(--editkit-border-hover);
 }
 
-.vellora-tb-pill-btn--font {
+.editkit-tb-pill-btn--font {
   min-width: 86px;
   justify-content: space-between;
 }
 
-.vellora-tb-pill-text {
+.editkit-tb-pill-text {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.vellora-tb-icon-sm svg {
+.editkit-tb-icon-sm svg {
   width: 14px;
   height: 14px;
 }
 
-.vellora-tb-chevron {
+.editkit-tb-chevron {
   opacity: 0.5;
   display: inline-flex;
   transition: transform 0.15s ease;
 }
 
-.vellora-tb-chevron svg {
+.editkit-tb-chevron svg {
   width: 12px;
   height: 12px;
 }
 
-.vellora-tb-dropdown-wrap--open .vellora-tb-chevron {
+.editkit-tb-dropdown-wrap--open .editkit-tb-chevron {
   transform: rotate(180deg);
 }
 
 /* Font Size Stepper (- 14 +) */
-.vellora-tb-stepper-wrap {
+.editkit-tb-stepper-wrap {
   display: inline-flex;
   align-items: center;
   height: 28px;
-  border: 1px solid var(--vellora-border);
-  border-radius: var(--vellora-radius-btn);
-  background: var(--vellora-card-bg);
+  border: 1px solid var(--editkit-border);
+  border-radius: var(--editkit-radius-btn);
+  background: var(--editkit-card-bg);
   padding: 0 2px;
 }
 
-.vellora-tb-stepper-btn {
+.editkit-tb-stepper-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -313,54 +313,54 @@
   height: 22px;
   border: none;
   background: transparent;
-  color: var(--vellora-text-muted);
+  color: var(--editkit-text-muted);
   cursor: pointer;
   border-radius: 4px;
   padding: 0;
 }
 
-.vellora-tb-stepper-btn:hover {
-  background: var(--vellora-surface-hover);
-  color: var(--vellora-text);
+.editkit-tb-stepper-btn:hover {
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text);
 }
 
-.vellora-tb-stepper-btn svg {
+.editkit-tb-stepper-btn svg {
   width: 12px;
   height: 12px;
 }
 
-.vellora-tb-stepper-val {
+.editkit-tb-stepper-val {
   font-size: 12px;
   font-weight: 500;
-  color: var(--vellora-text);
+  color: var(--editkit-text);
   padding: 0 6px;
   min-width: 22px;
   text-align: center;
 }
 
 /* Language Badge */
-.vellora-toolbar-pill-badge {
+.editkit-toolbar-pill-badge {
   font-size: 11px;
   font-weight: 600;
   padding: 3px 7px;
-  border-radius: var(--vellora-radius-btn);
-  background: var(--vellora-surface-hover);
-  color: var(--vellora-text-muted);
-  border: 1px solid var(--vellora-border);
+  border-radius: var(--editkit-radius-btn);
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text-muted);
+  border: 1px solid var(--editkit-border);
 }
 
 /* ✦ AI Assistant Button */
-.vellora-tb-ai-btn {
+.editkit-tb-ai-btn {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   height: 28px;
   padding: 0 10px;
   border: none;
-  border-radius: var(--vellora-radius-btn);
-  background: var(--vellora-ai-gradient);
+  border-radius: var(--editkit-radius-btn);
+  background: var(--editkit-ai-gradient);
   color: #ffffff;
-  font-family: var(--vellora-font);
+  font-family: var(--editkit-font);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -368,18 +368,18 @@
   transition: all 0.15s ease;
 }
 
-.vellora-tb-ai-btn:hover {
+.editkit-tb-ai-btn:hover {
   filter: brightness(1.1);
   transform: translateY(-1px);
 }
 
-.vellora-tb-ai-btn svg {
+.editkit-tb-ai-btn svg {
   width: 13px;
   height: 13px;
 }
 
 /* Text Color Indicator Underline */
-.vellora-tb-color-indicator {
+.editkit-tb-color-indicator {
   position: absolute;
   bottom: 3px;
   left: 6px;
@@ -393,19 +393,19 @@
    04. DROPDOWN MENUS & SUBMENUS
    ========================================================================== */
 
-.vellora-tb-dropdown-wrap {
+.editkit-tb-dropdown-wrap {
   position: relative;
 }
 
-.vellora-tb-dropdown-menu {
+.editkit-tb-dropdown-menu {
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
   min-width: 170px;
-  background: var(--vellora-popup-bg);
-  border: 1px solid var(--vellora-popup-border);
+  background: var(--editkit-popup-bg);
+  border: 1px solid var(--editkit-popup-border);
   border-radius: 10px;
-  box-shadow: var(--vellora-shadow-popup);
+  box-shadow: var(--editkit-shadow-popup);
   padding: 4px;
   z-index: 100;
   opacity: 0;
@@ -414,43 +414,43 @@
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.vellora-tb-dropdown-wrap--open .vellora-tb-dropdown-menu {
+.editkit-tb-dropdown-wrap--open .editkit-tb-dropdown-menu {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
-.vellora-tb-dropdown-menu--compact {
+.editkit-tb-dropdown-menu--compact {
   min-width: 160px;
   white-space: nowrap;
 }
 
-.vellora-tb-dropdown-menu--align {
+.editkit-tb-dropdown-menu--align {
   min-width: 145px;
 }
 
-.vellora-tb-dropdown-menu--format {
+.editkit-tb-dropdown-menu--format {
   min-width: 160px;
 }
 
-.vellora-tb-dropdown-menu--ai {
+.editkit-tb-dropdown-menu--ai {
   min-width: 200px;
   right: 0;
   left: auto;
 }
 
-.vellora-tb-submenu--lh {
+.editkit-tb-submenu--lh {
   min-width: 80px;
   padding: 4px;
 }
 
-.vellora-tb-submenu--lh .vellora-tb-menu-item {
+.editkit-tb-submenu--lh .editkit-tb-menu-item {
   padding: 4px 10px;
   font-size: 12px;
 }
 
 /* Menu Items */
-.vellora-tb-menu-item {
+.editkit-tb-menu-item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -459,8 +459,8 @@
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: var(--vellora-text);
-  font-family: var(--vellora-font);
+  color: var(--editkit-text);
+  font-family: var(--editkit-font);
   font-size: 13px;
   cursor: pointer;
   text-align: left;
@@ -469,125 +469,125 @@
   white-space: nowrap;
 }
 
-.vellora-tb-menu-item:hover {
-  background: var(--vellora-surface-hover);
+.editkit-tb-menu-item:hover {
+  background: var(--editkit-surface-hover);
 }
 
-.vellora-tb-menu-item.vellora-tb-menu-item--active,
-.vellora-tb-dropdown-menu .vellora-tb-menu-item.vellora-tb-menu-item--active,
-.vellora-tb-submenu .vellora-tb-menu-item.vellora-tb-menu-item--active,
-.vellora-tb-submenu--lh .vellora-tb-menu-item.vellora-tb-menu-item--active {
-  background: var(--vellora-surface-active) !important;
+.editkit-tb-menu-item.editkit-tb-menu-item--active,
+.editkit-tb-dropdown-menu .editkit-tb-menu-item.editkit-tb-menu-item--active,
+.editkit-tb-submenu .editkit-tb-menu-item.editkit-tb-menu-item--active,
+.editkit-tb-submenu--lh .editkit-tb-menu-item.editkit-tb-menu-item--active {
+  background: var(--editkit-surface-active) !important;
   color: #ffffff !important;
   font-weight: 600;
 }
 
-.vellora-tb-menu-prefix {
+.editkit-tb-menu-prefix {
   display: inline-flex;
   align-items: center;
-  color: var(--vellora-text-muted);
+  color: var(--editkit-text-muted);
   width: 16px;
   font-size: 12px;
   font-weight: 600;
   flex-shrink: 0;
 }
 
-.vellora-tb-menu-prefix svg {
+.editkit-tb-menu-prefix svg {
   width: 14px;
   height: 14px;
 }
 
-.vellora-tb-menu-label {
+.editkit-tb-menu-label {
   flex: 1;
   white-space: nowrap;
 }
 
-.vellora-tb-menu-arrow {
+.editkit-tb-menu-arrow {
   margin-left: auto;
   opacity: 0.5;
   display: inline-flex;
 }
 
-.vellora-tb-menu-arrow svg {
+.editkit-tb-menu-arrow svg {
   width: 12px;
   height: 12px;
 }
 
 /* Nested Submenu Flyout */
-.vellora-tb-submenu-wrap {
+.editkit-tb-submenu-wrap {
   position: relative;
 }
 
-.vellora-tb-submenu {
+.editkit-tb-submenu {
   position: absolute;
   top: 0;
   left: calc(100% + 4px);
   min-width: 130px;
-  background: var(--vellora-surface-elevated);
-  border: 1px solid var(--vellora-border);
+  background: var(--editkit-surface-elevated);
+  border: 1px solid var(--editkit-border);
   border-radius: 10px;
-  box-shadow: var(--vellora-shadow-popup);
+  box-shadow: var(--editkit-shadow-popup);
   padding: 4px;
   z-index: 105;
   display: none;
 }
 
-.vellora-tb-submenu-wrap:hover .vellora-tb-submenu {
+.editkit-tb-submenu-wrap:hover .editkit-tb-submenu {
   display: block;
-  animation: velloraFadeIn 0.15s ease;
+  animation: editkitFadeIn 0.15s ease;
 }
 
-.vellora-tb-bullet-symbol {
+.editkit-tb-bullet-symbol {
   font-size: 14px;
   width: 14px;
   text-align: center;
-  color: var(--vellora-text-muted);
+  color: var(--editkit-text-muted);
 }
 
 /* Table Grid Picker */
-.vellora-tb-table-picker {
+.editkit-tb-table-picker {
   min-width: 160px;
   padding: 10px;
 }
 
-.vellora-tb-table-picker-header {
+.editkit-tb-table-picker-header {
   display: flex;
   justify-content: space-between;
   font-size: 11px;
   font-weight: 600;
-  color: var(--vellora-text-muted);
+  color: var(--editkit-text-muted);
   margin-bottom: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.vellora-tb-table-size-text {
-  color: var(--vellora-primary);
+.editkit-tb-table-size-text {
+  color: var(--editkit-primary);
 }
 
-.vellora-tb-table-grid {
+.editkit-tb-table-grid {
   display: grid;
   grid-template-columns: repeat(6, 18px);
   gap: 3px;
 }
 
-.vellora-tb-grid-cell {
+.editkit-tb-grid-cell {
   width: 18px;
   height: 18px;
-  border: 1px solid var(--vellora-border);
+  border: 1px solid var(--editkit-border);
   border-radius: 3px;
-  background: var(--vellora-surface-hover);
+  background: var(--editkit-surface-hover);
   cursor: pointer;
   transition: all 0.1s ease;
 }
 
-.vellora-tb-grid-cell--active {
-  background: var(--vellora-primary);
-  border-color: var(--vellora-primary-hover);
+.editkit-tb-grid-cell--active {
+  background: var(--editkit-primary);
+  border-color: var(--editkit-primary-hover);
 }
 
 /* Emoji / Symbol Grid (Compact Symbol Dropdown) */
-.vellora-tb-emoji-grid {
+.editkit-tb-emoji-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 4px;
@@ -595,7 +595,7 @@
   padding: 6px;
 }
 
-.vellora-tb-emoji-btn {
+.editkit-tb-emoji-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -603,8 +603,8 @@
   height: 30px;
   border: none;
   background: transparent;
-  color: var(--vellora-text);
-  font-family: var(--vellora-font);
+  color: var(--editkit-text);
+  font-family: var(--editkit-font);
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
@@ -612,8 +612,8 @@
   transition: all 0.15s ease;
 }
 
-.vellora-tb-emoji-btn:hover {
-  background: var(--vellora-surface-hover);
+.editkit-tb-emoji-btn:hover {
+  background: var(--editkit-surface-hover);
   color: #ffffff;
   transform: scale(1.12);
 }
@@ -622,15 +622,15 @@
    Rich Emoji Picker Popover (Apple Color Emoji Style)
    ════════════════════════════════════════════ */
 
-.vellora-emoji-picker {
+.editkit-emoji-picker {
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
   width: 340px;
-  background: var(--vellora-popup-bg);
-  border: 1px solid var(--vellora-popup-border);
+  background: var(--editkit-popup-bg);
+  border: 1px solid var(--editkit-popup-border);
   border-radius: 12px;
-  box-shadow: var(--vellora-shadow-popup);
+  box-shadow: var(--editkit-shadow-popup);
   padding: 12px;
   z-index: 120;
   user-select: none;
@@ -644,7 +644,7 @@
   font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji", "SF Pro Display", "SF Pro Text", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
 }
 
-.vellora-tb-dropdown-wrap--open .vellora-emoji-picker {
+.editkit-tb-dropdown-wrap--open .editkit-emoji-picker {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -652,7 +652,7 @@
 }
 
 /* Search Bar (Full-Width Clean Apple Design) */
-.vellora-emoji-search-wrap {
+.editkit-emoji-search-wrap {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -663,34 +663,34 @@
   margin-bottom: 8px;
 }
 
-.vellora-emoji-search-icon {
+.editkit-emoji-search-icon {
   color: #8e94a6;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
-.vellora-emoji-search-icon svg {
+.editkit-emoji-search-icon svg {
   width: 15px;
   height: 15px;
 }
 
-.vellora-emoji-search-input {
+.editkit-emoji-search-input {
   flex: 1;
   border: none;
   background: transparent;
   color: #ffffff;
-  font-family: var(--vellora-font);
+  font-family: var(--editkit-font);
   font-size: 13px;
   outline: none;
 }
 
-.vellora-emoji-search-input::placeholder {
+.editkit-emoji-search-input::placeholder {
   color: #64697d;
 }
 
 /* Category Nav Tabs Row */
-.vellora-emoji-nav {
+.editkit-emoji-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -700,7 +700,7 @@
   margin-bottom: 6px;
 }
 
-.vellora-emoji-nav-btn {
+.editkit-emoji-nav-btn {
   border: none;
   background: transparent;
   cursor: pointer;
@@ -712,28 +712,28 @@
   justify-content: center;
 }
 
-.vellora-emoji-nav-btn:hover {
+.editkit-emoji-nav-btn:hover {
   background: #232530;
   transform: scale(1.15);
 }
 
 /* Scrollable Content Area */
-.vellora-emoji-content {
+.editkit-emoji-content {
   height: 240px;
   overflow-y: auto;
   padding-right: 2px;
 }
 
-.vellora-emoji-content::-webkit-scrollbar {
+.editkit-emoji-content::-webkit-scrollbar {
   width: 5px;
 }
 
-.vellora-emoji-content::-webkit-scrollbar-thumb {
+.editkit-emoji-content::-webkit-scrollbar-thumb {
   background: #2d3040;
   border-radius: 4px;
 }
 
-.vellora-emoji-section-header {
+.editkit-emoji-section-header {
   font-size: 11.5px;
   font-weight: 700;
   color: #8e94a6;
@@ -741,7 +741,7 @@
   letter-spacing: 0.2px;
 }
 
-.vellora-emoji-empty {
+.editkit-emoji-empty {
   font-size: 12.5px;
   color: #64697d;
   text-align: center;
@@ -749,14 +749,14 @@
 }
 
 /* Grid of Emojis */
-.vellora-emoji-grid {
+.editkit-emoji-grid {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   gap: 3px;
   margin-bottom: 8px;
 }
 
-.vellora-emoji-item-btn {
+.editkit-emoji-item-btn {
   width: 36px;
   height: 36px;
   border: none;
@@ -770,14 +770,14 @@
   padding: 0;
 }
 
-.vellora-emoji-item-btn:hover {
-  background: var(--vellora-surface-hover);
+.editkit-emoji-item-btn:hover {
+  background: var(--editkit-surface-hover);
   transform: scale(1.2);
   z-index: 2;
 }
 
 /* Bottom Mood / Preview Footer */
-.vellora-emoji-footer {
+.editkit-emoji-footer {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -786,7 +786,7 @@
   margin-top: 4px;
 }
 
-.vellora-emoji-footer-icon {
+.editkit-emoji-footer-icon {
   width: 34px;
   height: 34px;
   flex-shrink: 0;
@@ -795,7 +795,7 @@
   justify-content: center;
 }
 
-.vellora-emoji-footer-title {
+.editkit-emoji-footer-title {
   font-size: 13px;
   font-weight: 600;
   color: #e2e8f0;
@@ -805,7 +805,7 @@
 }
 
 /* Apple iOS Emoji Icon Styling */
-.vellora-apple-emoji {
+.editkit-apple-emoji {
   width: 27px;
   height: 27px;
   object-fit: contain;
@@ -816,7 +816,7 @@
   -webkit-user-drag: none;
 }
 
-.vellora-apple-emoji-nav {
+.editkit-apple-emoji-nav {
   width: 20px;
   height: 20px;
   object-fit: contain;
@@ -827,7 +827,7 @@
   -webkit-user-drag: none;
 }
 
-.vellora-apple-emoji-lg {
+.editkit-apple-emoji-lg {
   width: 34px;
   height: 34px;
   object-fit: contain;
@@ -839,18 +839,18 @@
 }
 
 /* ════════════════════════════════════════════
-   Rich Special Characters / Symbol Picker Popover (100% Eddyter Match)
+   Rich Special Characters / Symbol Picker Popover (100% EditKit Match)
    ════════════════════════════════════════════ */
 
-.vellora-symbol-picker {
+.editkit-symbol-picker {
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
   width: 360px;
-  background: var(--vellora-popup-bg);
-  border: 1px solid var(--vellora-popup-border);
+  background: var(--editkit-popup-bg);
+  border: 1px solid var(--editkit-popup-border);
   border-radius: 12px;
-  box-shadow: var(--vellora-shadow-popup);
+  box-shadow: var(--editkit-shadow-popup);
   padding: 12px;
   z-index: 120;
   user-select: none;
@@ -861,10 +861,10 @@
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
-  font-family: var(--vellora-font);
+  font-family: var(--editkit-font);
 }
 
-.vellora-tb-dropdown-wrap--open .vellora-symbol-picker {
+.editkit-tb-dropdown-wrap--open .editkit-symbol-picker {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -872,7 +872,7 @@
 }
 
 /* Search Header with / Shortcut Badge */
-.vellora-sym-search-wrap {
+.editkit-sym-search-wrap {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -883,19 +883,19 @@
   margin-bottom: 8px;
 }
 
-.vellora-sym-search-icon {
+.editkit-sym-search-icon {
   color: #8e94a6;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
-.vellora-sym-search-icon svg {
+.editkit-sym-search-icon svg {
   width: 14px;
   height: 14px;
 }
 
-.vellora-sym-search-input {
+.editkit-sym-search-input {
   flex: 1;
   border: none;
   background: transparent;
@@ -905,11 +905,11 @@
   outline: none;
 }
 
-.vellora-sym-search-input::placeholder {
+.editkit-sym-search-input::placeholder {
   color: #64697d;
 }
 
-.vellora-sym-search-badge {
+.editkit-sym-search-badge {
   background: #1e2029;
   border: 1px solid #333646;
   border-radius: 4px;
@@ -921,7 +921,7 @@
 }
 
 /* Horizontal Scrollable Tabs Row with Inline Arrows */
-.vellora-sym-nav-outer {
+.editkit-sym-nav-outer {
   position: relative;
   display: flex;
   align-items: center;
@@ -929,18 +929,18 @@
   margin-bottom: 8px;
 }
 
-.vellora-sym-nav-scroll-wrap {
+.editkit-sym-nav-scroll-wrap {
   flex: 1;
   overflow-x: auto;
   scrollbar-width: none;
   scroll-behavior: smooth;
 }
 
-.vellora-sym-nav-scroll-wrap::-webkit-scrollbar {
+.editkit-sym-nav-scroll-wrap::-webkit-scrollbar {
   display: none;
 }
 
-.vellora-sym-nav-arrow {
+.editkit-sym-nav-arrow {
   width: 22px;
   height: 22px;
   border: none;
@@ -957,25 +957,25 @@
   z-index: 2;
 }
 
-.vellora-sym-nav-arrow:hover {
+.editkit-sym-nav-arrow:hover {
   background: #252838;
   color: #ffffff;
   transform: scale(1.1);
 }
 
-.vellora-sym-nav-arrow--visible {
+.editkit-sym-nav-arrow--visible {
   display: inline-flex;
 }
 
-.vellora-sym-nav-arrow--left {
+.editkit-sym-nav-arrow--left {
   margin-right: 2px;
 }
 
-.vellora-sym-nav-arrow--right {
+.editkit-sym-nav-arrow--right {
   margin-left: 2px;
 }
 
-.vellora-sym-nav {
+.editkit-sym-nav {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -983,7 +983,7 @@
   min-width: 100%;
 }
 
-.vellora-sym-nav-tab {
+.editkit-sym-nav-tab {
   border: none;
   background: transparent;
   cursor: pointer;
@@ -1000,17 +1000,17 @@
   position: relative;
 }
 
-.vellora-sym-nav-tab:hover {
+.editkit-sym-nav-tab:hover {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.04);
 }
 
-.vellora-sym-nav-tab--active {
+.editkit-sym-nav-tab--active {
   color: #ffffff;
   font-weight: 600;
 }
 
-.vellora-sym-nav-tab--active::after {
+.editkit-sym-nav-tab--active::after {
   content: '';
   position: absolute;
   bottom: -7px;
@@ -1022,7 +1022,7 @@
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
 }
 
-.vellora-sym-tab-count {
+.editkit-sym-tab-count {
   background: #20222d;
   border-radius: 10px;
   padding: 1px 6px;
@@ -1031,28 +1031,28 @@
   color: #8e94a6;
 }
 
-.vellora-sym-nav-tab--active .vellora-sym-tab-count {
+.editkit-sym-nav-tab--active .editkit-sym-tab-count {
   background: #2b2e3c;
   color: #ffffff;
 }
 
 /* Scrollable Content */
-.vellora-sym-content {
+.editkit-sym-content {
   height: 230px;
   overflow-y: auto;
   padding-right: 2px;
 }
 
-.vellora-sym-content::-webkit-scrollbar {
+.editkit-sym-content::-webkit-scrollbar {
   width: 5px;
 }
 
-.vellora-sym-content::-webkit-scrollbar-thumb {
+.editkit-sym-content::-webkit-scrollbar-thumb {
   background: #2d3040;
   border-radius: 4px;
 }
 
-.vellora-sym-section-header {
+.editkit-sym-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1063,20 +1063,20 @@
   margin: 6px 0 6px;
 }
 
-.vellora-sym-header-left {
+.editkit-sym-header-left {
   display: inline-flex;
   align-items: center;
   gap: 5px;
 }
 
-.vellora-sym-section-count {
+.editkit-sym-section-count {
   font-size: 11px;
   font-weight: 600;
   color: #64697d;
 }
 
 /* Recently Used Card Well (Screenshot 100% Match) */
-.vellora-sym-recent-well {
+.editkit-sym-recent-well {
   background: #12131a;
   border: 1px solid #232532;
   border-radius: 10px;
@@ -1085,20 +1085,20 @@
 }
 
 /* Grid of Symbols */
-.vellora-sym-grid {
+.editkit-sym-grid {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   gap: 2px;
   margin-bottom: 6px;
 }
 
-.vellora-sym-grid--recent {
+.editkit-sym-grid--recent {
   grid-template-columns: repeat(6, 1fr);
   gap: 2px;
   margin-bottom: 0;
 }
 
-.vellora-sym-item-btn {
+.editkit-sym-item-btn {
   width: 36px;
   height: 36px;
   border: none;
@@ -1115,14 +1115,14 @@
   padding: 0;
 }
 
-.vellora-sym-item-btn:hover {
-  background: var(--vellora-surface-hover);
+.editkit-sym-item-btn:hover {
+  background: var(--editkit-surface-hover);
   color: #ffffff;
   transform: scale(1.18);
   z-index: 2;
 }
 
-.vellora-sym-empty {
+.editkit-sym-empty {
   font-size: 12.5px;
   color: #64697d;
   text-align: center;
@@ -1130,7 +1130,7 @@
 }
 
 /* Bottom Preview / Details Footer */
-.vellora-sym-footer {
+.editkit-sym-footer {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1139,7 +1139,7 @@
   margin-top: 4px;
 }
 
-.vellora-sym-footer-box {
+.editkit-sym-footer-box {
   width: 34px;
   height: 34px;
   background: #12131a;
@@ -1154,14 +1154,14 @@
   flex-shrink: 0;
 }
 
-.vellora-sym-footer-text {
+.editkit-sym-footer-text {
   display: flex;
   flex-direction: column;
   gap: 2px;
   overflow: hidden;
 }
 
-.vellora-sym-footer-name {
+.editkit-sym-footer-name {
   font-size: 12.5px;
   font-weight: 600;
   color: #ffffff;
@@ -1170,7 +1170,7 @@
   text-overflow: ellipsis;
 }
 
-.vellora-sym-footer-sub {
+.editkit-sym-footer-sub {
   font-size: 11px;
   color: #787e92;
   white-space: nowrap;
@@ -1179,18 +1179,18 @@
 }
 
 /* ==========================================================================
-   05. COLOR PICKER POPOVER (100% EDDYTER MATCH)
+   05. COLOR PICKER POPOVER (100% EDITKIT MATCH)
    ========================================================================== */
 
-.vellora-color-picker {
+.editkit-color-picker {
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
   width: 252px;
-  background: var(--vellora-popup-bg);
-  border: 1px solid var(--vellora-popup-border);
+  background: var(--editkit-popup-bg);
+  border: 1px solid var(--editkit-popup-border);
   border-radius: 12px;
-  box-shadow: var(--vellora-shadow-popup);
+  box-shadow: var(--editkit-shadow-popup);
   padding: 12px;
   z-index: 120;
   user-select: none;
@@ -1201,8 +1201,8 @@
   transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.vellora-tb-dropdown-wrap--open .vellora-color-picker,
-.vellora-color-picker--bubble {
+.editkit-tb-dropdown-wrap--open .editkit-color-picker,
+.editkit-color-picker--bubble {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -1210,7 +1210,7 @@
 }
 
 /* Color Tabs */
-.vellora-color-tabs {
+.editkit-color-tabs {
   display: flex;
   gap: 4px;
   background: #0e0f13;
@@ -1220,7 +1220,7 @@
   border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.vellora-color-tab {
+.editkit-color-tab {
   flex: 1;
   display: flex;
   align-items: center;
@@ -1230,21 +1230,21 @@
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: var(--vellora-text-muted);
-  font-family: var(--vellora-font);
+  color: var(--editkit-text-muted);
+  font-family: var(--editkit-font);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.vellora-color-tab--active {
+.editkit-color-tab--active {
   background: #252833;
   color: #ffffff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-.vellora-color-tab-pill {
+.editkit-color-tab-pill {
   font-size: 10px;
   font-weight: 700;
   padding: 1px 5px;
@@ -1253,67 +1253,67 @@
   color: #ffffff;
 }
 
-.vellora-color-section-title {
+.editkit-color-section-title {
   font-size: 11px;
   font-weight: 600;
-  color: var(--vellora-text-muted);
+  color: var(--editkit-text-muted);
   margin-bottom: 8px;
   letter-spacing: 0.2px;
 }
 
 /* Hex Bar */
-.vellora-color-hex-bar {
+.editkit-color-hex-bar {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 10px;
 }
 
-.vellora-color-preview-box {
+.editkit-color-preview-box {
   width: 24px;
   height: 24px;
   border-radius: 4px;
-  border: 1px solid var(--vellora-border);
+  border: 1px solid var(--editkit-border);
   flex-shrink: 0;
 }
 
-.vellora-color-hex-box {
+.editkit-color-hex-box {
   flex: 1;
   display: flex;
   align-items: center;
   gap: 4px;
   background: #0e0f13;
-  border: 1px solid var(--vellora-border);
+  border: 1px solid var(--editkit-border);
   border-radius: 6px;
   padding: 3px 8px;
 }
 
-.vellora-color-hash-symbol {
+.editkit-color-hash-symbol {
   font-size: 12px;
-  color: var(--vellora-text-dim);
-  font-family: var(--vellora-font-mono);
+  color: var(--editkit-text-dim);
+  font-family: var(--editkit-font-mono);
 }
 
-.vellora-color-hex-text {
+.editkit-color-hex-text {
   width: 100%;
   border: none;
   background: transparent;
   color: #ffffff;
-  font-family: var(--vellora-font-mono);
+  font-family: var(--editkit-font-mono);
   font-size: 12px;
   letter-spacing: 1px;
   outline: none;
 }
 
 /* Swatches Grid */
-.vellora-color-swatches-grid {
+.editkit-color-swatches-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 5px;
   margin-bottom: 12px;
 }
 
-.vellora-color-swatch-btn {
+.editkit-color-swatch-btn {
   width: 26px;
   height: 24px;
   border-radius: 5px;
@@ -1324,45 +1324,45 @@
   position: relative;
 }
 
-.vellora-color-swatch-btn:hover {
+.editkit-color-swatch-btn:hover {
   transform: scale(1.15);
   z-index: 2;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
-.vellora-color-swatch-btn--active {
+.editkit-color-swatch-btn--active {
   box-shadow: 0 0 0 2px #ffffff;
   z-index: 3;
 }
 
 /* Collapsible Custom Picker */
-.vellora-color-custom-header {
+.editkit-color-custom-header {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 11px;
   font-weight: 600;
-  color: var(--vellora-text-muted);
+  color: var(--editkit-text-muted);
   cursor: pointer;
   margin-bottom: 8px;
   user-select: none;
 }
 
-.vellora-color-custom-header:hover {
-  color: var(--vellora-text);
+.editkit-color-custom-header:hover {
+  color: var(--editkit-text);
 }
 
-.vellora-color-custom-arrow {
+.editkit-color-custom-arrow {
   font-size: 8px;
   opacity: 0.7;
 }
 
-.vellora-color-custom-body {
+.editkit-color-custom-body {
   margin-top: 6px;
 }
 
 /* 2D Saturation / Brightness Canvas */
-.vellora-color-satval-canvas {
+.editkit-color-satval-canvas {
   position: relative;
   width: 100%;
   height: 124px;
@@ -1372,19 +1372,19 @@
   background-color: #ff0000;
 }
 
-.vellora-color-satval-white {
+.editkit-color-satval-white {
   position: absolute;
   inset: 0;
   background: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
 }
 
-.vellora-color-satval-black {
+.editkit-color-satval-black {
   position: absolute;
   inset: 0;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #000000);
 }
 
-.vellora-color-satval-thumb {
+.editkit-color-satval-thumb {
   position: absolute;
   width: 16px;
   height: 16px;
@@ -1396,11 +1396,11 @@
 }
 
 /* Hue Slider Bar */
-.vellora-color-hue-wrap {
+.editkit-color-hue-wrap {
   margin-top: 10px;
 }
 
-.vellora-color-hue-slider {
+.editkit-color-hue-slider {
   position: relative;
   width: 100%;
   height: 12px;
@@ -1409,7 +1409,7 @@
   cursor: pointer;
 }
 
-.vellora-color-hue-thumb {
+.editkit-color-hue-thumb {
   position: absolute;
   top: 50%;
   width: 16px;
@@ -1425,7 +1425,7 @@
    06. FLOATING BUBBLE MENU
    ========================================================================== */
 
-.vellora-bubble-menu {
+.editkit-bubble-menu {
   position: absolute;
   top: 0;
   left: 0;
@@ -1433,21 +1433,21 @@
   align-items: center;
   gap: 2px;
   padding: 4px 6px;
-  background: var(--vellora-popup-bg);
-  border: 1px solid var(--vellora-popup-border);
+  background: var(--editkit-popup-bg);
+  border: 1px solid var(--editkit-popup-border);
   border-radius: 10px;
-  box-shadow: var(--vellora-shadow-floating);
+  box-shadow: var(--editkit-shadow-floating);
   backdrop-filter: blur(12px);
   z-index: 100;
   transition: transform 0.1s ease;
 }
 
-.vellora-bubble-menu--visible {
+.editkit-bubble-menu--visible {
   display: flex;
-  animation: velloraFadeIn 0.15s ease;
+  animation: editkitFadeIn 0.15s ease;
 }
 
-.vellora-bubble-btn {
+.editkit-bubble-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1456,22 +1456,22 @@
   border: none;
   border-radius: 5px;
   background: transparent;
-  color: var(--vellora-text-muted);
+  color: var(--editkit-text-muted);
   cursor: pointer;
   padding: 0;
 }
 
-.vellora-bubble-btn:hover {
-  background: var(--vellora-surface-hover);
-  color: var(--vellora-text);
+.editkit-bubble-btn:hover {
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text);
 }
 
-.vellora-bubble-btn--active {
-  background: var(--vellora-surface-active);
-  color: var(--vellora-text);
+.editkit-bubble-btn--active {
+  background: var(--editkit-surface-active);
+  color: var(--editkit-text);
 }
 
-.vellora-bubble-btn--ai {
+.editkit-bubble-btn--ai {
   width: auto;
   padding: 0 8px;
   gap: 4px;
@@ -1480,38 +1480,38 @@
   color: #8b5cf6;
 }
 
-.vellora-bubble-chevron svg {
+.editkit-bubble-chevron svg {
   width: 10px;
   height: 10px;
 }
 
-.vellora-bubble-divider {
+.editkit-bubble-divider {
   width: 1px;
   height: 16px;
-  background: var(--vellora-border);
+  background: var(--editkit-border);
   margin: 0 3px;
 }
 
-.vellora-bubble-stepper {
+.editkit-bubble-stepper {
   display: inline-flex;
   align-items: center;
   gap: 2px;
 }
 
-.vellora-bubble-btn--stepper {
+.editkit-bubble-btn--stepper {
   width: 18px;
   height: 20px;
 }
 
-.vellora-bubble-btn--stepper svg {
+.editkit-bubble-btn--stepper svg {
   width: 10px;
   height: 10px;
 }
 
-.vellora-bubble-stepper-value {
+.editkit-bubble-stepper-value {
   font-size: 11px;
   font-weight: 500;
-  color: var(--vellora-text);
+  color: var(--editkit-text);
   padding: 0 2px;
 }
 
@@ -1519,7 +1519,7 @@
    07. TABLE FLOATING CONTEXTUAL CONTROLS
    ========================================================================== */
 
-.vellora-table-floating-menu {
+.editkit-table-floating-menu {
   position: absolute;
   top: 0;
   left: 0;
@@ -1527,35 +1527,35 @@
   align-items: center;
   gap: 2px;
   padding: 4px 6px;
-  background: var(--vellora-popup-bg);
-  border: 1px solid var(--vellora-popup-border);
+  background: var(--editkit-popup-bg);
+  border: 1px solid var(--editkit-popup-border);
   border-radius: 8px;
-  box-shadow: var(--vellora-shadow-floating);
+  box-shadow: var(--editkit-shadow-floating);
   z-index: 95;
   transition: transform 0.1s ease;
 }
 
-.vellora-table-floating-menu--visible {
+.editkit-table-floating-menu--visible {
   display: flex;
-  animation: velloraFadeIn 0.15s ease;
+  animation: editkitFadeIn 0.15s ease;
 }
 
-.vellora-table-menu-label {
+.editkit-table-menu-label {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   font-size: 11px;
   font-weight: 600;
-  color: var(--vellora-text-muted);
+  color: var(--editkit-text-muted);
   padding: 0 4px;
 }
 
-.vellora-table-menu-label svg {
+.editkit-table-menu-label svg {
   width: 12px;
   height: 12px;
 }
 
-.vellora-table-btn {
+.editkit-table-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1564,25 +1564,25 @@
   border: none;
   border-radius: 4px;
   background: transparent;
-  color: var(--vellora-text-muted);
+  color: var(--editkit-text-muted);
   cursor: pointer;
   padding: 0;
 }
 
-.vellora-table-btn:hover {
-  background: var(--vellora-surface-hover);
-  color: var(--vellora-text);
+.editkit-table-btn:hover {
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text);
 }
 
-.vellora-table-btn--danger:hover {
+.editkit-table-btn--danger:hover {
   background: rgba(239, 68, 68, 0.15);
   color: #ef4444;
 }
 
-.vellora-table-btn-divider {
+.editkit-table-btn-divider {
   width: 1px;
   height: 16px;
-  background: var(--vellora-border);
+  background: var(--editkit-border);
   margin: 0 3px;
 }
 
@@ -1590,26 +1590,26 @@
    08. IN-PLACE LINK POPOVER & PREVIEW TOOLTIP
    ========================================================================== */
 
-.vellora-link-popover {
+.editkit-link-popover {
   position: absolute;
   display: none;
   align-items: center;
   gap: 6px;
   padding: 4px 6px;
-  background: var(--vellora-popup-bg);
-  border: 1px solid var(--vellora-popup-border);
+  background: var(--editkit-popup-bg);
+  border: 1px solid var(--editkit-popup-border);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
   z-index: 120;
-  animation: velloraFadeIn 0.15s ease;
-  font-family: var(--vellora-font, 'DM Sans', sans-serif);
+  animation: editkitFadeIn 0.15s ease;
+  font-family: var(--editkit-font, 'DM Sans', sans-serif);
 }
 
-.vellora-link-popover--visible {
+.editkit-link-popover--visible {
   display: inline-flex;
 }
 
-.vellora-link-input {
+.editkit-link-input {
   width: 240px;
   background: #14151c;
   border: 1px solid #383b4c;
@@ -1622,15 +1622,15 @@
   transition: border-color 0.15s ease;
 }
 
-.vellora-link-input:focus {
+.editkit-link-input:focus {
   border-color: #585d77;
 }
 
-.vellora-link-input::placeholder {
+.editkit-link-input::placeholder {
   color: #64697d;
 }
 
-.vellora-link-apply-btn {
+.editkit-link-apply-btn {
   width: 28px;
   height: 28px;
   background: #00c975;
@@ -1646,18 +1646,18 @@
   transition: transform 0.1s ease, filter 0.15s ease;
 }
 
-.vellora-link-apply-btn:hover {
+.editkit-link-apply-btn:hover {
   filter: brightness(1.1);
   transform: scale(1.04);
 }
 
-.vellora-link-apply-btn svg {
+.editkit-link-apply-btn svg {
   width: 15px;
   height: 15px;
   stroke-width: 3;
 }
 
-.vellora-link-cancel-btn {
+.editkit-link-cancel-btn {
   width: 28px;
   height: 28px;
   background: transparent;
@@ -1673,19 +1673,19 @@
   transition: all 0.15s ease;
 }
 
-.vellora-link-cancel-btn:hover {
+.editkit-link-cancel-btn:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: #55596b;
 }
 
-.vellora-link-cancel-btn svg {
+.editkit-link-cancel-btn svg {
   width: 14px;
   height: 14px;
   stroke-width: 2.5;
 }
 
 /* Link Preview Tooltip & Action Buttons */
-.vellora-link-preview-url {
+.editkit-link-preview-url {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1699,32 +1699,32 @@
   transition: all 0.15s ease;
 }
 
-.vellora-link-preview-url span {
+.editkit-link-preview-url span {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.vellora-link-preview-url:hover {
+.editkit-link-preview-url:hover {
   color: #60a5fa;
   text-decoration: underline;
 }
 
-.vellora-link-preview-url svg {
+.editkit-link-preview-url svg {
   width: 13px;
   height: 13px;
   flex-shrink: 0;
   opacity: 0.8;
 }
 
-.vellora-link-popover-divider {
+.editkit-link-popover-divider {
   width: 1px;
   height: 16px;
   background: #282a36;
   margin: 0 2px;
 }
 
-.vellora-link-action-btn {
+.editkit-link-action-btn {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -1741,17 +1741,17 @@
   transition: all 0.15s ease;
 }
 
-.vellora-link-action-btn:hover {
+.editkit-link-action-btn:hover {
   background: #222530;
   color: #ffffff;
 }
 
-.vellora-link-action-btn svg {
+.editkit-link-action-btn svg {
   width: 13px;
   height: 13px;
 }
 
-.vellora-link-action-btn--unlink:hover {
+.editkit-link-action-btn--unlink:hover {
   color: #ef4444;
   background: rgba(239, 68, 68, 0.15);
 }
@@ -1760,7 +1760,7 @@
    09. GLOBAL MODAL SYSTEM (Base, Image & Math Modals)
    ========================================================================== */
 
-.vellora-modal-overlay {
+.editkit-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
@@ -1773,40 +1773,40 @@
   transition: opacity 0.15s ease, visibility 0.15s ease;
 }
 
-.vellora-modal-overlay--open {
+.editkit-modal-overlay--open {
   opacity: 1;
   visibility: visible;
 }
 
-.vellora-modal {
-  background: var(--vellora-popup-bg);
-  border: 1px solid var(--vellora-popup-border);
+.editkit-modal {
+  background: var(--editkit-popup-bg);
+  border: 1px solid var(--editkit-popup-border);
   border-radius: 14px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 4px 12px rgba(0, 0, 0, 0.5);
   position: relative;
   padding: 24px;
   max-width: 620px;
   width: 92%;
-  animation: velloraModalIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: editkitModalIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
-  font-family: var(--vellora-font, 'DM Sans', sans-serif);
+  font-family: var(--editkit-font, 'DM Sans', sans-serif);
 }
 
-.vellora-modal-header {
+.editkit-modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 14px;
 }
 
-.vellora-modal-title {
+.editkit-modal-title {
   margin: 0;
   font-size: 16px;
   font-weight: 700;
   color: #ffffff;
 }
 
-.vellora-modal-close {
+.editkit-modal-close {
   position: absolute;
   top: 14px;
   right: 14px;
@@ -1824,18 +1824,18 @@
   z-index: 10;
 }
 
-.vellora-modal-close:hover {
+.editkit-modal-close:hover {
   background: #313444;
   color: #ffffff;
 }
 
-.vellora-modal-close svg {
+.editkit-modal-close svg {
   width: 14px;
   height: 14px;
 }
 
 /* Image Modal Styles */
-.vellora-img-dropzone {
+.editkit-img-dropzone {
   border: 1.5px dashed #343746;
   border-radius: 12px;
   padding: 36px 20px;
@@ -1845,13 +1845,13 @@
   background: #181a22;
 }
 
-.vellora-img-dropzone:hover,
-.vellora-img-dropzone--dragover {
+.editkit-img-dropzone:hover,
+.editkit-img-dropzone--dragover {
   border-color: #7c3aed;
   background: #1d1a2c;
 }
 
-.vellora-img-icon-badge {
+.editkit-img-icon-badge {
   width: 44px;
   height: 44px;
   margin: 0 auto 14px;
@@ -1863,12 +1863,12 @@
   color: #e2e8f0;
 }
 
-.vellora-img-icon-badge svg {
+.editkit-img-icon-badge svg {
   width: 20px;
   height: 20px;
 }
 
-.vellora-img-dropzone-title {
+.editkit-img-dropzone-title {
   font-size: 15px;
   font-weight: 700;
   color: #ffffff;
@@ -1876,14 +1876,14 @@
   font-family: inherit;
 }
 
-.vellora-img-dropzone-subtitle {
+.editkit-img-dropzone-subtitle {
   font-size: 12px;
   color: #8e94a6;
   margin: 0;
   font-family: inherit;
 }
 
-.vellora-img-or-divider {
+.editkit-img-or-divider {
   text-align: center;
   font-size: 11px;
   font-weight: 600;
@@ -1893,12 +1893,12 @@
   font-family: inherit;
 }
 
-.vellora-img-actions-center {
+.editkit-img-actions-center {
   display: flex;
   justify-content: center;
 }
 
-.vellora-img-url-btn {
+.editkit-img-url-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -1915,36 +1915,36 @@
   transition: all 0.15s ease;
 }
 
-.vellora-img-url-btn:hover {
+.editkit-img-url-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
 }
 
-.vellora-img-url-btn svg {
+.editkit-img-url-btn svg {
   width: 15px;
   height: 15px;
 }
 
 /* Image Staging & Progress */
-.vellora-img-staging-wrap {
+.editkit-img-staging-wrap {
   margin: 14px 0 6px;
 }
 
-.vellora-img-staging-header {
+.editkit-img-staging-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
 }
 
-.vellora-img-count-text {
+.editkit-img-count-text {
   font-size: 13px;
   font-weight: 700;
   color: #ffffff;
   font-family: inherit;
 }
 
-.vellora-img-clear-all-btn {
+.editkit-img-clear-all-btn {
   background: transparent;
   border: none;
   font-size: 12px;
@@ -1954,12 +1954,12 @@
   font-family: inherit;
 }
 
-.vellora-img-clear-all-btn:hover {
+.editkit-img-clear-all-btn:hover {
   color: #ffffff;
   text-decoration: underline;
 }
 
-.vellora-img-staged-list {
+.editkit-img-staged-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1968,7 +1968,7 @@
   overflow-y: auto;
 }
 
-.vellora-img-staged-card {
+.editkit-img-staged-card {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -1978,7 +1978,7 @@
   padding: 8px 12px;
 }
 
-.vellora-img-staged-thumb {
+.editkit-img-staged-thumb {
   width: 44px;
   height: 44px;
   border-radius: 6px;
@@ -1988,7 +1988,7 @@
   flex-shrink: 0;
 }
 
-.vellora-img-staged-meta {
+.editkit-img-staged-meta {
   flex: 1;
   min-width: 0;
   display: flex;
@@ -1996,7 +1996,7 @@
   gap: 3px;
 }
 
-.vellora-img-staged-name {
+.editkit-img-staged-name {
   font-size: 13px;
   font-weight: 600;
   color: #ffffff;
@@ -2006,7 +2006,7 @@
   font-family: inherit;
 }
 
-.vellora-img-staged-alt {
+.editkit-img-staged-alt {
   background: transparent;
   border: none;
   font-size: 12px;
@@ -2017,11 +2017,11 @@
   font-family: inherit;
 }
 
-.vellora-img-staged-alt::placeholder {
+.editkit-img-staged-alt::placeholder {
   color: #55596b;
 }
 
-.vellora-img-staged-del {
+.editkit-img-staged-del {
   background: transparent;
   border: none;
   color: #8e94a6;
@@ -2034,17 +2034,17 @@
   transition: all 0.15s ease;
 }
 
-.vellora-img-staged-del:hover {
+.editkit-img-staged-del:hover {
   color: #ef4444;
   background: rgba(239, 68, 68, 0.15);
 }
 
-.vellora-img-staged-del svg {
+.editkit-img-staged-del svg {
   width: 14px;
   height: 14px;
 }
 
-.vellora-img-upload-btn {
+.editkit-img-upload-btn {
   position: relative;
   width: 100%;
   height: 38px;
@@ -2065,11 +2065,11 @@
   transition: all 0.15s ease;
 }
 
-.vellora-img-upload-btn:hover {
+.editkit-img-upload-btn:hover {
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
 }
 
-.vellora-img-upload-bar {
+.editkit-img-upload-bar {
   position: absolute;
   top: 0;
   left: 0;
@@ -2080,7 +2080,7 @@
   z-index: 1;
 }
 
-.vellora-img-upload-inner {
+.editkit-img-upload-inner {
   position: relative;
   z-index: 2;
   display: inline-flex;
@@ -2089,37 +2089,37 @@
   transition: color 0.15s ease;
 }
 
-.vellora-img-upload-btn--loading .vellora-img-upload-inner {
+.editkit-img-upload-btn--loading .editkit-img-upload-inner {
   color: #ffffff;
 }
 
-.vellora-img-upload-icon svg {
+.editkit-img-upload-icon svg {
   width: 16px;
   height: 16px;
 }
 
 /* Image URL Form */
-.vellora-img-url-form {
+.editkit-img-url-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding: 8px 4px 4px;
 }
 
-.vellora-img-form-group {
+.editkit-img-form-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.vellora-img-form-label {
+.editkit-img-form-label {
   font-size: 13px;
   font-weight: 700;
   color: #ffffff;
   font-family: inherit;
 }
 
-.vellora-img-input {
+.editkit-img-input {
   background: #0f1015;
   border: 1px solid #282a36;
   border-radius: 8px;
@@ -2131,21 +2131,21 @@
   transition: border-color 0.15s ease;
 }
 
-.vellora-img-input:focus {
+.editkit-img-input:focus {
   border-color: #7c3aed;
 }
 
-.vellora-img-input::placeholder {
+.editkit-img-input::placeholder {
   color: #55596b;
 }
 
-.vellora-img-form-actions {
+.editkit-img-form-actions {
   display: flex;
   justify-content: center;
   margin-top: 8px;
 }
 
-.vellora-img-submit-btn {
+.editkit-img-submit-btn {
   background: #464a5c;
   color: #ffffff;
   font-weight: 600;
@@ -2158,23 +2158,23 @@
   transition: all 0.15s ease;
 }
 
-.vellora-img-submit-btn:hover {
+.editkit-img-submit-btn:hover {
   background: #585d73;
 }
 
 /* Math Modal Styles */
-.vellora-math-modal {
+.editkit-math-modal {
   max-width: 540px;
 }
 
-.vellora-math-chips {
+.editkit-math-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   margin-bottom: 14px;
 }
 
-.vellora-math-chip {
+.editkit-math-chip {
   background: #1e202b;
   border: 1px solid #2d3040;
   color: #cbd5e1;
@@ -2187,32 +2187,32 @@
   transition: all 0.15s ease;
 }
 
-.vellora-math-chip:hover {
+.editkit-math-chip:hover {
   background: #2b2e3e;
   color: #ffffff;
   border-color: #7c3aed;
   transform: translateY(-1px);
 }
 
-.vellora-math-input-group {
+.editkit-math-input-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
   margin-bottom: 12px;
 }
 
-.vellora-math-label {
+.editkit-math-label {
   font-size: 12px;
   font-weight: 600;
   color: #8e94a6;
 }
 
-.vellora-math-textarea {
+.editkit-math-textarea {
   background: #0f1015;
   border: 1px solid #282a36;
   border-radius: 8px;
   padding: 10px 12px;
-  font-family: var(--vellora-font-mono, monospace);
+  font-family: var(--editkit-font-mono, monospace);
   font-size: 13px;
   color: #ffffff;
   outline: none;
@@ -2221,18 +2221,18 @@
   transition: border-color 0.15s ease;
 }
 
-.vellora-math-textarea:focus {
+.editkit-math-textarea:focus {
   border-color: #7c3aed;
 }
 
-.vellora-math-preview-group {
+.editkit-math-preview-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
   margin-bottom: 16px;
 }
 
-.vellora-math-preview {
+.editkit-math-preview {
   background: #111218;
   border: 1px solid #282a36;
   border-radius: 8px;
@@ -2245,21 +2245,21 @@
   font-size: 16px;
 }
 
-.vellora-math-actions {
+.editkit-math-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
 }
 
-.vellora-math-right-actions {
+.editkit-math-right-actions {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-left: auto;
 }
 
-.vellora-math-cancel-btn {
+.editkit-math-cancel-btn {
   background: transparent;
   border: 1px solid #333644;
   color: #a0a5b8;
@@ -2272,12 +2272,12 @@
   transition: all 0.15s ease;
 }
 
-.vellora-math-cancel-btn:hover {
+.editkit-math-cancel-btn:hover {
   background: rgba(255, 255, 255, 0.06);
   color: #ffffff;
 }
 
-.vellora-math-submit-btn {
+.editkit-math-submit-btn {
   background: #7c3aed;
   color: #ffffff;
   font-weight: 600;
@@ -2290,11 +2290,11 @@
   transition: all 0.15s ease;
 }
 
-.vellora-math-submit-btn:hover {
+.editkit-math-submit-btn:hover {
   background: #6d28d9;
 }
 
-.vellora-math-del-btn {
+.editkit-math-del-btn {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -2310,11 +2310,11 @@
   transition: all 0.15s ease;
 }
 
-.vellora-math-del-btn:hover {
+.editkit-math-del-btn:hover {
   background: rgba(239, 68, 68, 0.25);
 }
 
-.vellora-math-del-btn svg {
+.editkit-math-del-btn svg {
   width: 13px;
   height: 13px;
 }
@@ -2323,7 +2323,7 @@
    10. GLOBAL TOAST NOTIFICATIONS (Warning / Success / Error / Info)
    ========================================================================== */
 
-.vellora-toast {
+.editkit-toast {
   position: absolute;
   top: 52px;
   left: 50%;
@@ -2337,60 +2337,60 @@
   border-radius: 8px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
   color: #fef3c7;
-  font-family: var(--vellora-font, 'DM Sans', sans-serif);
+  font-family: var(--editkit-font, 'DM Sans', sans-serif);
   font-size: 13px;
   font-weight: 600;
   z-index: 200;
   cursor: pointer;
-  animation: velloraToastIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: editkitToastIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
 }
 
-.vellora-toast--warning {
+.editkit-toast--warning {
   border-color: #f59e0b;
   color: #fef3c7;
 }
-.vellora-toast--warning .vellora-toast-icon {
+.editkit-toast--warning .editkit-toast-icon {
   color: #f59e0b;
 }
 
-.vellora-toast--success {
+.editkit-toast--success {
   border-color: #10b981;
   color: #d1fae5;
 }
-.vellora-toast--success .vellora-toast-icon {
+.editkit-toast--success .editkit-toast-icon {
   color: #10b981;
 }
 
-.vellora-toast--error {
+.editkit-toast--error {
   border-color: #ef4444;
   color: #fee2e2;
 }
-.vellora-toast--error .vellora-toast-icon {
+.editkit-toast--error .editkit-toast-icon {
   color: #ef4444;
 }
 
-.vellora-toast--info {
+.editkit-toast--info {
   border-color: #7c3aed;
   color: #ede9fe;
 }
-.vellora-toast--info .vellora-toast-icon {
+.editkit-toast--info .editkit-toast-icon {
   color: #a78bfa;
 }
 
-.vellora-toast-icon {
+.editkit-toast-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-.vellora-toast-icon svg {
+.editkit-toast-icon svg {
   width: 16px;
   height: 16px;
 }
 
-.vellora-toast--hiding {
+.editkit-toast--hiding {
   opacity: 0;
   transform: translateX(-50%) translateY(-6px);
   transition: all 0.2s ease;
@@ -2400,10 +2400,10 @@
    10.5. CUSTOM FLOATING TOOLTIP (BUBBLE SPRING ANIMATION & DUAL THEME)
    ========================================================================== */
 
-.vellora-tooltip {
+.editkit-tooltip {
   position: fixed;
   z-index: 99999;
-  font-family: var(--vellora-font);
+  font-family: var(--editkit-font);
   font-size: 11.5px;
   font-weight: 500;
   line-height: 1.2;
@@ -2432,17 +2432,17 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-.vellora-tooltip--visible {
+.editkit-tooltip--visible {
   opacity: 1;
   visibility: visible;
   transform: translateY(0) scale(1);
 }
 
-.vellora-tooltip-text {
+.editkit-tooltip-text {
   color: inherit;
 }
 
-.vellora-tooltip-shortcut {
+.editkit-tooltip-shortcut {
   background: #242633;
   border: 1px solid #383c50;
   border-radius: 4px;
@@ -2455,18 +2455,18 @@
 }
 
 /* Light Mode Tooltip Styling */
-.vellora-tooltip[data-vellora-theme="light"] {
+.editkit-tooltip[data-editkit-theme="light"] {
   background: rgba(255, 255, 255, 0.98);
   border: 1px solid #e2e8f0;
   color: #0f172a;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.06);
 }
 
-.vellora-tooltip[data-vellora-theme="light"] .vellora-tooltip-text {
+.editkit-tooltip[data-editkit-theme="light"] .editkit-tooltip-text {
   color: #0f172a;
 }
 
-.vellora-tooltip[data-vellora-theme="light"] .vellora-tooltip-shortcut {
+.editkit-tooltip[data-editkit-theme="light"] .editkit-tooltip-shortcut {
   background: #f1f5f9;
   border: 1px solid #cbd5e1;
   color: #475569;
@@ -2476,31 +2476,31 @@
    11. CONTENT EDITABLE & RICH TYPOGRAPHY
    ========================================================================== */
 
-.vellora-content {
+.editkit-content {
   padding: 24px 32px;
   min-height: 280px;
   max-height: 65vh;
   overflow-y: auto;
   scrollbar-width: none;
   outline: none;
-  font-family: var(--vellora-font);
-  font-size: var(--vellora-font-size);
-  line-height: var(--vellora-line-height);
-  color: var(--vellora-text);
-  caret-color: var(--vellora-primary);
-  border-bottom-left-radius: var(--vellora-radius-card);
-  border-bottom-right-radius: var(--vellora-radius-card);
+  font-family: var(--editkit-font);
+  font-size: var(--editkit-font-size);
+  line-height: var(--editkit-line-height);
+  color: var(--editkit-text);
+  caret-color: var(--editkit-primary);
+  border-bottom-left-radius: var(--editkit-radius-card);
+  border-bottom-right-radius: var(--editkit-radius-card);
 }
 
-.vellora-content::-webkit-scrollbar {
+.editkit-content::-webkit-scrollbar {
   display: none;
 }
 
-.vellora-content ::selection {
-  background: var(--vellora-selection);
+.editkit-content ::selection {
+  background: var(--editkit-selection);
 }
 
-@keyframes velloraTyping {
+@keyframes editkitTyping {
   0% {
     clip-path: inset(0 100% 0 0);
   }
@@ -2509,9 +2509,9 @@
   }
 }
 
-.vellora-content--empty::before {
+.editkit-content--empty::before {
   content: attr(data-placeholder);
-  color: var(--vellora-placeholder);
+  color: var(--editkit-placeholder);
   pointer-events: none;
   position: absolute;
   font-style: normal;
@@ -2521,23 +2521,23 @@
   user-select: none;
   white-space: nowrap;
   clip-path: inset(0 100% 0 0);
-  animation: velloraTyping 1.1s steps(38, end) forwards;
+  animation: editkitTyping 1.1s steps(38, end) forwards;
 }
 
 /* Headings Typography */
-.vellora-content h1 { font-size: 2em; font-weight: 700; margin: 1em 0 0.4em; }
-.vellora-content h2 { font-size: 1.5em; font-weight: 700; margin: 1em 0 0.4em; }
-.vellora-content h3 { font-size: 1.25em; font-weight: 600; margin: 0.8em 0 0.3em; }
-.vellora-content h4 { font-size: 1.1em; font-weight: 600; margin: 0.6em 0 0.2em; }
-.vellora-content h5 { font-size: 1em; font-weight: 600; margin: 0.5em 0 0.2em; }
-.vellora-content h6 { font-size: 0.9em; font-weight: 600; color: var(--vellora-text-muted); margin: 0.4em 0 0.2em; }
+.editkit-content h1 { font-size: 2em; font-weight: 700; margin: 1em 0 0.4em; }
+.editkit-content h2 { font-size: 1.5em; font-weight: 700; margin: 1em 0 0.4em; }
+.editkit-content h3 { font-size: 1.25em; font-weight: 600; margin: 0.8em 0 0.3em; }
+.editkit-content h4 { font-size: 1.1em; font-weight: 600; margin: 0.6em 0 0.2em; }
+.editkit-content h5 { font-size: 1em; font-weight: 600; margin: 0.5em 0 0.2em; }
+.editkit-content h6 { font-size: 0.9em; font-weight: 600; color: var(--editkit-text-muted); margin: 0.4em 0 0.2em; }
 
-.vellora-content p {
+.editkit-content p {
   margin: 0 0 0.5em 0;
 }
 
 /* Links (Exact rgb(118, 101, 255) match) */
-.vellora-content a {
+.editkit-content a {
   color: rgb(118, 101, 255);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -2545,135 +2545,135 @@
   transition: color 0.15s ease, opacity 0.15s ease;
 }
 
-.vellora-content a:hover {
+.editkit-content a:hover {
   color: rgb(142, 128, 255);
   opacity: 0.9;
 }
 
 /* Table in Content (Screenshot 2 exact match) */
-.vellora-content table,
-.vellora-table {
+.editkit-content table,
+.editkit-table {
   width: 100%;
   border-collapse: collapse;
   margin: 1.2em 0;
-  border: 1px solid var(--vellora-table-border);
+  border: 1px solid var(--editkit-table-border);
   border-radius: 8px;
   overflow: hidden;
 }
 
-.vellora-content th {
-  background: var(--vellora-table-header-bg);
-  color: var(--vellora-table-header-text);
+.editkit-content th {
+  background: var(--editkit-table-header-bg);
+  color: var(--editkit-table-header-text);
   font-weight: 600;
   padding: 10px 14px;
   text-align: left;
-  border: 1px solid var(--vellora-table-border);
+  border: 1px solid var(--editkit-table-border);
   position: relative;
 }
 
-.vellora-content td {
+.editkit-content td {
   padding: 10px 14px;
-  border: 1px solid var(--vellora-table-border);
+  border: 1px solid var(--editkit-table-border);
   vertical-align: top;
   transition: background 0.1s ease;
 }
 
-.vellora-content td:hover {
-  background: var(--vellora-table-cell-hover);
+.editkit-content td:hover {
+  background: var(--editkit-table-cell-hover);
 }
 
-.vellora-table--striped tbody tr:nth-child(even) td {
+.editkit-table--striped tbody tr:nth-child(even) td {
   background: rgba(255, 255, 255, 0.02);
 }
 
 /* Lists & Task Lists */
-.vellora-content ul,
-.vellora-content ol {
+.editkit-content ul,
+.editkit-content ol {
   padding-left: 1.5em;
   margin: 0.5em 0;
 }
 
-.vellora-content li {
+.editkit-content li {
   margin: 0.25em 0;
 }
 
-.vellora-content .vellora-task-list {
+.editkit-content .editkit-task-list {
   list-style: none;
   padding-left: 0;
 }
 
-.vellora-content .vellora-task-item {
+.editkit-content .editkit-task-item {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.vellora-content .vellora-task-checkbox {
-  accent-color: var(--vellora-primary);
+.editkit-content .editkit-task-checkbox {
+  accent-color: var(--editkit-primary);
   cursor: pointer;
 }
 
-.vellora-content .vellora-task-done > span {
+.editkit-content .editkit-task-done > span {
   text-decoration: line-through;
   opacity: 0.5;
 }
 
 /* Code, Keyboard & Blockquote Typography */
-.vellora-content code {
-  font-family: var(--vellora-font-mono);
+.editkit-content code {
+  font-family: var(--editkit-font-mono);
   font-size: 0.85em;
   padding: 2px 5px;
   border-radius: 4px;
-  background: var(--vellora-surface-hover);
+  background: var(--editkit-surface-hover);
   color: #f472b6;
 }
 
-.vellora-content kbd {
-  font-family: var(--vellora-font-mono);
+.editkit-content kbd {
+  font-family: var(--editkit-font-mono);
   font-size: 0.82em;
-  background: var(--vellora-surface-hover);
-  border: 1px solid var(--vellora-border);
-  border-bottom: 2px solid var(--vellora-border-hover);
+  background: var(--editkit-surface-hover);
+  border: 1px solid var(--editkit-border);
+  border-bottom: 2px solid var(--editkit-border-hover);
   border-radius: 4px;
   padding: 2px 6px;
-  color: var(--vellora-text);
+  color: var(--editkit-text);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
-.vellora-content pre {
-  font-family: var(--vellora-font-mono);
+.editkit-content pre {
+  font-family: var(--editkit-font-mono);
   font-size: 0.85em;
   background: #0d0e12;
-  border: 1px solid var(--vellora-border);
+  border: 1px solid var(--editkit-border);
   padding: 14px 18px;
   border-radius: 8px;
   overflow-x: auto;
   margin: 1em 0;
 }
 
-.vellora-content pre code {
+.editkit-content pre code {
   background: transparent;
   padding: 0;
   color: inherit;
 }
 
-.vellora-content blockquote {
-  border-left: 3px solid var(--vellora-primary);
-  background: var(--vellora-primary-light);
+.editkit-content blockquote {
+  border-left: 3px solid var(--editkit-primary);
+  background: var(--editkit-primary-light);
   padding: 10px 16px;
   margin: 1em 0;
   border-radius: 0 6px 6px 0;
   font-style: italic;
 }
 
-.vellora-content hr {
+.editkit-content hr {
   border: none;
   height: 1px;
-  background: var(--vellora-divider);
+  background: var(--editkit-divider);
   margin: 1.5em 0;
 }
 
-.vellora-content img {
+.editkit-content img {
   max-width: 100%;
   border-radius: 8px;
   margin: 1em 0;
@@ -2683,7 +2683,7 @@
    12. MATHEMATICAL TYPOGRAPHY & EQUATION ELEMENTS
    ========================================================================== */
 
-.vellora-content .vellora-math-block {
+.editkit-content .editkit-math-block {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2699,13 +2699,13 @@
   transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 }
 
-.vellora-content .vellora-math-block:hover {
+.editkit-content .editkit-math-block:hover {
   border-color: #7c3aed;
   background: #151722;
   box-shadow: 0 4px 14px rgba(124, 58, 237, 0.15);
 }
 
-.vellora-content .vellora-math-inline {
+.editkit-content .editkit-math-inline {
   display: inline-flex;
   align-items: center;
   margin: 0 3px;
@@ -2720,19 +2720,19 @@
   transition: all 0.15s ease;
 }
 
-.vellora-content .vellora-math-inline:hover {
+.editkit-content .editkit-math-inline:hover {
   border-color: #7c3aed;
   background: #1c1a2c;
   color: #ffffff;
 }
 
-.vellora-math-rendered {
+.editkit-math-rendered {
   font-family: 'Cambria Math', 'Latin Modern Math', 'STIX Two Math', 'Times New Roman', serif;
   font-style: italic;
   letter-spacing: 0.5px;
 }
 
-.vellora-math-frac {
+.editkit-math-frac {
   display: inline-flex;
   flex-direction: column;
   vertical-align: middle;
@@ -2741,39 +2741,39 @@
   font-size: 0.9em;
 }
 
-.vellora-math-num {
+.editkit-math-num {
   border-bottom: 1px solid currentColor;
   padding-bottom: 1px;
 }
 
-.vellora-math-den {
+.editkit-math-den {
   padding-top: 1px;
 }
 
-.vellora-math-sqrt {
+.editkit-math-sqrt {
   display: inline-flex;
   align-items: center;
   padding: 0 2px;
 }
 
-.vellora-math-sqrt-sym {
+.editkit-math-sqrt-sym {
   font-size: 1.1em;
   margin-right: 1px;
 }
 
-.vellora-math-sqrt-body {
+.editkit-math-sqrt-body {
   border-top: 1px solid currentColor;
   padding-top: 1px;
 }
 
-.vellora-math-symbol {
+.editkit-math-symbol {
   font-size: 1.25em;
   font-style: normal;
   vertical-align: -2px;
   padding: 0 2px;
 }
 
-.vellora-math-func {
+.editkit-math-func {
   font-style: normal;
   font-weight: 500;
   padding: 0 2px;
@@ -2783,7 +2783,7 @@
    13. IMAGE RESIZER & FLOATING TOOLBAR (SCREENSHOT 2 EXACT MATCH)
    ========================================================================== */
 
-.vellora-image-overlay-layer {
+.editkit-image-overlay-layer {
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -2791,11 +2791,11 @@
   display: none;
 }
 
-.vellora-image-overlay-layer--active {
+.editkit-image-overlay-layer--active {
   display: block;
 }
 
-.vellora-image-resizer-box {
+.editkit-image-resizer-box {
   position: absolute;
   border: 2px solid #a78bfa;
   pointer-events: auto;
@@ -2803,7 +2803,7 @@
   transition: border-color 0.15s ease;
 }
 
-.vellora-img-handle {
+.editkit-img-handle {
   position: absolute;
   width: 10px;
   height: 10px;
@@ -2815,16 +2815,16 @@
   transform: translate(-50%, -50%);
 }
 
-.vellora-img-handle--tl { top: 0; left: 0; }
-.vellora-img-handle--tc { top: 0; left: 50%; }
-.vellora-img-handle--tr { top: 0; left: 100%; }
-.vellora-img-handle--ml { top: 50%; left: 0; }
-.vellora-img-handle--mr { top: 50%; left: 100%; }
-.vellora-img-handle--bl { top: 100%; left: 0; }
-.vellora-img-handle--bc { top: 100%; left: 50%; }
-.vellora-img-handle--br { top: 100%; left: 100%; }
+.editkit-img-handle--tl { top: 0; left: 0; }
+.editkit-img-handle--tc { top: 0; left: 50%; }
+.editkit-img-handle--tr { top: 0; left: 100%; }
+.editkit-img-handle--ml { top: 50%; left: 0; }
+.editkit-img-handle--mr { top: 50%; left: 100%; }
+.editkit-img-handle--bl { top: 100%; left: 0; }
+.editkit-img-handle--bc { top: 100%; left: 50%; }
+.editkit-img-handle--br { top: 100%; left: 100%; }
 
-.vellora-image-floating-toolbar {
+.editkit-image-floating-toolbar {
   position: absolute;
   bottom: calc(100% + 10px);
   left: 50%;
@@ -2839,10 +2839,10 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
   z-index: 10;
   white-space: nowrap;
-  animation: velloraFadeIn 0.15s ease;
+  animation: editkitFadeIn 0.15s ease;
 }
 
-.vellora-img-tb-btn {
+.editkit-img-tb-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2857,17 +2857,17 @@
   transition: all 0.15s ease;
 }
 
-.vellora-img-tb-btn:hover {
+.editkit-img-tb-btn:hover {
   background: #252834;
   color: #ffffff;
 }
 
-.vellora-img-tb-btn--danger:hover {
+.editkit-img-tb-btn--danger:hover {
   background: rgba(239, 68, 68, 0.18);
   color: #ef4444;
 }
 
-.vellora-img-tb-btn--pill {
+.editkit-img-tb-btn--pill {
   width: auto;
   padding: 0 6px;
   font-weight: 700;
@@ -2875,19 +2875,19 @@
   color: #cbd5e1;
 }
 
-.vellora-img-tb-divider {
+.editkit-img-tb-divider {
   width: 1px;
   height: 16px;
   background: #282a36;
   margin: 0 3px;
 }
 
-.vellora-img-tb-btn svg {
+.editkit-img-tb-btn svg {
   width: 14px;
   height: 14px;
 }
 
-.vellora-image-caption {
+.editkit-image-caption {
   display: block;
   text-align: center;
   font-size: 12px;
@@ -2897,7 +2897,7 @@
   outline: none;
 }
 
-.vellora-image--framed {
+.editkit-image--framed {
   border: 2px solid #3b4252;
   border-radius: 10px;
   padding: 3px;
@@ -2907,17 +2907,17 @@
    14. KEYFRAME ANIMATIONS
    ========================================================================== */
 
-@keyframes velloraFadeIn {
+@keyframes editkitFadeIn {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes velloraModalIn {
+@keyframes editkitModalIn {
   from { opacity: 0; transform: scale(0.96) translateY(-8px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-@keyframes velloraToastIn {
+@keyframes editkitToastIn {
   from {
     opacity: 0;
     transform: translateX(-50%) translateY(-10px) scale(0.95);

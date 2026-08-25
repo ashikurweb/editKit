@@ -1,5 +1,5 @@
 // ============================================================
-// Vellora — Comprehensive Core Type Definitions
+// EditKit — Comprehensive Core Type Definitions
 // ============================================================
 
 import type { Extension, CustomToolbarItem } from './Extension';
@@ -27,7 +27,7 @@ export interface TableCellInfo {
 }
 
 /** Configuration for creating an editor instance */
-export interface VelloraConfig {
+export interface EditKitConfig {
   /** Container element or selector to mount the editor into */
   element?: HTMLElement | string;
   /** Initial HTML content */
@@ -112,7 +112,7 @@ export type BulletListStyle = 'default' | 'circle' | 'square';
 export type NumberedListStyle = 'decimal' | 'lower-alpha' | 'lower-roman';
 
 /** Editor event types */
-export interface VelloraEvents {
+export interface EditKitEvents {
   create: { editor: any };
   update: { editor: any };
   selectionUpdate: { editor: any };

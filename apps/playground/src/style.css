@@ -1,5 +1,5 @@
 /* ============================================================
-   Vellora Playground — Page Layout (Eddyter Experience)
+   EditKit Playground — Page Layout (EditKit Experience)
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
@@ -48,7 +48,7 @@ body {
    Top Header Banner (Screenshot 1 & 2 match)
    ════════════════════════════════════════════ */
 
-.eddyter-top-banner {
+.editkit-top-banner {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -59,13 +59,13 @@ body {
   color: var(--page-text-muted);
 }
 
-.eddyter-banner-left {
+.editkit-banner-left {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.eddyter-banner-dot {
+.editkit-banner-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
@@ -73,25 +73,25 @@ body {
   box-shadow: 0 0 8px rgba(236, 72, 153, 0.6);
 }
 
-.eddyter-banner-title {
+.editkit-banner-title {
   color: var(--page-text-muted);
   font-weight: 500;
 }
 
-.eddyter-banner-title strong {
+.editkit-banner-title strong {
   color: var(--page-text);
   letter-spacing: 1px;
 }
 
-.eddyter-banner-sep {
+.editkit-banner-sep {
   opacity: 0.3;
 }
 
-.eddyter-banner-sub {
+.editkit-banner-sub {
   color: var(--page-text-muted);
 }
 
-.eddyter-theme-toggle {
+.editkit-theme-toggle {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -107,22 +107,22 @@ body {
   transition: all 0.15s ease;
 }
 
-.eddyter-theme-toggle:hover {
+.editkit-theme-toggle:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: var(--page-primary);
 }
 
 .theme-icon-sun { display: none; }
 .theme-icon-moon { display: inline; }
-.eddyter-theme-toggle--light .theme-icon-sun { display: inline; }
-.eddyter-theme-toggle--light .theme-icon-moon { display: none; }
+.editkit-theme-toggle--light .theme-icon-sun { display: inline; }
+.editkit-theme-toggle--light .theme-icon-moon { display: none; }
 
 
 /* ════════════════════════════════════════════
    Main Editor Container
    ════════════════════════════════════════════ */
 
-.eddyter-main {
+.editkit-main {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -130,55 +130,55 @@ body {
   padding: 32px 48px 64px;
 }
 
-.eddyter-editor-card {
+.editkit-editor-card {
   width: 100%;
   max-width: 1060px;
 }
 
 /* Bottom Bar inside Editor Card */
-.eddyter-bottom-bar {
+.editkit-bottom-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px 24px;
-  background: var(--vellora-toolbar-bg);
-  border-top: 1px solid var(--vellora-border);
-  border-bottom-left-radius: var(--vellora-radius-card);
-  border-bottom-right-radius: var(--vellora-radius-card);
+  background: var(--editkit-toolbar-bg);
+  border-top: 1px solid var(--editkit-border);
+  border-bottom-left-radius: var(--editkit-radius-card);
+  border-bottom-right-radius: var(--editkit-radius-card);
   font-size: 11px;
-  color: var(--vellora-text-dim);
+  color: var(--editkit-text-dim);
   user-select: none;
 }
 
-.eddyter-bottom-left {
+.editkit-bottom-left {
   display: flex;
   align-items: center;
   gap: 6px;
   font-variant-numeric: tabular-nums;
 }
 
-.eddyter-stat-space {
+.editkit-stat-space {
   margin-right: 8px;
 }
 
-.eddyter-bottom-right {
+.editkit-bottom-right {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.eddyter-footer-link {
-  color: var(--vellora-text-muted);
+.editkit-footer-link {
+  color: var(--editkit-text-muted);
   text-decoration: none;
   transition: color 0.15s ease;
 }
 
-.eddyter-footer-link:hover {
-  color: var(--vellora-text);
+.editkit-footer-link:hover {
+  color: var(--editkit-text);
 }
 
-.eddyter-version-badge {
-  color: var(--vellora-text-dim);
+.editkit-version-badge {
+  color: var(--editkit-text-dim);
   font-family: var(--page-font-mono);
   font-size: 10px;
 }
@@ -188,41 +188,41 @@ body {
    Developer Section Below Editor
    ════════════════════════════════════════════ */
 
-.eddyter-dev-section {
+.editkit-dev-section {
   width: 100%;
   max-width: 1060px;
   margin-top: 48px;
 }
 
-.eddyter-dev-grid {
+.editkit-dev-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
 
-.eddyter-dev-card {
-  background: var(--vellora-card-bg);
-  border: 1px solid var(--vellora-border);
-  border-radius: var(--vellora-radius-card);
+.editkit-dev-card {
+  background: var(--editkit-card-bg);
+  border: 1px solid var(--editkit-border);
+  border-radius: var(--editkit-radius-card);
   padding: 20px;
 }
 
-.eddyter-dev-card h3 {
+.editkit-dev-card h3 {
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 6px;
   color: var(--page-text);
 }
 
-.eddyter-dev-card p {
+.editkit-dev-card p {
   font-size: 12px;
   color: var(--page-text-muted);
   margin-bottom: 12px;
 }
 
-.eddyter-dev-card pre {
+.editkit-dev-card pre {
   background: #08090c;
-  border: 1px solid var(--vellora-border);
+  border: 1px solid var(--editkit-border);
   border-radius: 8px;
   padding: 12px 14px;
   font-family: var(--page-font-mono);
@@ -232,16 +232,16 @@ body {
 }
 
 @media (max-width: 768px) {
-  .eddyter-top-banner {
+  .editkit-top-banner {
     padding: 12px 16px;
   }
-  .eddyter-main {
+  .editkit-main {
     padding: 16px;
   }
-  .eddyter-dev-grid {
+  .editkit-dev-grid {
     grid-template-columns: 1fr;
   }
-  .eddyter-bottom-bar {
+  .editkit-bottom-bar {
     flex-direction: column;
     gap: 8px;
     align-items: flex-start;

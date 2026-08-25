@@ -1,9 +1,9 @@
 // ============================================================
-// Vellora — LaTeX / Math Equation Modal & Live Renderer
+// EditKit — LaTeX / Math Equation Modal & Live Renderer
 // Extends global reusable Modal component
 // ============================================================
 
-import type { VelloraEditor } from '@vellora/core';
+import type { EditKitEditor } from '@editkit/core';
 import { Modal } from './Modal';
 import { icons } from './icons';
 
@@ -16,10 +16,10 @@ export class MathModal extends Modal {
   private submitBtn!: HTMLButtonElement;
   private deleteBtn!: HTMLButtonElement;
 
-  constructor(editor: VelloraEditor) {
+  constructor(editor: EditKitEditor) {
     super(editor, {
       title: 'Insert Math Equation',
-      className: 'vellora-math-modal',
+      className: 'editkit-math-modal',
       maxWidth: '540px',
     });
 
@@ -30,7 +30,7 @@ export class MathModal extends Modal {
   private _buildMathUI(): void {
     // Quick formula chips
     const chipsWrap = document.createElement('div');
-    chipsWrap.classList.add('vellora-math-chips');
+    chipsWrap.classList.add('editkit-math-chips');
 
     const presets = [
       { label: 'E = mc²', latex: 'E = mc^2' },
@@ -46,7 +46,7 @@ export class MathModal extends Modal {
     presets.forEach(p => {
       const chip = document.createElement('button');
       chip.type = 'button';
-      chip.classList.add('vellora-math-chip');
+      chip.classList.add('editkit-math-chip');
       chip.textContent = p.label;
       chip.addEventListener('click', () => {
         this.textareaEl.value = p.latex;
@@ -58,14 +58,14 @@ export class MathModal extends Modal {
 
     // Textarea input
     const inputGroup = document.createElement('div');
-    inputGroup.classList.add('vellora-math-input-group');
+    inputGroup.classList.add('editkit-math-input-group');
 
     const inputLabel = document.createElement('label');
-    inputLabel.classList.add('vellora-math-label');
+    inputLabel.classList.add('editkit-math-label');
     inputLabel.textContent = 'TeX / LaTeX Equation:';
 
     this.textareaEl = document.createElement('textarea');
-    this.textareaEl.classList.add('vellora-math-textarea');
+    this.textareaEl.classList.add('editkit-math-textarea');
     this.textareaEl.placeholder = 'e.g. \\frac{a}{b} + \\sqrt{x}';
     this.textareaEl.rows = 3;
     this.textareaEl.addEventListener('input', () => this._updatePreview());
@@ -76,14 +76,14 @@ export class MathModal extends Modal {
 
     // Live Preview
     const previewGroup = document.createElement('div');
-    previewGroup.classList.add('vellora-math-preview-group');
+    previewGroup.classList.add('editkit-math-preview-group');
 
     const previewLabel = document.createElement('div');
-    previewLabel.classList.add('vellora-math-label');
+    previewLabel.classList.add('editkit-math-label');
     previewLabel.textContent = 'Live Render Preview:';
 
     this.previewEl = document.createElement('div');
-    this.previewEl.classList.add('vellora-math-preview');
+    this.previewEl.classList.add('editkit-math-preview');
 
     previewGroup.appendChild(previewLabel);
     previewGroup.appendChild(this.previewEl);
@@ -91,11 +91,11 @@ export class MathModal extends Modal {
 
     // Actions (Submit / Delete / Cancel)
     const actions = document.createElement('div');
-    actions.classList.add('vellora-math-actions');
+    actions.classList.add('editkit-math-actions');
 
     this.deleteBtn = document.createElement('button');
     this.deleteBtn.type = 'button';
-    this.deleteBtn.classList.add('vellora-math-del-btn');
+    this.deleteBtn.classList.add('editkit-math-del-btn');
     this.deleteBtn.innerHTML = `${icons.trash} <span>Delete</span>`;
     this.deleteBtn.style.display = 'none';
     this.deleteBtn.addEventListener('click', () => {
@@ -107,17 +107,17 @@ export class MathModal extends Modal {
     });
 
     const rightActions = document.createElement('div');
-    rightActions.classList.add('vellora-math-right-actions');
+    rightActions.classList.add('editkit-math-right-actions');
 
     const cancelBtn = document.createElement('button');
     cancelBtn.type = 'button';
-    cancelBtn.classList.add('vellora-math-cancel-btn');
+    cancelBtn.classList.add('editkit-math-cancel-btn');
     cancelBtn.textContent = 'Cancel';
     cancelBtn.addEventListener('click', () => this.hide());
 
     this.submitBtn = document.createElement('button');
     this.submitBtn.type = 'button';
-    this.submitBtn.classList.add('vellora-math-submit-btn');
+    this.submitBtn.classList.add('editkit-math-submit-btn');
     this.submitBtn.textContent = 'Insert Equation';
     this.submitBtn.addEventListener('click', () => this._applyEquation());
 
@@ -133,7 +133,7 @@ export class MathModal extends Modal {
     // Click on math equations in editor to edit
     this.editor.contentEl.addEventListener('click', (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const mathEl = target.closest('.vellora-math-block, .vellora-math-inline') as HTMLElement | null;
+      const mathEl = target.closest('.editkit-math-block, .editkit-math-inline') as HTMLElement | null;
       if (mathEl && this.editor.contentEl.contains(mathEl)) {
         e.preventDefault();
         e.stopPropagation();
@@ -169,7 +169,7 @@ export class MathModal extends Modal {
 
   edit(el: HTMLElement): void {
     this.targetEl = el;
-    this.currentType = el.classList.contains('vellora-math-block') ? 'block' : 'inline';
+    this.currentType = el.classList.contains('editkit-math-block') ? 'block' : 'inline';
     this.setTitle(this.currentType === 'block' ? 'Edit Block Equation' : 'Edit Inline Equation');
     this.submitBtn.textContent = 'Update Equation';
     this.deleteBtn.style.display = 'inline-flex';
@@ -210,19 +210,19 @@ export function formatMathFormula(latex: string): string {
 
   // 1. Fractions: \frac{a}{b}
   html = html.replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, (_m, num, den) => {
-    return `<span class="vellora-math-frac"><span class="vellora-math-num">${num}</span><span class="vellora-math-den">${den}</span></span>`;
+    return `<span class="editkit-math-frac"><span class="editkit-math-num">${num}</span><span class="editkit-math-den">${den}</span></span>`;
   });
 
   // 2. Square roots: \sqrt{x}
   html = html.replace(/\\sqrt\s*\{([^{}]+)\}/g, (_m, body) => {
-    return `<span class="vellora-math-sqrt"><span class="vellora-math-sqrt-sym">√</span><span class="vellora-math-sqrt-body">${body}</span></span>`;
+    return `<span class="editkit-math-sqrt"><span class="editkit-math-sqrt-sym">√</span><span class="editkit-math-sqrt-body">${body}</span></span>`;
   });
 
   // 3. Integrals & Sums: \int, \sum, \prod, \lim
-  html = html.replace(/\\int/g, '<span class="vellora-math-symbol">∫</span>');
-  html = html.replace(/\\sum/g, '<span class="vellora-math-symbol">∑</span>');
-  html = html.replace(/\\prod/g, '<span class="vellora-math-symbol">∏</span>');
-  html = html.replace(/\\lim/g, '<span class="vellora-math-func">lim</span>');
+  html = html.replace(/\\int/g, '<span class="editkit-math-symbol">∫</span>');
+  html = html.replace(/\\sum/g, '<span class="editkit-math-symbol">∑</span>');
+  html = html.replace(/\\prod/g, '<span class="editkit-math-symbol">∏</span>');
+  html = html.replace(/\\lim/g, '<span class="editkit-math-func">lim</span>');
   html = html.replace(/\\infty/g, '∞');
   html = html.replace(/\\partial/g, '∂');
   html = html.replace(/\\nabla/g, '∇');
@@ -264,7 +264,7 @@ export function formatMathFormula(latex: string): string {
   html = html.replace(/_([a-zA-Z0-9])/g, '<sub>$1</sub>');
 
   // 7. Math functions: \sin, \cos, \tan, \log, \ln, \exp
-  html = html.replace(/\\(sin|cos|tan|log|ln|exp)/g, '<span class="vellora-math-func">$1</span>');
+  html = html.replace(/\\(sin|cos|tan|log|ln|exp)/g, '<span class="editkit-math-func">$1</span>');
 
-  return `<span class="vellora-math-rendered">${html}</span>`;
+  return `<span class="editkit-math-rendered">${html}</span>`;
 }

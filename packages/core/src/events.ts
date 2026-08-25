@@ -1,5 +1,5 @@
 // ============================================================
-// Vellora — Typed Event Emitter
+// EditKit — Typed Event Emitter
 // ============================================================
 
 export type EventHandler<T = any> = (data: T) => void;
@@ -28,7 +28,7 @@ export class EventEmitter<Events extends Record<string, any> = Record<string, an
       try {
         handler(data);
       } catch (err) {
-        console.error(`[Vellora] Error in "${String(event)}" handler:`, err);
+        console.error(`[EditKit] Error in "${String(event)}" handler:`, err);
       }
     });
   }

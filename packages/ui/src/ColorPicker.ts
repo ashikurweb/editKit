@@ -1,11 +1,11 @@
 // ============================================================
-// Vellora — Advanced Color Picker Popover (100% EDDYTER Match)
+// EditKit — Advanced Color Picker Popover (100% EDITKIT Match)
 // Tabs + Hex Bar + Preset Swatches + Full 2D HSV Custom Picker
 // ============================================================
 
-import type { VelloraEditor } from '@vellora/core';
+import type { EditKitEditor } from '@editkit/core';
 
-export const EDDYTER_EXACT_PALETTE = [
+export const EDITKIT_EXACT_PALETTE = [
   // Row 1
   '#ffffff', '#3b82f6', '#67e8f9', '#2dd4bf', '#fbbf24', '#f87171', '#d946ef',
   // Row 2
@@ -68,7 +68,7 @@ function rgbToHsv(r: number, g: number, b: number): [number, number, number] {
 
 export class ColorPickerPopover {
   readonly element: HTMLElement;
-  private editor: VelloraEditor;
+  private editor: EditKitEditor;
   private currentMode: 'text' | 'background' = 'text';
 
   // State
@@ -91,7 +91,7 @@ export class ColorPickerPopover {
   private onCloseCallback?: () => void;
 
   constructor(
-    editor: VelloraEditor,
+    editor: EditKitEditor,
     onApply?: (color: string, mode: 'text' | 'background') => void,
     onClose?: () => void
   ) {
@@ -100,7 +100,7 @@ export class ColorPickerPopover {
     this.onCloseCallback = onClose;
 
     this.element = document.createElement('div');
-    this.element.classList.add('vellora-color-picker');
+    this.element.classList.add('editkit-color-picker');
 
     this._render();
   }
@@ -110,30 +110,30 @@ export class ColorPickerPopover {
 
     // ── 1. Top Tabs (Text A | Background) ──
     const tabs = document.createElement('div');
-    tabs.classList.add('vellora-color-tabs');
+    tabs.classList.add('editkit-color-tabs');
 
     const textTab = document.createElement('button');
     textTab.type = 'button';
-    textTab.classList.add('vellora-color-tab');
-    if (this.currentMode === 'text') textTab.classList.add('vellora-color-tab--active');
-    textTab.innerHTML = `<span>Text</span> <span class="vellora-color-tab-pill">A</span>`;
+    textTab.classList.add('editkit-color-tab');
+    if (this.currentMode === 'text') textTab.classList.add('editkit-color-tab--active');
+    textTab.innerHTML = `<span>Text</span> <span class="editkit-color-tab-pill">A</span>`;
     textTab.addEventListener('mousedown', (e) => {
       e.preventDefault();
       this.currentMode = 'text';
-      textTab.classList.add('vellora-color-tab--active');
-      bgTab.classList.remove('vellora-color-tab--active');
+      textTab.classList.add('editkit-color-tab--active');
+      bgTab.classList.remove('editkit-color-tab--active');
     });
 
     const bgTab = document.createElement('button');
     bgTab.type = 'button';
-    bgTab.classList.add('vellora-color-tab');
-    if (this.currentMode === 'background') bgTab.classList.add('vellora-color-tab--active');
+    bgTab.classList.add('editkit-color-tab');
+    if (this.currentMode === 'background') bgTab.classList.add('editkit-color-tab--active');
     bgTab.innerHTML = `<span>Background</span>`;
     bgTab.addEventListener('mousedown', (e) => {
       e.preventDefault();
       this.currentMode = 'background';
-      bgTab.classList.add('vellora-color-tab--active');
-      textTab.classList.remove('vellora-color-tab--active');
+      bgTab.classList.add('editkit-color-tab--active');
+      textTab.classList.remove('editkit-color-tab--active');
     });
 
     tabs.appendChild(textTab);
@@ -142,28 +142,28 @@ export class ColorPickerPopover {
 
     // ── 2. "Colours" Title ──
     const title = document.createElement('div');
-    title.classList.add('vellora-color-section-title');
+    title.classList.add('editkit-color-section-title');
     title.textContent = 'Colours';
     this.element.appendChild(title);
 
     // ── 3. Hex Input Bar with Preview Swatch ──
     const hexRow = document.createElement('div');
-    hexRow.classList.add('vellora-color-hex-bar');
+    hexRow.classList.add('editkit-color-hex-bar');
 
     this.previewBox = document.createElement('div');
-    this.previewBox.classList.add('vellora-color-preview-box');
+    this.previewBox.classList.add('editkit-color-preview-box');
     this.previewBox.style.backgroundColor = this.currentHex;
 
     const hexInputBox = document.createElement('div');
-    hexInputBox.classList.add('vellora-color-hex-box');
+    hexInputBox.classList.add('editkit-color-hex-box');
 
     const hashSpan = document.createElement('span');
-    hashSpan.classList.add('vellora-color-hash-symbol');
+    hashSpan.classList.add('editkit-color-hash-symbol');
     hashSpan.textContent = '#';
 
     this.hexInput = document.createElement('input');
     this.hexInput.type = 'text';
-    this.hexInput.classList.add('vellora-color-hex-text');
+    this.hexInput.classList.add('editkit-color-hex-text');
     this.hexInput.value = this.currentHex.replace('#', '');
     this.hexInput.maxLength = 6;
     this.hexInput.spellcheck = false;
@@ -192,17 +192,17 @@ export class ColorPickerPopover {
 
     // ── 4. Preset Palette (3 rows x 7 swatches) ──
     this.swatchesWrap = document.createElement('div');
-    this.swatchesWrap.classList.add('vellora-color-swatches-grid');
+    this.swatchesWrap.classList.add('editkit-color-swatches-grid');
 
-    for (const color of EDDYTER_EXACT_PALETTE) {
+    for (const color of EDITKIT_EXACT_PALETTE) {
       const swatch = document.createElement('button');
       swatch.type = 'button';
-      swatch.classList.add('vellora-color-swatch-btn');
+      swatch.classList.add('editkit-color-swatch-btn');
       swatch.style.backgroundColor = color;
       swatch.setAttribute('data-color', color.toLowerCase());
 
       if (color.toLowerCase() === this.currentHex.toLowerCase()) {
-        swatch.classList.add('vellora-color-swatch-btn--active');
+        swatch.classList.add('editkit-color-swatch-btn--active');
       }
 
       swatch.addEventListener('mousedown', (e) => {
@@ -216,36 +216,36 @@ export class ColorPickerPopover {
 
     // ── 5. Collapsible "▼ Custom Picker" Header ──
     const customHeader = document.createElement('div');
-    customHeader.classList.add('vellora-color-custom-header');
+    customHeader.classList.add('editkit-color-custom-header');
     customHeader.innerHTML = `
-      <span class="vellora-color-custom-arrow">${this.isCustomPickerOpen ? '▼' : '▶'}</span>
-      <span class="vellora-color-custom-title">Custom Picker</span>
+      <span class="editkit-color-custom-arrow">${this.isCustomPickerOpen ? '▼' : '▶'}</span>
+      <span class="editkit-color-custom-title">Custom Picker</span>
     `;
 
     const customBody = document.createElement('div');
-    customBody.classList.add('vellora-color-custom-body');
+    customBody.classList.add('editkit-color-custom-body');
     if (!this.isCustomPickerOpen) customBody.style.display = 'none';
 
     customHeader.addEventListener('mousedown', (e) => {
       e.preventDefault();
       this.isCustomPickerOpen = !this.isCustomPickerOpen;
       customBody.style.display = this.isCustomPickerOpen ? 'block' : 'none';
-      customHeader.querySelector('.vellora-color-custom-arrow')!.textContent = this.isCustomPickerOpen ? '▼' : '▶';
+      customHeader.querySelector('.editkit-color-custom-arrow')!.textContent = this.isCustomPickerOpen ? '▼' : '▶';
     });
 
     this.element.appendChild(customHeader);
 
     // ── 6. 2D Saturation / Value Box ──
     this.satValCanvas = document.createElement('div');
-    this.satValCanvas.classList.add('vellora-color-satval-canvas');
+    this.satValCanvas.classList.add('editkit-color-satval-canvas');
 
     const whiteGrad = document.createElement('div');
-    whiteGrad.classList.add('vellora-color-satval-white');
+    whiteGrad.classList.add('editkit-color-satval-white');
     const blackGrad = document.createElement('div');
-    blackGrad.classList.add('vellora-color-satval-black');
+    blackGrad.classList.add('editkit-color-satval-black');
 
     this.satValThumb = document.createElement('div');
-    this.satValThumb.classList.add('vellora-color-satval-thumb');
+    this.satValThumb.classList.add('editkit-color-satval-thumb');
 
     this.satValCanvas.appendChild(whiteGrad);
     this.satValCanvas.appendChild(blackGrad);
@@ -256,13 +256,13 @@ export class ColorPickerPopover {
 
     // ── 7. Hue Slider Bar ──
     const hueWrap = document.createElement('div');
-    hueWrap.classList.add('vellora-color-hue-wrap');
+    hueWrap.classList.add('editkit-color-hue-wrap');
 
     this.hueSlider = document.createElement('div');
-    this.hueSlider.classList.add('vellora-color-hue-slider');
+    this.hueSlider.classList.add('editkit-color-hue-slider');
 
     this.hueThumb = document.createElement('div');
-    this.hueThumb.classList.add('vellora-color-hue-thumb');
+    this.hueThumb.classList.add('editkit-color-hue-thumb');
 
     this.hueSlider.appendChild(this.hueThumb);
     hueWrap.appendChild(this.hueSlider);
@@ -356,12 +356,12 @@ export class ColorPickerPopover {
     this.hexInput.value = this.currentHex.replace('#', '');
 
     // 5. Update Active Swatch
-    this.swatchesWrap?.querySelectorAll('.vellora-color-swatch-btn').forEach(btn => {
+    this.swatchesWrap?.querySelectorAll('.editkit-color-swatch-btn').forEach(btn => {
       const col = btn.getAttribute('data-color');
       if (col === this.currentHex.toLowerCase()) {
-        btn.classList.add('vellora-color-swatch-btn--active');
+        btn.classList.add('editkit-color-swatch-btn--active');
       } else {
-        btn.classList.remove('vellora-color-swatch-btn--active');
+        btn.classList.remove('editkit-color-swatch-btn--active');
       }
     });
   }

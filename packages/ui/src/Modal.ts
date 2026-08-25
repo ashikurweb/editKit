@@ -1,9 +1,9 @@
 // ============================================================
-// Vellora — Global Base Modal Component
+// EditKit — Global Base Modal Component
 // Provides common overlay, container, header, close & lifecycle
 // ============================================================
 
-import type { VelloraEditor } from '@vellora/core';
+import type { EditKitEditor } from '@editkit/core';
 import { icons } from './icons';
 
 export interface ModalOptions {
@@ -24,12 +24,12 @@ export class Modal {
   readonly closeBtn: HTMLButtonElement;
   readonly bodyEl: HTMLElement;
 
-  protected editor: VelloraEditor;
+  protected editor: EditKitEditor;
   protected options: ModalOptions;
   private _isMounted: boolean = false;
   private _keydownHandler: (e: KeyboardEvent) => void;
 
-  constructor(editor: VelloraEditor, options: ModalOptions = {}) {
+  constructor(editor: EditKitEditor, options: ModalOptions = {}) {
     this.editor = editor;
     this.options = {
       closeOnOverlayClick: true,
@@ -39,13 +39,13 @@ export class Modal {
 
     // 1. Overlay
     this.overlayEl = document.createElement('div');
-    this.overlayEl.classList.add('vellora-modal-overlay');
+    this.overlayEl.classList.add('editkit-modal-overlay');
     this.overlayEl.setAttribute('role', 'dialog');
     this.overlayEl.setAttribute('aria-modal', 'true');
 
     // 2. Modal Container
     this.modalEl = document.createElement('div');
-    this.modalEl.classList.add('vellora-modal');
+    this.modalEl.classList.add('editkit-modal');
     if (this.options.className) {
       this.modalEl.classList.add(...this.options.className.split(' ').filter(Boolean));
     }
@@ -55,15 +55,15 @@ export class Modal {
 
     // 3. Header & Close Button
     this.headerEl = document.createElement('div');
-    this.headerEl.classList.add('vellora-modal-header');
+    this.headerEl.classList.add('editkit-modal-header');
 
     this.titleEl = document.createElement('h3');
-    this.titleEl.classList.add('vellora-modal-title');
+    this.titleEl.classList.add('editkit-modal-title');
     this.titleEl.textContent = this.options.title || '';
 
     this.closeBtn = document.createElement('button');
     this.closeBtn.type = 'button';
-    this.closeBtn.classList.add('vellora-modal-close');
+    this.closeBtn.classList.add('editkit-modal-close');
     this.closeBtn.setAttribute('title', 'Close (Esc)');
     this.closeBtn.setAttribute('aria-label', 'Close');
     this.closeBtn.innerHTML = icons.close;
@@ -79,7 +79,7 @@ export class Modal {
 
     // 4. Body
     this.bodyEl = document.createElement('div');
-    this.bodyEl.classList.add('vellora-modal-body');
+    this.bodyEl.classList.add('editkit-modal-body');
 
     this.modalEl.appendChild(this.headerEl);
     this.modalEl.appendChild(this.bodyEl);
@@ -102,7 +102,7 @@ export class Modal {
   }
 
   isOpen(): boolean {
-    return this.overlayEl.classList.contains('vellora-modal-overlay--open');
+    return this.overlayEl.classList.contains('editkit-modal-overlay--open');
   }
 
   show(): void {
@@ -110,13 +110,13 @@ export class Modal {
       document.body.appendChild(this.overlayEl);
       this._isMounted = true;
     }
-    this.overlayEl.classList.add('vellora-modal-overlay--open');
+    this.overlayEl.classList.add('editkit-modal-overlay--open');
     this.options.onOpen?.();
   }
 
   hide(): void {
     if (this.isOpen()) {
-      this.overlayEl.classList.remove('vellora-modal-overlay--open');
+      this.overlayEl.classList.remove('editkit-modal-overlay--open');
       this.options.onClose?.();
     }
   }

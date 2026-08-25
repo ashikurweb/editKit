@@ -1,27 +1,27 @@
 // ============================================================
-// Vellora — Floating Selection Bubble Menu
-// Exact match for the Eddyter Bubble Toolbar
+// EditKit — Floating Selection Bubble Menu
+// Exact match for the EditKit Bubble Toolbar
 // ============================================================
 
-import type { VelloraEditor } from '@vellora/core';
+import type { EditKitEditor } from '@editkit/core';
 import { icons } from './icons';
 import { ColorPickerPopover } from './ColorPicker';
 import { LinkPopover } from './LinkPopover';
 
 export class BubbleMenu {
   readonly element: HTMLElement;
-  private editor: VelloraEditor;
+  private editor: EditKitEditor;
   private linkPopover: LinkPopover;
   private isVisible: boolean = false;
   private colorPickerEl: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
-  constructor(editor: VelloraEditor) {
+  constructor(editor: EditKitEditor) {
     this.editor = editor;
     this.linkPopover = new LinkPopover(editor);
 
     this.element = document.createElement('div');
-    this.element.classList.add('vellora-bubble-menu');
+    this.element.classList.add('editkit-bubble-menu');
     this.element.setAttribute('role', 'toolbar');
     this.element.setAttribute('aria-label', 'Floating selection menu');
 
@@ -56,8 +56,8 @@ export class BubbleMenu {
     const btn = (iconKey: string, tooltip: string, action: () => void, isActiveKey?: string) => {
       const b = document.createElement('button');
       b.type = 'button';
-      b.classList.add('vellora-bubble-btn');
-      b.setAttribute('data-vellora-tooltip', tooltip);
+      b.classList.add('editkit-bubble-btn');
+      b.setAttribute('data-editkit-tooltip', tooltip);
       b.setAttribute('aria-label', tooltip);
       b.innerHTML = icons[iconKey] || iconKey;
       b.addEventListener('mousedown', (e) => {
@@ -71,15 +71,15 @@ export class BubbleMenu {
 
     const divider = () => {
       const d = document.createElement('div');
-      d.classList.add('vellora-bubble-divider');
+      d.classList.add('editkit-bubble-divider');
       return d;
     };
 
     // 1. ✦ AI pill button
     const aiBtn = document.createElement('button');
     aiBtn.type = 'button';
-    aiBtn.classList.add('vellora-bubble-btn', 'vellora-bubble-btn--ai');
-    aiBtn.innerHTML = `${icons.sparkles} <span>AI</span> <span class="vellora-bubble-chevron">${icons.chevronDown}</span>`;
+    aiBtn.classList.add('editkit-bubble-btn', 'editkit-bubble-btn--ai');
+    aiBtn.innerHTML = `${icons.sparkles} <span>AI</span> <span class="editkit-bubble-chevron">${icons.chevronDown}</span>`;
     aiBtn.addEventListener('mousedown', (e) => {
       e.preventDefault();
       // AI prompt mock
@@ -93,11 +93,11 @@ export class BubbleMenu {
 
     // 2. Font Size stepper: - 14 +
     const sizeWrap = document.createElement('div');
-    sizeWrap.classList.add('vellora-bubble-stepper');
+    sizeWrap.classList.add('editkit-bubble-stepper');
 
     const minusBtn = document.createElement('button');
     minusBtn.type = 'button';
-    minusBtn.classList.add('vellora-bubble-btn', 'vellora-bubble-btn--stepper');
+    minusBtn.classList.add('editkit-bubble-btn', 'editkit-bubble-btn--stepper');
     minusBtn.innerHTML = icons.minus;
     minusBtn.addEventListener('mousedown', (e) => {
       e.preventDefault();
@@ -106,12 +106,12 @@ export class BubbleMenu {
     });
 
     const sizeDisplay = document.createElement('span');
-    sizeDisplay.classList.add('vellora-bubble-stepper-value');
+    sizeDisplay.classList.add('editkit-bubble-stepper-value');
     sizeDisplay.textContent = '14';
 
     const plusBtn = document.createElement('button');
     plusBtn.type = 'button';
-    plusBtn.classList.add('vellora-bubble-btn', 'vellora-bubble-btn--stepper');
+    plusBtn.classList.add('editkit-bubble-btn', 'editkit-bubble-btn--stepper');
     plusBtn.innerHTML = icons.plus;
     plusBtn.addEventListener('mousedown', (e) => {
       e.preventDefault();
@@ -142,8 +142,8 @@ export class BubbleMenu {
     // 5. Color picker button
     const colorBtn = document.createElement('button');
     colorBtn.type = 'button';
-    colorBtn.classList.add('vellora-bubble-btn');
-    colorBtn.setAttribute('data-vellora-tooltip', 'Text & Highlight Color');
+    colorBtn.classList.add('editkit-bubble-btn');
+    colorBtn.setAttribute('data-editkit-tooltip', 'Text & Highlight Color');
     colorBtn.setAttribute('aria-label', 'Text & Highlight Color');
     colorBtn.innerHTML = `${icons.textColor}`;
     colorBtn.addEventListener('mousedown', (e) => {
@@ -224,23 +224,23 @@ export class BubbleMenu {
     btns.forEach((b) => {
       const key = b.getAttribute('data-active-key');
       if (key && this.editor.isActive(key)) {
-        b.classList.add('vellora-bubble-btn--active');
+        b.classList.add('editkit-bubble-btn--active');
       } else {
-        b.classList.remove('vellora-bubble-btn--active');
+        b.classList.remove('editkit-bubble-btn--active');
       }
     });
   }
 
   show(): void {
     if (!this.isVisible) {
-      this.element.classList.add('vellora-bubble-menu--visible');
+      this.element.classList.add('editkit-bubble-menu--visible');
       this.isVisible = true;
     }
   }
 
   hide(): void {
     if (this.isVisible) {
-      this.element.classList.remove('vellora-bubble-menu--visible');
+      this.element.classList.remove('editkit-bubble-menu--visible');
       if (this.colorPickerEl) {
         this.colorPickerEl.remove();
         this.colorPickerEl = null;

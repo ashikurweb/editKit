@@ -1,22 +1,22 @@
 // ============================================================
-// Vellora Editor — Playground Demo (Eddyter Inspired UI)
+// EditKit Editor — Playground Demo (EditKit Inspired UI)
 // ============================================================
 
-import { createEditor, Extension } from '@vellora/core';
-import { createToolbar, BubbleMenu, TableFloatingMenu, ImageFloatingMenu } from '@vellora/ui';
-import '@vellora/ui/styles';
+import { createEditor, Extension } from '@editkit/core';
+import { createToolbar, BubbleMenu, TableFloatingMenu, ImageFloatingMenu } from '@editkit/ui';
+import '@editkit/ui/styles';
 import './style.css';
 
 // ── Sample Rich Content with First-Class Table & Image ──
 const SAMPLE_CONTENT = `
-<h1>Build modern docs with Vellora ✨</h1>
+<h1>Build modern docs with EditKit ✨</h1>
 <p>A premium, framework-agnostic rich text editor built <strong>100% from scratch</strong> — zero external dependencies, full table support, customizable via CSS variables, and native image manipulation.</p>
 
-<table class="vellora-table">
+<table class="editkit-table">
   <thead>
     <tr>
       <th>Feature</th>
-      <th>Vellora</th>
+      <th>EditKit</th>
       <th>Traditional Editors</th>
     </tr>
   </thead>
@@ -45,18 +45,18 @@ const SAMPLE_CONTENT = `
 </table>
 
 <h3>Interactive Task List</h3>
-<ul class="vellora-task-list">
-  <li class="vellora-task-item vellora-task-done"><input type="checkbox" checked class="vellora-task-checkbox"> <span>First-class table support with hover grid</span></li>
-  <li class="vellora-task-item vellora-task-done"><input type="checkbox" checked class="vellora-task-checkbox"> <span>Floating bubble toolbar on text selection</span></li>
-  <li class="vellora-task-item vellora-task-done"><input type="checkbox" checked class="vellora-task-checkbox"> <span>Interactive image resizer &amp; contextual toolbar</span></li>
-  <li class="vellora-task-item"><input type="checkbox" class="vellora-task-checkbox"> <span>Custom Plugin &amp; Extension architecture</span></li>
+<ul class="editkit-task-list">
+  <li class="editkit-task-item editkit-task-done"><input type="checkbox" checked class="editkit-task-checkbox"> <span>First-class table support with hover grid</span></li>
+  <li class="editkit-task-item editkit-task-done"><input type="checkbox" checked class="editkit-task-checkbox"> <span>Floating bubble toolbar on text selection</span></li>
+  <li class="editkit-task-item editkit-task-done"><input type="checkbox" checked class="editkit-task-checkbox"> <span>Interactive image resizer &amp; contextual toolbar</span></li>
+  <li class="editkit-task-item"><input type="checkbox" class="editkit-task-checkbox"> <span>Custom Plugin &amp; Extension architecture</span></li>
 </ul>
 
 <blockquote>
   <p>"Minimal by default. Powerful when needed." — Built for high-performance publishing.</p>
 </blockquote>
 
-<pre><code>// Initialize Vellora in any JS framework:
+<pre><code>// Initialize EditKit in any JS framework:
 const editor = createEditor({
   theme: 'dark',
   defaultFontFamily: 'DM Sans',
@@ -85,18 +85,18 @@ function init() {
   const app = document.getElementById('app')!;
   app.innerHTML = '';
 
-  // ── Header Banner (Exact match from screenshot: • TRY IT YOURSELF — EDDYTER | THE EDITOR RENDERING THIS PAGE) ──
+  // ── Header Banner (Exact match from screenshot: • TRY IT YOURSELF — EDITKIT | THE EDITOR RENDERING THIS PAGE) ──
   const topBanner = document.createElement('div');
-  topBanner.className = 'eddyter-top-banner';
+  topBanner.className = 'editkit-top-banner';
   topBanner.innerHTML = `
-    <div class="eddyter-banner-left">
-      <span class="eddyter-banner-dot"></span>
-      <span class="eddyter-banner-title">TRY IT YOURSELF — <strong>VELLORA</strong></span>
-      <span class="eddyter-banner-sep">|</span>
-      <span class="eddyter-banner-sub">THE EDITOR RENDERING THIS PAGE</span>
+    <div class="editkit-banner-left">
+      <span class="editkit-banner-dot"></span>
+      <span class="editkit-banner-title">TRY IT YOURSELF — <strong>EDITKIT</strong></span>
+      <span class="editkit-banner-sep">|</span>
+      <span class="editkit-banner-sub">THE EDITOR RENDERING THIS PAGE</span>
     </div>
-    <div class="eddyter-banner-right">
-      <button id="theme-btn" class="eddyter-theme-toggle" title="Toggle Light/Dark Theme">
+    <div class="editkit-banner-right">
+      <button id="theme-btn" class="editkit-theme-toggle" title="Toggle Light/Dark Theme">
         <span class="theme-icon-sun">☀️</span>
         <span class="theme-icon-moon">🌙</span>
         <span id="theme-text">Dark Mode</span>
@@ -107,11 +107,11 @@ function init() {
 
   // ── Main Container ──
   const main = document.createElement('main');
-  main.className = 'eddyter-main';
+  main.className = 'editkit-main';
 
   // Editor Card Wrapper
   const editorCard = document.createElement('div');
-  editorCard.className = 'eddyter-editor-card';
+  editorCard.className = 'editkit-editor-card';
 
   main.appendChild(editorCard);
   app.appendChild(main);
@@ -146,17 +146,17 @@ function init() {
 
   // ── Bottom Status Bar inside Card (Matching Screenshot bottom footer) ──
   const bottomBar = document.createElement('div');
-  bottomBar.className = 'eddyter-bottom-bar';
+  bottomBar.className = 'editkit-bottom-bar';
   bottomBar.innerHTML = `
-    <div class="eddyter-bottom-left">
+    <div class="editkit-bottom-left">
       <span id="words-count">Words: 0</span>
-      <span class="eddyter-stat-space"></span>
+      <span class="editkit-stat-space"></span>
       <span id="chars-count">Characters: 0</span>
     </div>
-    <div class="eddyter-bottom-right">
-      <a href="#feature" class="eddyter-footer-link">💡 Suggest a Feature</a>
-      <a href="#bug" class="eddyter-footer-link">🐞 Report a Bug</a>
-      <span class="eddyter-version-badge">v1.0.0</span>
+    <div class="editkit-bottom-right">
+      <a href="#feature" class="editkit-footer-link">💡 Suggest a Feature</a>
+      <a href="#bug" class="editkit-footer-link">🐞 Report a Bug</a>
+      <span class="editkit-version-badge">v1.0.0</span>
     </div>
   `;
   editor.root.appendChild(bottomBar);
@@ -173,18 +173,18 @@ function init() {
     editor.setTheme(currentTheme);
     document.documentElement.setAttribute('data-theme', currentTheme);
     themeText.textContent = currentTheme === 'dark' ? 'Dark Mode' : 'Light Mode';
-    themeBtn.classList.toggle('eddyter-theme-toggle--light', currentTheme === 'light');
+    themeBtn.classList.toggle('editkit-theme-toggle--light', currentTheme === 'light');
   });
 
   // ── Developer Showcase Section Below Editor ──
   const devSection = document.createElement('section');
-  devSection.className = 'eddyter-dev-section';
+  devSection.className = 'editkit-dev-section';
   devSection.innerHTML = `
-    <div class="eddyter-dev-grid">
-      <div class="eddyter-dev-card">
+    <div class="editkit-dev-grid">
+      <div class="editkit-dev-card">
         <h3>🔌 Custom Plugin System</h3>
         <p>Register custom plugins, commands, toolbar items &amp; shortcuts:</p>
-        <pre><code>import { Extension } from '@vellora/core';
+        <pre><code>import { Extension } from '@editkit/core';
 
 class MentionsPlugin extends Extension {
   get name() { return 'mentions'; }
@@ -195,15 +195,15 @@ class MentionsPlugin extends Extension {
   }
 }</code></pre>
       </div>
-      <div class="eddyter-dev-card">
+      <div class="editkit-dev-card">
         <h3>🎨 CSS Variable Theming</h3>
         <p>Override any design token in plain CSS without touching TS/JS:</p>
-        <pre><code>[data-vellora] {
-  --vellora-card-bg: #141519;
-  --vellora-toolbar-bg: #18191e;
-  --vellora-primary: #7c3aed;
-  --vellora-table-header-bg: #2d3342;
-  --vellora-font: 'DM Sans', sans-serif;
+        <pre><code>[data-editkit] {
+  --editkit-card-bg: #141519;
+  --editkit-toolbar-bg: #18191e;
+  --editkit-primary: #7c3aed;
+  --editkit-table-header-bg: #2d3342;
+  --editkit-font: 'DM Sans', sans-serif;
 }</code></pre>
       </div>
     </div>

@@ -1,10 +1,10 @@
 // ============================================================
-// Vellora — Special Characters & Symbol Picker (100% Match)
+// EditKit — Special Characters & Symbol Picker (100% Match)
 // Tabs with badges, search, recent well, interactive footer
 // Smooth left/right scroll navigation arrows & complete categories
 // ============================================================
 
-import type { VelloraEditor } from '@vellora/core';
+import type { EditKitEditor } from '@editkit/core';
 import { icons } from './icons';
 
 export interface SymbolItem {
@@ -413,11 +413,11 @@ export const SYMBOL_CATEGORIES: SymbolCategory[] = [
   },
 ];
 
-const RECENT_SYMBOLS_KEY = 'vellora_recent_symbols';
+const RECENT_SYMBOLS_KEY = 'editkit_recent_symbols';
 
 export class SymbolPicker {
   readonly element: HTMLElement;
-  private editor: VelloraEditor;
+  private editor: EditKitEditor;
   private onSelect?: (symbol: string) => void;
 
   private searchInput!: HTMLInputElement;
@@ -434,12 +434,12 @@ export class SymbolPicker {
   private searchQuery: string = '';
   private recentSymbols: SymbolItem[] = [];
 
-  constructor(editor: VelloraEditor, onSelect?: (symbol: string) => void) {
+  constructor(editor: EditKitEditor, onSelect?: (symbol: string) => void) {
     this.editor = editor;
     this.onSelect = onSelect;
 
     this.element = document.createElement('div');
-    this.element.classList.add('vellora-symbol-picker');
+    this.element.classList.add('editkit-symbol-picker');
     this.element.setAttribute('role', 'dialog');
     this.element.setAttribute('aria-label', 'Special Characters and Symbols');
 
@@ -483,15 +483,15 @@ export class SymbolPicker {
 
     // ── 1. Top Search Header with Shortcut Badge (100% Match) ──
     const searchWrap = document.createElement('div');
-    searchWrap.classList.add('vellora-sym-search-wrap');
+    searchWrap.classList.add('editkit-sym-search-wrap');
 
     const searchIcon = document.createElement('span');
-    searchIcon.classList.add('vellora-sym-search-icon');
+    searchIcon.classList.add('editkit-sym-search-icon');
     searchIcon.innerHTML = icons.search || `<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`;
 
     this.searchInput = document.createElement('input');
     this.searchInput.type = 'text';
-    this.searchInput.classList.add('vellora-sym-search-input');
+    this.searchInput.classList.add('editkit-sym-search-input');
     this.searchInput.placeholder = 'Search 1,200+ symbols by name or codepoint...';
     this.searchInput.addEventListener('input', () => {
       this.searchQuery = this.searchInput.value.trim().toLowerCase();
@@ -499,7 +499,7 @@ export class SymbolPicker {
     });
 
     const badge = document.createElement('span');
-    badge.classList.add('vellora-sym-search-badge');
+    badge.classList.add('editkit-sym-search-badge');
     badge.textContent = '/';
 
     searchWrap.appendChild(searchIcon);
@@ -509,12 +509,12 @@ export class SymbolPicker {
 
     // ── 2. Category Tabs Row with Left & Right Scroll Arrows (100% Match) ──
     const navOuter = document.createElement('div');
-    navOuter.classList.add('vellora-sym-nav-outer');
+    navOuter.classList.add('editkit-sym-nav-outer');
 
     // Left arrow button
     this.leftArrowBtn = document.createElement('button');
     this.leftArrowBtn.type = 'button';
-    this.leftArrowBtn.classList.add('vellora-sym-nav-arrow', 'vellora-sym-nav-arrow--left');
+    this.leftArrowBtn.classList.add('editkit-sym-nav-arrow', 'editkit-sym-nav-arrow--left');
     this.leftArrowBtn.innerHTML = icons.chevronLeft || `<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
     this.leftArrowBtn.title = 'Scroll left';
     this.leftArrowBtn.addEventListener('click', (e) => {
@@ -525,7 +525,7 @@ export class SymbolPicker {
     // Right arrow button
     this.rightArrowBtn = document.createElement('button');
     this.rightArrowBtn.type = 'button';
-    this.rightArrowBtn.classList.add('vellora-sym-nav-arrow', 'vellora-sym-nav-arrow--right');
+    this.rightArrowBtn.classList.add('editkit-sym-nav-arrow', 'editkit-sym-nav-arrow--right');
     this.rightArrowBtn.innerHTML = icons.chevronRight || `<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
     this.rightArrowBtn.title = 'Scroll right';
     this.rightArrowBtn.addEventListener('click', (e) => {
@@ -534,26 +534,26 @@ export class SymbolPicker {
     });
 
     this.navScrollWrap = document.createElement('div');
-    this.navScrollWrap.classList.add('vellora-sym-nav-scroll-wrap');
+    this.navScrollWrap.classList.add('editkit-sym-nav-scroll-wrap');
 
     this.navContainer = document.createElement('div');
-    this.navContainer.classList.add('vellora-sym-nav');
+    this.navContainer.classList.add('editkit-sym-nav');
 
     SYMBOL_CATEGORIES.forEach(cat => {
       const tabBtn = document.createElement('button');
       tabBtn.type = 'button';
-      tabBtn.classList.add('vellora-sym-nav-tab');
+      tabBtn.classList.add('editkit-sym-nav-tab');
       tabBtn.dataset.tabId = cat.id;
       if (cat.id === this.activeTabId) {
-        tabBtn.classList.add('vellora-sym-nav-tab--active');
+        tabBtn.classList.add('editkit-sym-nav-tab--active');
       }
 
       const label = document.createElement('span');
-      label.classList.add('vellora-sym-tab-label');
+      label.classList.add('editkit-sym-tab-label');
       label.textContent = cat.name;
 
       const count = document.createElement('span');
-      count.classList.add('vellora-sym-tab-count');
+      count.classList.add('editkit-sym-tab-count');
       count.textContent = String(cat.symbols.length);
 
       tabBtn.appendChild(label);
@@ -584,26 +584,26 @@ export class SymbolPicker {
 
     // ── 3. Scrollable Content Area (Recent Well + Category Grid) ──
     this.contentContainer = document.createElement('div');
-    this.contentContainer.classList.add('vellora-sym-content');
+    this.contentContainer.classList.add('editkit-sym-content');
     this.element.appendChild(this.contentContainer);
 
     // ── 4. Bottom Hover Details Footer ──
     const footer = document.createElement('div');
-    footer.classList.add('vellora-sym-footer');
+    footer.classList.add('editkit-sym-footer');
 
     this.previewBox = document.createElement('div');
-    this.previewBox.classList.add('vellora-sym-footer-box');
+    this.previewBox.classList.add('editkit-sym-footer-box');
     this.previewBox.textContent = 'Ω';
 
     const textWrap = document.createElement('div');
-    textWrap.classList.add('vellora-sym-footer-text');
+    textWrap.classList.add('editkit-sym-footer-text');
 
     this.previewName = document.createElement('div');
-    this.previewName.classList.add('vellora-sym-footer-name');
+    this.previewName.classList.add('editkit-sym-footer-name');
     this.previewName.textContent = 'Hover a symbol for details';
 
     this.previewCode = document.createElement('div');
-    this.previewCode.classList.add('vellora-sym-footer-sub');
+    this.previewCode.classList.add('editkit-sym-footer-sub');
     this.previewCode.textContent = 'Click to insert at cursor';
 
     textWrap.appendChild(this.previewName);
@@ -623,15 +623,15 @@ export class SymbolPicker {
     const canScrollLeft = scrollLeft > 4;
     const canScrollRight = scrollLeft < scrollWidth - clientWidth - 4;
 
-    this.leftArrowBtn.classList.toggle('vellora-sym-nav-arrow--visible', canScrollLeft);
-    this.rightArrowBtn.classList.toggle('vellora-sym-nav-arrow--visible', canScrollRight);
+    this.leftArrowBtn.classList.toggle('editkit-sym-nav-arrow--visible', canScrollLeft);
+    this.rightArrowBtn.classList.toggle('editkit-sym-nav-arrow--visible', canScrollRight);
   }
 
   private _updateNavActive(): void {
-    const tabs = this.navContainer.querySelectorAll<HTMLButtonElement>('.vellora-sym-nav-tab');
+    const tabs = this.navContainer.querySelectorAll<HTMLButtonElement>('.editkit-sym-nav-tab');
     tabs.forEach(tab => {
       const isCurrent = tab.dataset.tabId === this.activeTabId && !this.searchQuery;
-      tab.classList.toggle('vellora-sym-nav-tab--active', isCurrent);
+      tab.classList.toggle('editkit-sym-nav-tab--active', isCurrent);
     });
   }
 
@@ -655,20 +655,20 @@ export class SymbolPicker {
       });
 
       const header = document.createElement('div');
-      header.classList.add('vellora-sym-section-header');
-      header.innerHTML = `<span>SEARCH RESULTS</span> <span class="vellora-sym-section-count">${matches.length}</span>`;
+      header.classList.add('editkit-sym-section-header');
+      header.innerHTML = `<span>SEARCH RESULTS</span> <span class="editkit-sym-section-count">${matches.length}</span>`;
       this.contentContainer.appendChild(header);
 
       if (matches.length === 0) {
         const empty = document.createElement('div');
-        empty.classList.add('vellora-sym-empty');
+        empty.classList.add('editkit-sym-empty');
         empty.textContent = 'No matching symbols found';
         this.contentContainer.appendChild(empty);
         return;
       }
 
       const grid = document.createElement('div');
-      grid.classList.add('vellora-sym-grid');
+      grid.classList.add('editkit-sym-grid');
       matches.forEach(item => {
         grid.appendChild(this._createSymbolButton(item));
       });
@@ -679,21 +679,21 @@ export class SymbolPicker {
     // ── 1. Recently Used Section with Enclosed Well (Screenshot Match) ──
     if (this.recentSymbols.length > 0) {
       const recentHeader = document.createElement('div');
-      recentHeader.classList.add('vellora-sym-section-header');
+      recentHeader.classList.add('editkit-sym-section-header');
       recentHeader.innerHTML = `
-        <span class="vellora-sym-header-left">
+        <span class="editkit-sym-header-left">
           <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
           <span>RECENTLY USED</span>
         </span>
-        <span class="vellora-sym-section-count">${this.recentSymbols.length}</span>
+        <span class="editkit-sym-section-count">${this.recentSymbols.length}</span>
       `;
       this.contentContainer.appendChild(recentHeader);
 
       const recentWell = document.createElement('div');
-      recentWell.classList.add('vellora-sym-recent-well');
+      recentWell.classList.add('editkit-sym-recent-well');
 
       const recentGrid = document.createElement('div');
-      recentGrid.classList.add('vellora-sym-grid', 'vellora-sym-grid--recent');
+      recentGrid.classList.add('editkit-sym-grid', 'editkit-sym-grid--recent');
       this.recentSymbols.forEach(item => {
         recentGrid.appendChild(this._createSymbolButton(item));
       });
@@ -705,15 +705,15 @@ export class SymbolPicker {
     const currentCategory = SYMBOL_CATEGORIES.find(c => c.id === this.activeTabId) || SYMBOL_CATEGORIES[0];
 
     const catHeader = document.createElement('div');
-    catHeader.classList.add('vellora-sym-section-header');
+    catHeader.classList.add('editkit-sym-section-header');
     catHeader.innerHTML = `
       <span>${currentCategory.name.toUpperCase()}</span>
-      <span class="vellora-sym-section-count">${currentCategory.symbols.length}</span>
+      <span class="editkit-sym-section-count">${currentCategory.symbols.length}</span>
     `;
     this.contentContainer.appendChild(catHeader);
 
     const catGrid = document.createElement('div');
-    catGrid.classList.add('vellora-sym-grid');
+    catGrid.classList.add('editkit-sym-grid');
     currentCategory.symbols.forEach(item => {
       catGrid.appendChild(this._createSymbolButton(item));
     });
@@ -723,7 +723,7 @@ export class SymbolPicker {
   private _createSymbolButton(item: SymbolItem): HTMLElement {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.classList.add('vellora-sym-item-btn');
+    btn.classList.add('editkit-sym-item-btn');
     btn.textContent = item.char;
     btn.setAttribute('aria-label', item.name);
 

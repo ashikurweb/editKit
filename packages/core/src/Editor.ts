@@ -1,13 +1,13 @@
 // ============================================================
-// Vellora — Core Editor Engine
+// EditKit — Core Editor Engine
 // Built 100% from scratch. Zero external dependencies.
 // ============================================================
 
 import { EventEmitter } from './events';
 import { ExtensionManager, Extension } from './Extension';
 import type {
-  VelloraConfig,
-  VelloraEvents,
+  EditKitConfig,
+  EditKitEvents,
   EditorJSON,
   NodeJSON,
   MarkJSON,
@@ -181,15 +181,15 @@ function getSelectedBlocks(root: HTMLElement): HTMLElement[] {
 //   ╚═══╝  ╚══════╝╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
 // ════════════════════════════════════════════════════════════════
 
-export class VelloraEditor extends EventEmitter<VelloraEvents> {
-  /** The root container element (.vellora) */
+export class EditKitEditor extends EventEmitter<EditKitEvents> {
+  /** The root container element (.editkit) */
   readonly root: HTMLElement;
-  /** The contenteditable element (.vellora-content) */
+  /** The contenteditable element (.editkit-content) */
   readonly contentEl: HTMLElement;
   /** Extension & Plugin Manager */
   readonly extensionManager: ExtensionManager;
 
-  private _config: VelloraConfig;
+  private _config: EditKitConfig;
   private _history: HistoryManager;
   private _isComposing: boolean = false;
   private _isMounted: boolean = false;
@@ -199,7 +199,7 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
   private _currentFontFamily: string = 'DM Sans';
   private _currentLineHeight: string = '1.5';
 
-  constructor(config: VelloraConfig = {}) {
+  constructor(config: EditKitConfig = {}) {
     super();
     this._config = {
       editable: true,
@@ -218,12 +218,12 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
 
     // ── Create DOM ──
     this.root = document.createElement('div');
-    this.root.classList.add('vellora');
-    this.root.setAttribute('data-vellora', '');
-    this.root.setAttribute('data-vellora-theme', this._config.theme!);
+    this.root.classList.add('editkit');
+    this.root.setAttribute('data-editkit', '');
+    this.root.setAttribute('data-editkit-theme', this._config.theme!);
 
     this.contentEl = document.createElement('div');
-    this.contentEl.classList.add('vellora-content');
+    this.contentEl.classList.add('editkit-content');
     this.contentEl.setAttribute('contenteditable', String(this._config.editable));
     this.contentEl.setAttribute('role', 'textbox');
     this.contentEl.setAttribute('aria-multiline', 'true');
@@ -240,7 +240,7 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
       this.contentEl.innerHTML = this._config.content;
     } else {
       this.contentEl.innerHTML = '<p><br></p>';
-      this.contentEl.classList.add('vellora-content--empty');
+      this.contentEl.classList.add('editkit-content--empty');
     }
 
     this.root.appendChild(this.contentEl);
@@ -325,12 +325,12 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
 
   /** Clear all content */
   clearContent(emitUpdate: boolean = true): void {
-    this.contentEl.classList.remove('vellora-content--empty');
+    this.contentEl.classList.remove('editkit-content--empty');
     this.contentEl.innerHTML = '<p><br></p>';
     this._saveHistory();
     // Force DOM reflow to restart CSS reveal animation
     void this.contentEl.offsetWidth;
-    this.contentEl.classList.add('vellora-content--empty');
+    this.contentEl.classList.add('editkit-content--empty');
     this.focus('start');
     if (emitUpdate) {
       this.emit('update', { editor: this });
@@ -385,9 +385,9 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
     this._config.theme = theme;
     if (theme === 'system') {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      this.root.setAttribute('data-vellora-theme', prefersDark ? 'dark' : 'light');
+      this.root.setAttribute('data-editkit-theme', prefersDark ? 'dark' : 'light');
     } else {
-      this.root.setAttribute('data-vellora-theme', theme);
+      this.root.setAttribute('data-editkit-theme', theme);
     }
   }
 
@@ -605,12 +605,12 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
 
     // Focus / blur
     this.contentEl.addEventListener('focus', (e) => {
-      this.root.classList.add('vellora--focused');
+      this.root.classList.add('editkit--focused');
       this.emit('focus', { editor: this, event: e });
       this._config.onFocus?.(this);
     });
     this.contentEl.addEventListener('blur', (e) => {
-      this.root.classList.remove('vellora--focused');
+      this.root.classList.remove('editkit--focused');
       this.emit('blur', { editor: this, event: e });
       this._config.onBlur?.(this);
     });
@@ -1067,7 +1067,7 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
     if (!sel || sel.rangeCount === 0) return;
 
     const existingList = this._findAncestor(sel.anchorNode, 'UL');
-    if (existingList?.classList.contains('vellora-task-list')) {
+    if (existingList?.classList.contains('editkit-task-list')) {
       const items = Array.from(existingList.querySelectorAll(':scope > li'));
       const parent = existingList.parentNode!;
       for (const item of items) {
@@ -1083,17 +1083,17 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
       if (blocks.length === 0) return;
 
       const list = document.createElement('ul');
-      list.classList.add('vellora-task-list');
+      list.classList.add('editkit-task-list');
       blocks[0].parentNode!.insertBefore(list, blocks[0]);
 
       for (const block of blocks) {
         const li = document.createElement('li');
-        li.classList.add('vellora-task-item');
+        li.classList.add('editkit-task-item');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
-        checkbox.classList.add('vellora-task-checkbox');
+        checkbox.classList.add('editkit-task-checkbox');
         checkbox.addEventListener('change', () => {
-          li.classList.toggle('vellora-task-done', checkbox.checked);
+          li.classList.toggle('editkit-task-done', checkbox.checked);
           this._saveHistory();
           this._emitUpdate();
         });
@@ -1214,8 +1214,8 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
     const withHeader = options.withHeaderRow ?? true;
 
     const table = document.createElement('table');
-    table.classList.add('vellora-table');
-    if (options.striped) table.classList.add('vellora-table--striped');
+    table.classList.add('editkit-table');
+    if (options.striped) table.classList.add('editkit-table--striped');
 
     if (withHeader) {
       const thead = document.createElement('thead');
@@ -1476,7 +1476,7 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
     img.src = opts.src;
     if (opts.alt) img.alt = opts.alt;
     if (opts.title) img.title = opts.title;
-    img.classList.add('vellora-image');
+    img.classList.add('editkit-image');
 
     const sel = window.getSelection();
     if (sel && sel.rangeCount > 0) {
@@ -1527,7 +1527,7 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
 
     if (opts.type === 'block') {
       const el = document.createElement('div');
-      el.classList.add('vellora-math-block');
+      el.classList.add('editkit-math-block');
       el.setAttribute('data-math', opts.latex);
       el.setAttribute('contenteditable', 'false');
       el.innerHTML = this._renderMath(opts.latex);
@@ -1550,7 +1550,7 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
       return el;
     } else {
       const el = document.createElement('span');
-      el.classList.add('vellora-math-inline');
+      el.classList.add('editkit-math-inline');
       el.setAttribute('data-math', opts.latex);
       el.setAttribute('contenteditable', 'false');
       el.innerHTML = this._renderMath(opts.latex);
@@ -1575,12 +1575,12 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
 
   private _renderMath(latex: string): string {
     let html = latex;
-    html = html.replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, '<span class="vellora-math-frac"><span class="vellora-math-num">$1</span><span class="vellora-math-den">$2</span></span>');
-    html = html.replace(/\\sqrt\s*\{([^{}]+)\}/g, '<span class="vellora-math-sqrt"><span class="vellora-math-sqrt-sym">√</span><span class="vellora-math-sqrt-body">$1</span></span>');
-    html = html.replace(/\\int/g, '<span class="vellora-math-symbol">∫</span>');
-    html = html.replace(/\\sum/g, '<span class="vellora-math-symbol">∑</span>');
-    html = html.replace(/\\prod/g, '<span class="vellora-math-symbol">∏</span>');
-    html = html.replace(/\\lim/g, '<span class="vellora-math-func">lim</span>');
+    html = html.replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, '<span class="editkit-math-frac"><span class="editkit-math-num">$1</span><span class="editkit-math-den">$2</span></span>');
+    html = html.replace(/\\sqrt\s*\{([^{}]+)\}/g, '<span class="editkit-math-sqrt"><span class="editkit-math-sqrt-sym">√</span><span class="editkit-math-sqrt-body">$1</span></span>');
+    html = html.replace(/\\int/g, '<span class="editkit-math-symbol">∫</span>');
+    html = html.replace(/\\sum/g, '<span class="editkit-math-symbol">∑</span>');
+    html = html.replace(/\\prod/g, '<span class="editkit-math-symbol">∏</span>');
+    html = html.replace(/\\lim/g, '<span class="editkit-math-func">lim</span>');
     html = html.replace(/\\infty/g, '∞');
     html = html.replace(/\\partial/g, '∂');
     html = html.replace(/\\nabla/g, '∇');
@@ -1600,7 +1600,7 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
     html = html.replace(/\^([a-zA-Z0-9])/g, '<sup>$1</sup>');
     html = html.replace(/_\{([^{}]+)\}/g, '<sub>$1</sub>');
     html = html.replace(/_([a-zA-Z0-9])/g, '<sub>$1</sub>');
-    return `<span class="vellora-math-rendered">${html}</span>`;
+    return `<span class="editkit-math-rendered">${html}</span>`;
   }
 
   // ═══════════════════════════════════════════
@@ -1891,9 +1891,9 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
       case 'H6': json.type = 'heading'; json.attrs = { level: 6 }; break;
       case 'BLOCKQUOTE': json.type = 'blockquote'; break;
       case 'PRE': json.type = 'codeBlock'; break;
-      case 'UL': json.type = el.classList.contains('vellora-task-list') ? 'taskList' : 'bulletList'; break;
+      case 'UL': json.type = el.classList.contains('editkit-task-list') ? 'taskList' : 'bulletList'; break;
       case 'OL': json.type = 'orderedList'; break;
-      case 'LI': json.type = el.classList.contains('vellora-task-item') ? 'taskItem' : 'listItem'; break;
+      case 'LI': json.type = el.classList.contains('editkit-task-item') ? 'taskItem' : 'listItem'; break;
       case 'TABLE': json.type = 'table'; break;
       case 'TR': json.type = 'tableRow'; break;
       case 'TD': json.type = 'tableCell'; break;
@@ -1926,15 +1926,15 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
   // ═══════════════════════════════════════════
 
   private _emitUpdate(): void {
-    const wasEmpty = this.contentEl.classList.contains('vellora-content--empty');
+    const wasEmpty = this.contentEl.classList.contains('editkit-content--empty');
     if (this.isEmpty) {
       if (!wasEmpty) {
         void this.contentEl.offsetWidth;
-        this.contentEl.classList.add('vellora-content--empty');
+        this.contentEl.classList.add('editkit-content--empty');
       }
     } else {
       if (wasEmpty) {
-        this.contentEl.classList.remove('vellora-content--empty');
+        this.contentEl.classList.remove('editkit-content--empty');
       }
     }
 
@@ -1948,6 +1948,6 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
 // Factory Function
 // ═══════════════════════════════════════════
 
-export function createEditor(config: VelloraConfig = {}): VelloraEditor {
-  return new VelloraEditor(config);
+export function createEditor(config: EditKitConfig = {}): EditKitEditor {
+  return new EditKitEditor(config);
 }

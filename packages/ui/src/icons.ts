@@ -1,6 +1,6 @@
 // ============================================================
-// Vellora — SVG Icon System (Zero Dependencies)
-// Exact match for the Eddyter-inspired premium interface
+// EditKit — SVG Icon System (Zero Dependencies)
+// Exact match for the EditKit-inspired premium interface
 // ============================================================
 
 const svg = (d: string, opts?: { viewBox?: string; fill?: string; strokeWidth?: string }) => {

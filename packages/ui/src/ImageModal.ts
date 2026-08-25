@@ -1,9 +1,9 @@
 // ============================================================
-// Vellora — Image Upload & Insert Modal
+// EditKit — Image Upload & Insert Modal
 // Extends global reusable Modal component with Staging, Progress & URL insertion
 // ============================================================
 
-import type { VelloraEditor } from '@vellora/core';
+import type { EditKitEditor } from '@editkit/core';
 import { Modal } from './Modal';
 import { icons } from './icons';
 
@@ -20,9 +20,9 @@ export class ImageModal extends Modal {
   private stagedImages: StagedImage[] = [];
   private isUploading: boolean = false;
 
-  constructor(editor: VelloraEditor) {
+  constructor(editor: EditKitEditor) {
     super(editor, {
-      className: 'vellora-image-modal',
+      className: 'editkit-image-modal',
       maxWidth: '640px',
     });
 
@@ -92,13 +92,13 @@ export class ImageModal extends Modal {
   // ── 1. Dropzone View ──
   private _renderDropzoneView(): void {
     const dropzone = document.createElement('div');
-    dropzone.classList.add('vellora-img-dropzone');
+    dropzone.classList.add('editkit-img-dropzone');
 
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = 'image/*';
     fileInput.multiple = true;
-    fileInput.classList.add('vellora-img-file-input');
+    fileInput.classList.add('editkit-img-file-input');
     fileInput.style.display = 'none';
 
     fileInput.addEventListener('change', () => {
@@ -108,15 +108,15 @@ export class ImageModal extends Modal {
     });
 
     const iconBadge = document.createElement('div');
-    iconBadge.classList.add('vellora-img-icon-badge');
+    iconBadge.classList.add('editkit-img-icon-badge');
     iconBadge.innerHTML = icons.image;
 
     const title = document.createElement('h3');
-    title.classList.add('vellora-img-dropzone-title');
+    title.classList.add('editkit-img-dropzone-title');
     title.textContent = 'Drop your images here';
 
     const subtitle = document.createElement('p');
-    subtitle.classList.add('vellora-img-dropzone-subtitle');
+    subtitle.classList.add('editkit-img-dropzone-subtitle');
     subtitle.textContent = 'PNG, JPG, GIF or other image files — select as many as you like';
 
     dropzone.appendChild(iconBadge);
@@ -130,16 +130,16 @@ export class ImageModal extends Modal {
 
     dropzone.addEventListener('dragover', (e) => {
       e.preventDefault();
-      if (!this.isUploading) dropzone.classList.add('vellora-img-dropzone--dragover');
+      if (!this.isUploading) dropzone.classList.add('editkit-img-dropzone--dragover');
     });
 
     dropzone.addEventListener('dragleave', () => {
-      dropzone.classList.remove('vellora-img-dropzone--dragover');
+      dropzone.classList.remove('editkit-img-dropzone--dragover');
     });
 
     dropzone.addEventListener('drop', (e) => {
       e.preventDefault();
-      dropzone.classList.remove('vellora-img-dropzone--dragover');
+      dropzone.classList.remove('editkit-img-dropzone--dragover');
       if (!this.isUploading && e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
         this._stageFiles(Array.from(e.dataTransfer.files));
       }
@@ -150,17 +150,17 @@ export class ImageModal extends Modal {
     // ── Staged Images List ──
     if (this.stagedImages.length > 0) {
       const stagingWrap = document.createElement('div');
-      stagingWrap.classList.add('vellora-img-staging-wrap');
+      stagingWrap.classList.add('editkit-img-staging-wrap');
 
       const stagingHeader = document.createElement('div');
-      stagingHeader.classList.add('vellora-img-staging-header');
+      stagingHeader.classList.add('editkit-img-staging-header');
       stagingHeader.innerHTML = `
-        <span class="vellora-img-count-text">${this.stagedImages.length} image${this.stagedImages.length > 1 ? 's' : ''} selected</span>
+        <span class="editkit-img-count-text">${this.stagedImages.length} image${this.stagedImages.length > 1 ? 's' : ''} selected</span>
       `;
 
       const clearBtn = document.createElement('button');
       clearBtn.type = 'button';
-      clearBtn.classList.add('vellora-img-clear-all-btn');
+      clearBtn.classList.add('editkit-img-clear-all-btn');
       clearBtn.textContent = 'Clear all';
       clearBtn.addEventListener('click', () => {
         if (!this.isUploading) {
@@ -172,28 +172,28 @@ export class ImageModal extends Modal {
       stagingWrap.appendChild(stagingHeader);
 
       const list = document.createElement('div');
-      list.classList.add('vellora-img-staged-list');
+      list.classList.add('editkit-img-staged-list');
 
       for (const item of this.stagedImages) {
         const card = document.createElement('div');
-        card.classList.add('vellora-img-staged-card');
+        card.classList.add('editkit-img-staged-card');
 
         // Thumbnail
         const thumb = document.createElement('img');
-        thumb.classList.add('vellora-img-staged-thumb');
+        thumb.classList.add('editkit-img-staged-thumb');
         thumb.src = item.dataUrl;
 
         // Meta (File Name & Alt Text input)
         const meta = document.createElement('div');
-        meta.classList.add('vellora-img-staged-meta');
+        meta.classList.add('editkit-img-staged-meta');
 
         const name = document.createElement('div');
-        name.classList.add('vellora-img-staged-name');
+        name.classList.add('editkit-img-staged-name');
         name.textContent = item.name;
 
         const altInput = document.createElement('input');
         altInput.type = 'text';
-        altInput.classList.add('vellora-img-staged-alt');
+        altInput.classList.add('editkit-img-staged-alt');
         altInput.placeholder = 'Alt text (describes this image)';
         altInput.value = item.alt;
         altInput.addEventListener('input', () => {
@@ -206,7 +206,7 @@ export class ImageModal extends Modal {
         // Delete button
         const delBtn = document.createElement('button');
         delBtn.type = 'button';
-        delBtn.classList.add('vellora-img-staged-del');
+        delBtn.classList.add('editkit-img-staged-del');
         delBtn.setAttribute('title', 'Remove image');
         delBtn.innerHTML = icons.trash;
         delBtn.addEventListener('click', () => {
@@ -227,12 +227,12 @@ export class ImageModal extends Modal {
       // Upload Button with animated progress
       const uploadBtn = document.createElement('button');
       uploadBtn.type = 'button';
-      uploadBtn.classList.add('vellora-img-upload-btn');
+      uploadBtn.classList.add('editkit-img-upload-btn');
       uploadBtn.innerHTML = `
-        <span class="vellora-img-upload-bar"></span>
-        <span class="vellora-img-upload-inner">
-          <span class="vellora-img-upload-icon">${icons.upload}</span>
-          <span class="vellora-img-upload-text">Upload ${this.stagedImages.length} image${this.stagedImages.length > 1 ? 's' : ''}</span>
+        <span class="editkit-img-upload-bar"></span>
+        <span class="editkit-img-upload-inner">
+          <span class="editkit-img-upload-icon">${icons.upload}</span>
+          <span class="editkit-img-upload-text">Upload ${this.stagedImages.length} image${this.stagedImages.length > 1 ? 's' : ''}</span>
         </span>
       `;
 
@@ -246,16 +246,16 @@ export class ImageModal extends Modal {
 
     // OR divider
     const orDivider = document.createElement('div');
-    orDivider.classList.add('vellora-img-or-divider');
+    orDivider.classList.add('editkit-img-or-divider');
     orDivider.textContent = 'OR';
 
     // Insert via URL button
     const actionCenter = document.createElement('div');
-    actionCenter.classList.add('vellora-img-actions-center');
+    actionCenter.classList.add('editkit-img-actions-center');
 
     const urlBtn = document.createElement('button');
     urlBtn.type = 'button';
-    urlBtn.classList.add('vellora-img-url-btn');
+    urlBtn.classList.add('editkit-img-url-btn');
     urlBtn.innerHTML = `${icons.link} <span>Insert via URL</span>`;
     urlBtn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -274,10 +274,10 @@ export class ImageModal extends Modal {
   private _startUploadAnimation(btn: HTMLElement): void {
     if (this.isUploading || this.stagedImages.length === 0) return;
     this.isUploading = true;
-    btn.classList.add('vellora-img-upload-btn--loading');
+    btn.classList.add('editkit-img-upload-btn--loading');
 
-    const bar = btn.querySelector('.vellora-img-upload-bar') as HTMLElement;
-    const text = btn.querySelector('.vellora-img-upload-text') as HTMLElement;
+    const bar = btn.querySelector('.editkit-img-upload-bar') as HTMLElement;
+    const text = btn.querySelector('.editkit-img-upload-text') as HTMLElement;
 
     let progress = 0;
     const interval = setInterval(() => {
@@ -334,19 +334,19 @@ export class ImageModal extends Modal {
   // ── 2. URL View ──
   private _renderUrlView(): void {
     const form = document.createElement('div');
-    form.classList.add('vellora-img-url-form');
+    form.classList.add('editkit-img-url-form');
 
     // 1. Image URL field
     const urlGroup = document.createElement('div');
-    urlGroup.classList.add('vellora-img-form-group');
+    urlGroup.classList.add('editkit-img-form-group');
 
     const urlLabel = document.createElement('label');
-    urlLabel.classList.add('vellora-img-form-label');
+    urlLabel.classList.add('editkit-img-form-label');
     urlLabel.textContent = 'Image URL';
 
     const urlInput = document.createElement('input');
     urlInput.type = 'url';
-    urlInput.classList.add('vellora-img-input', 'vellora-img-input--url');
+    urlInput.classList.add('editkit-img-input', 'editkit-img-input--url');
     urlInput.placeholder = 'https://example.com/image.jpg';
 
     urlGroup.appendChild(urlLabel);
@@ -354,15 +354,15 @@ export class ImageModal extends Modal {
 
     // 2. Alt Text field
     const altGroup = document.createElement('div');
-    altGroup.classList.add('vellora-img-form-group');
+    altGroup.classList.add('editkit-img-form-group');
 
     const altLabel = document.createElement('label');
-    altLabel.classList.add('vellora-img-form-label');
+    altLabel.classList.add('editkit-img-form-label');
     altLabel.textContent = 'Alt Text';
 
     const altInput = document.createElement('input');
     altInput.type = 'text';
-    altInput.classList.add('vellora-img-input', 'vellora-img-input--alt');
+    altInput.classList.add('editkit-img-input', 'editkit-img-input--alt');
     altInput.placeholder = 'Descriptive alternative text';
 
     altGroup.appendChild(altLabel);
@@ -370,11 +370,11 @@ export class ImageModal extends Modal {
 
     // 3. Action button
     const actions = document.createElement('div');
-    actions.classList.add('vellora-img-form-actions');
+    actions.classList.add('editkit-img-form-actions');
 
     const submitBtn = document.createElement('button');
     submitBtn.type = 'button';
-    submitBtn.classList.add('vellora-img-submit-btn');
+    submitBtn.classList.add('editkit-img-submit-btn');
     submitBtn.textContent = 'Insert Image';
 
     const handleInsert = () => {

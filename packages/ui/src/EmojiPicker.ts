@@ -1,9 +1,9 @@
 // ============================================================
-// Vellora — Complete Eddyter-Inspired Rich Emoji Picker
+// EditKit — Complete EditKit-Inspired Rich Emoji Picker
 // Search, categorized navigation, Apple-Style Emojis & World Flags
 // ============================================================
 
-import type { VelloraEditor } from '@vellora/core';
+import type { EditKitEditor } from '@editkit/core';
 import { icons } from './icons';
 
 // Convert 2-letter ISO country code to flag emoji
@@ -31,7 +31,7 @@ export function getAppleEmojiUrl(char: string): string {
 }
 
 // Render Apple iOS style emoji image with graceful fallback to native glyph
-export function renderAppleEmoji(char: string, altText: string = '', className: string = 'vellora-apple-emoji'): HTMLElement {
+export function renderAppleEmoji(char: string, altText: string = '', className: string = 'editkit-apple-emoji'): HTMLElement {
   const img = document.createElement('img');
   img.classList.add(className);
   img.src = getAppleEmojiUrl(char);
@@ -913,11 +913,11 @@ const EMOJI_DATA: EmojiCategory[] = [
   },
 ];
 
-const RECENT_STORAGE_KEY = 'vellora_recent_emojis';
+const RECENT_STORAGE_KEY = 'editkit_recent_emojis';
 
 export class EmojiPicker {
   readonly element: HTMLElement;
-  private editor: VelloraEditor;
+  private editor: EditKitEditor;
   private onSelect?: (emoji: string) => void;
 
   private searchInput!: HTMLInputElement;
@@ -930,12 +930,12 @@ export class EmojiPicker {
   private searchQuery: string = '';
   private recentEmojis: EmojiItem[] = [];
 
-  constructor(editor: VelloraEditor, onSelect?: (emoji: string) => void) {
+  constructor(editor: EditKitEditor, onSelect?: (emoji: string) => void) {
     this.editor = editor;
     this.onSelect = onSelect;
 
     this.element = document.createElement('div');
-    this.element.classList.add('vellora-emoji-picker');
+    this.element.classList.add('editkit-emoji-picker');
     this.element.setAttribute('role', 'dialog');
     this.element.setAttribute('aria-label', 'Emoji picker');
 
@@ -981,15 +981,15 @@ export class EmojiPicker {
 
     // ── 1. Search Bar (Full Width with Clean Apple Look) ──
     const searchWrap = document.createElement('div');
-    searchWrap.classList.add('vellora-emoji-search-wrap');
+    searchWrap.classList.add('editkit-emoji-search-wrap');
 
     const searchIcon = document.createElement('span');
-    searchIcon.classList.add('vellora-emoji-search-icon');
+    searchIcon.classList.add('editkit-emoji-search-icon');
     searchIcon.innerHTML = icons.search || `<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`;
 
     this.searchInput = document.createElement('input');
     this.searchInput.type = 'text';
-    this.searchInput.classList.add('vellora-emoji-search-input');
+    this.searchInput.classList.add('editkit-emoji-search-input');
     this.searchInput.placeholder = 'Search emojis...';
     this.searchInput.addEventListener('input', () => {
       this.searchQuery = this.searchInput.value.trim().toLowerCase();
@@ -1002,13 +1002,13 @@ export class EmojiPicker {
 
     // ── 2. Category Nav Tabs Row (Apple iOS Icon Artwork) ──
     this.navContainer = document.createElement('div');
-    this.navContainer.classList.add('vellora-emoji-nav');
+    this.navContainer.classList.add('editkit-emoji-nav');
 
     // Recent tab
     const recentTab = document.createElement('button');
     recentTab.type = 'button';
-    recentTab.classList.add('vellora-emoji-nav-btn');
-    recentTab.appendChild(renderAppleEmoji('🕒', 'Frequently Used', 'vellora-apple-emoji-nav'));
+    recentTab.classList.add('editkit-emoji-nav-btn');
+    recentTab.appendChild(renderAppleEmoji('🕒', 'Frequently Used', 'editkit-apple-emoji-nav'));
     recentTab.title = 'Frequently Used';
     recentTab.addEventListener('click', (e) => {
       e.preventDefault();
@@ -1020,8 +1020,8 @@ export class EmojiPicker {
     EMOJI_DATA.forEach(cat => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.classList.add('vellora-emoji-nav-btn');
-      btn.appendChild(renderAppleEmoji(cat.icon, cat.name, 'vellora-apple-emoji-nav'));
+      btn.classList.add('editkit-emoji-nav-btn');
+      btn.appendChild(renderAppleEmoji(cat.icon, cat.name, 'editkit-apple-emoji-nav'));
       btn.title = cat.name;
       btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -1034,19 +1034,19 @@ export class EmojiPicker {
 
     // ── 3. Scrollable Content Area ──
     this.contentContainer = document.createElement('div');
-    this.contentContainer.classList.add('vellora-emoji-content');
+    this.contentContainer.classList.add('editkit-emoji-content');
     this.element.appendChild(this.contentContainer);
 
     // ── 4. Bottom Mood / Preview Footer ──
     this.previewFooter = document.createElement('div');
-    this.previewFooter.classList.add('vellora-emoji-footer');
+    this.previewFooter.classList.add('editkit-emoji-footer');
 
     this.previewIcon = document.createElement('div');
-    this.previewIcon.classList.add('vellora-emoji-footer-icon');
-    this.previewIcon.appendChild(renderAppleEmoji('😊', 'Smiling Face', 'vellora-apple-emoji-lg'));
+    this.previewIcon.classList.add('editkit-emoji-footer-icon');
+    this.previewIcon.appendChild(renderAppleEmoji('😊', 'Smiling Face', 'editkit-apple-emoji-lg'));
 
     this.previewTitle = document.createElement('div');
-    this.previewTitle.classList.add('vellora-emoji-footer-title');
+    this.previewTitle.classList.add('editkit-emoji-footer-title');
     this.previewTitle.textContent = "What's Your Mood?";
 
     this.previewFooter.appendChild(this.previewIcon);
@@ -1081,20 +1081,20 @@ export class EmojiPicker {
       });
 
       const header = document.createElement('div');
-      header.classList.add('vellora-emoji-section-header');
+      header.classList.add('editkit-emoji-section-header');
       header.textContent = `Search Results (${allResults.length})`;
       this.contentContainer.appendChild(header);
 
       if (allResults.length === 0) {
         const noResult = document.createElement('div');
-        noResult.classList.add('vellora-emoji-empty');
+        noResult.classList.add('editkit-emoji-empty');
         noResult.textContent = 'No matching emojis found';
         this.contentContainer.appendChild(noResult);
         return;
       }
 
       const grid = document.createElement('div');
-      grid.classList.add('vellora-emoji-grid');
+      grid.classList.add('editkit-emoji-grid');
       allResults.forEach(item => {
         grid.appendChild(this._createEmojiButton(item));
       });
@@ -1106,14 +1106,14 @@ export class EmojiPicker {
     if (this.recentEmojis.length > 0) {
       const recentSec = document.createElement('div');
       recentSec.id = 'section-frequent';
-      recentSec.classList.add('vellora-emoji-section');
+      recentSec.classList.add('editkit-emoji-section');
 
       const secHeader = document.createElement('div');
-      secHeader.classList.add('vellora-emoji-section-header');
+      secHeader.classList.add('editkit-emoji-section-header');
       secHeader.textContent = 'Frequently Used';
 
       const grid = document.createElement('div');
-      grid.classList.add('vellora-emoji-grid');
+      grid.classList.add('editkit-emoji-grid');
 
       this.recentEmojis.forEach(item => {
         grid.appendChild(this._createEmojiButton(item));
@@ -1128,14 +1128,14 @@ export class EmojiPicker {
     EMOJI_DATA.forEach(cat => {
       const sec = document.createElement('div');
       sec.id = `section-${cat.id}`;
-      sec.classList.add('vellora-emoji-section');
+      sec.classList.add('editkit-emoji-section');
 
       const secHeader = document.createElement('div');
-      secHeader.classList.add('vellora-emoji-section-header');
+      secHeader.classList.add('editkit-emoji-section-header');
       secHeader.textContent = cat.name;
 
       const grid = document.createElement('div');
-      grid.classList.add('vellora-emoji-grid');
+      grid.classList.add('editkit-emoji-grid');
 
       cat.emojis.forEach(item => {
         grid.appendChild(this._createEmojiButton(item));
@@ -1150,14 +1150,14 @@ export class EmojiPicker {
   private _createEmojiButton(item: EmojiItem): HTMLElement {
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.classList.add('vellora-emoji-item-btn');
-    btn.appendChild(renderAppleEmoji(item.char, item.name, 'vellora-apple-emoji'));
+    btn.classList.add('editkit-emoji-item-btn');
+    btn.appendChild(renderAppleEmoji(item.char, item.name, 'editkit-apple-emoji'));
     btn.setAttribute('aria-label', item.name);
     btn.setAttribute('title', item.name);
 
     btn.addEventListener('mouseenter', () => {
       this.previewIcon.innerHTML = '';
-      this.previewIcon.appendChild(renderAppleEmoji(item.char, item.name, 'vellora-apple-emoji-lg'));
+      this.previewIcon.appendChild(renderAppleEmoji(item.char, item.name, 'editkit-apple-emoji-lg'));
       this.previewTitle.textContent = item.name;
     });
 

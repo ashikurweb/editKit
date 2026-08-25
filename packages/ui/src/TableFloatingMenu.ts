@@ -1,24 +1,24 @@
 // ============================================================
-// Vellora — Contextual Table Floating Menu
+// EditKit — Contextual Table Floating Menu
 // Appears automatically when active in a table cell
 // ============================================================
 
-import type { VelloraEditor, TableCellInfo } from '@vellora/core';
+import type { EditKitEditor, TableCellInfo } from '@editkit/core';
 import { icons } from './icons';
 import { ColorPickerPopover } from './ColorPicker';
 
 export class TableFloatingMenu {
   readonly element: HTMLElement;
-  private editor: VelloraEditor;
+  private editor: EditKitEditor;
   private isVisible: boolean = false;
   private colorPickerEl: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
-  constructor(editor: VelloraEditor) {
+  constructor(editor: EditKitEditor) {
     this.editor = editor;
 
     this.element = document.createElement('div');
-    this.element.classList.add('vellora-table-floating-menu');
+    this.element.classList.add('editkit-table-floating-menu');
     this.element.setAttribute('role', 'toolbar');
     this.element.setAttribute('aria-label', 'Table actions');
 
@@ -55,9 +55,9 @@ export class TableFloatingMenu {
     const btn = (iconKey: string, tooltip: string, action: () => void, isDanger?: boolean) => {
       const b = document.createElement('button');
       b.type = 'button';
-      b.classList.add('vellora-table-btn');
-      if (isDanger) b.classList.add('vellora-table-btn--danger');
-      b.setAttribute('data-vellora-tooltip', tooltip);
+      b.classList.add('editkit-table-btn');
+      if (isDanger) b.classList.add('editkit-table-btn--danger');
+      b.setAttribute('data-editkit-tooltip', tooltip);
       b.setAttribute('aria-label', tooltip);
       b.innerHTML = icons[iconKey] || iconKey;
       b.addEventListener('mousedown', (e) => {
@@ -69,13 +69,13 @@ export class TableFloatingMenu {
 
     const divider = () => {
       const d = document.createElement('div');
-      d.classList.add('vellora-table-btn-divider');
+      d.classList.add('editkit-table-btn-divider');
       return d;
     };
 
     // Label indicator
     const label = document.createElement('span');
-    label.classList.add('vellora-table-menu-label');
+    label.classList.add('editkit-table-menu-label');
     label.innerHTML = `${icons.table} <span>Table</span>`;
     this.element.appendChild(label);
     this.element.appendChild(divider());
@@ -98,8 +98,8 @@ export class TableFloatingMenu {
     // Cell Background Color button
     const colorBtn = document.createElement('button');
     colorBtn.type = 'button';
-    colorBtn.classList.add('vellora-table-btn');
-    colorBtn.setAttribute('data-vellora-tooltip', 'Cell Background Color');
+    colorBtn.classList.add('editkit-table-btn');
+    colorBtn.setAttribute('data-editkit-tooltip', 'Cell Background Color');
     colorBtn.setAttribute('aria-label', 'Cell Background Color');
     colorBtn.innerHTML = icons.highlightColor;
     colorBtn.addEventListener('mousedown', (e) => {
@@ -170,14 +170,14 @@ export class TableFloatingMenu {
 
   show(): void {
     if (!this.isVisible) {
-      this.element.classList.add('vellora-table-floating-menu--visible');
+      this.element.classList.add('editkit-table-floating-menu--visible');
       this.isVisible = true;
     }
   }
 
   hide(): void {
     if (this.isVisible) {
-      this.element.classList.remove('vellora-table-floating-menu--visible');
+      this.element.classList.remove('editkit-table-floating-menu--visible');
       if (this.colorPickerEl) {
         this.colorPickerEl.remove();
         this.colorPickerEl = null;

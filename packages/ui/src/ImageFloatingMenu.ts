@@ -1,34 +1,34 @@
 // ============================================================
-// Vellora — Image Floating Toolbar & 8-Handle Resizer
-// Exact match for the Eddyter Image Contextual Controls & Resizing
+// EditKit — Image Floating Toolbar & 8-Handle Resizer
+// Exact match for the EditKit Image Contextual Controls & Resizing
 // ============================================================
 
-import type { VelloraEditor } from '@vellora/core';
+import type { EditKitEditor } from '@editkit/core';
 import { icons } from './icons';
 
 export class ImageFloatingMenu {
   readonly element: HTMLElement;
-  private editor: VelloraEditor;
+  private editor: EditKitEditor;
   private activeImg: HTMLImageElement | null = null;
   private resizerBox: HTMLElement;
   private toolbar: HTMLElement;
   private _unsubscribers: (() => void)[] = [];
   private currentRotation: number = 0;
 
-  constructor(editor: VelloraEditor) {
+  constructor(editor: EditKitEditor) {
     this.editor = editor;
 
     // Main wrapper container
     this.element = document.createElement('div');
-    this.element.classList.add('vellora-image-overlay-layer');
+    this.element.classList.add('editkit-image-overlay-layer');
 
     // Selection frame box with 8 handles
     this.resizerBox = document.createElement('div');
-    this.resizerBox.classList.add('vellora-image-resizer-box');
+    this.resizerBox.classList.add('editkit-image-resizer-box');
 
     // Floating toolbar pill
     this.toolbar = document.createElement('div');
-    this.toolbar.classList.add('vellora-image-floating-toolbar');
+    this.toolbar.classList.add('editkit-image-floating-toolbar');
 
     this._buildHandles();
     this._buildToolbar();
@@ -94,13 +94,13 @@ export class ImageFloatingMenu {
   selectImage(img: HTMLImageElement): void {
     this.activeImg = img;
     this.currentRotation = parseInt(img.getAttribute('data-rotation') || '0', 10);
-    this.element.classList.add('vellora-image-overlay-layer--active');
+    this.element.classList.add('editkit-image-overlay-layer--active');
     this._updatePosition();
   }
 
   deselect(): void {
     this.activeImg = null;
-    this.element.classList.remove('vellora-image-overlay-layer--active');
+    this.element.classList.remove('editkit-image-overlay-layer--active');
   }
 
   deleteActiveImage(): void {
@@ -146,7 +146,7 @@ export class ImageFloatingMenu {
 
     for (const h of handles) {
       const el = document.createElement('div');
-      el.classList.add('vellora-img-handle', `vellora-img-handle--${h.pos}`);
+      el.classList.add('editkit-img-handle', `editkit-img-handle--${h.pos}`);
       el.style.cursor = h.cursor;
       this._attachHandleDrag(el, h.pos);
       this.resizerBox.appendChild(el);
@@ -216,12 +216,12 @@ export class ImageFloatingMenu {
     const createBtn = (iconHtml: string, title: string, onClick: () => void, isDanger?: boolean, isPill?: boolean, textLabel?: string) => {
       const b = document.createElement('button');
       b.type = 'button';
-      b.classList.add('vellora-img-tb-btn');
-      if (isDanger) b.classList.add('vellora-img-tb-btn--danger');
-      if (isPill) b.classList.add('vellora-img-tb-btn--pill');
+      b.classList.add('editkit-img-tb-btn');
+      if (isDanger) b.classList.add('editkit-img-tb-btn--danger');
+      if (isPill) b.classList.add('editkit-img-tb-btn--pill');
       b.setAttribute('title', title);
       b.setAttribute('aria-label', title);
-      b.innerHTML = textLabel ? `<span class="vellora-img-tb-pill-text">${textLabel}</span>` : iconHtml;
+      b.innerHTML = textLabel ? `<span class="editkit-img-tb-pill-text">${textLabel}</span>` : iconHtml;
 
       b.addEventListener('mousedown', (e) => {
         e.preventDefault();
@@ -235,7 +235,7 @@ export class ImageFloatingMenu {
 
     const addDivider = () => {
       const d = document.createElement('div');
-      d.classList.add('vellora-img-tb-divider');
+      d.classList.add('editkit-img-tb-divider');
       this.toolbar.appendChild(d);
     };
 
@@ -285,11 +285,11 @@ export class ImageFloatingMenu {
     this.toolbar.appendChild(createBtn(icons.caption, 'Toggle Caption', () => {
       if (!this.activeImg) return;
       const nextEl = this.activeImg.nextElementSibling;
-      if (nextEl && nextEl.classList.contains('vellora-image-caption')) {
+      if (nextEl && nextEl.classList.contains('editkit-image-caption')) {
         nextEl.remove();
       } else {
         const cap = document.createElement('figcaption');
-        cap.classList.add('vellora-image-caption');
+        cap.classList.add('editkit-image-caption');
         cap.textContent = this.activeImg.alt || 'Add image caption...';
         cap.setAttribute('contenteditable', 'true');
         this.activeImg.insertAdjacentElement('afterend', cap);
@@ -314,7 +314,7 @@ export class ImageFloatingMenu {
     // 9. Frame / Border
     this.toolbar.appendChild(createBtn(icons.frame, 'Toggle Frame / Border', () => {
       if (!this.activeImg) return;
-      this.activeImg.classList.toggle('vellora-image--framed');
+      this.activeImg.classList.toggle('editkit-image--framed');
     }));
 
     // 10. ALT Text Button
