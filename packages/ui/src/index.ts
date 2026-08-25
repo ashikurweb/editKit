@@ -3,7 +3,7 @@
 // ============================================================
 
 export { VelloraToolbar, createToolbar } from './Toolbar';
-export type { ToolbarConfig } from './Toolbar';
+export type { ToolbarConfig, ToolbarFeaturesConfig } from './Toolbar';
 export { BubbleMenu } from './BubbleMenu';
 export { TableFloatingMenu } from './TableFloatingMenu';
 export { ColorPickerPopover, EDDYTER_EXACT_PALETTE } from './ColorPicker';

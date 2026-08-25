@@ -13,8 +13,36 @@ import { LinkPopover } from './LinkPopover';
 import { MathModal } from './MathModal';
 import { TooltipManager } from './Tooltip';
 
+export interface ToolbarFeaturesConfig {
+  history?: boolean;
+  undo?: boolean;
+  redo?: boolean;
+  block?: boolean;
+  fontFamily?: boolean;
+  fontSize?: boolean;
+  bold?: boolean;
+  format?: boolean;
+  color?: boolean;
+  align?: boolean;
+  lists?: boolean;
+  image?: boolean;
+  table?: boolean;
+  chart?: boolean;
+  math?: boolean;
+  link?: boolean;
+  emoji?: boolean;
+  symbol?: boolean;
+  bookmark?: boolean;
+  selectAll?: boolean;
+  clearAll?: boolean;
+  comment?: boolean;
+  versionHistory?: boolean;
+  more?: boolean;
+}
+
 export interface ToolbarConfig {
   container?: HTMLElement;
+  features?: ToolbarFeaturesConfig;
 }
 
 const FONT_FAMILIES = [
@@ -31,6 +59,7 @@ const FONT_FAMILIES = [
 export class VelloraToolbar {
   readonly element: HTMLElement;
   private editor: VelloraEditor;
+  private config: ToolbarConfig;
   private imageModal: ImageModal;
   private linkPopover: LinkPopover;
   private mathModal: MathModal;
@@ -38,16 +67,17 @@ export class VelloraToolbar {
   private _unsubscribers: (() => void)[] = [];
 
   // Active state trackers
-  private blockLabel!: HTMLElement;
-  private fontLabel!: HTMLElement;
-  private sizeDisplay!: HTMLElement;
-  private boldBtn!: HTMLElement;
-  private italicBtn!: HTMLElement;
-  private alignTrigger!: HTMLElement;
-  private clearAllBtn!: HTMLButtonElement;
+  private blockLabel?: HTMLElement;
+  private fontLabel?: HTMLElement;
+  private sizeDisplay?: HTMLElement;
+  private boldBtn?: HTMLElement;
+  private italicBtn?: HTMLElement;
+  private alignTrigger?: HTMLElement;
+  private clearAllBtn?: HTMLButtonElement;
 
   constructor(editor: VelloraEditor, config: ToolbarConfig = {}) {
     this.editor = editor;
+    this.config = config;
     this.imageModal = new ImageModal(editor);
     this.linkPopover = new LinkPopover(editor);
     this.mathModal = new MathModal(editor);
@@ -97,65 +127,95 @@ export class VelloraToolbar {
     const leftGroup = document.createElement('div');
     leftGroup.classList.add('vellora-toolbar-group');
 
-    // ──────────────────────────────────────────
-    // TOOLBAR CONTROLS (Single seamless row)
-    // ──────────────────────────────────────────
+    const f = this.config.features || {};
+    const isEnabled = (key: keyof ToolbarFeaturesConfig, fallback: boolean = true): boolean => {
+      return f[key] !== undefined ? !!f[key] : fallback;
+    };
 
-    // 1. Undo / Redo
-    leftGroup.appendChild(this._createBtn('undo', 'Undo', () => this.editor.commands.undo(), undefined, '⌘Z'));
-    leftGroup.appendChild(this._createBtn('redo', 'Redo', () => this.editor.commands.redo(), undefined, '⌘⇧Z'));
-    leftGroup.appendChild(this._createDivider());
+    // Define control groups
+    const sections: HTMLElement[][] = [];
 
-    // 2. Block Type Selector: ¶ Normal ˅
-    leftGroup.appendChild(this._createBlockDropdown());
+    // Group 1: Undo / Redo
+    const group1: HTMLElement[] = [];
+    const showHistory = isEnabled('history');
+    if (showHistory && isEnabled('undo')) {
+      group1.push(this._createBtn('undo', 'Undo', () => this.editor.commands.undo(), undefined, '⌘Z'));
+    }
+    if (showHistory && isEnabled('redo')) {
+      group1.push(this._createBtn('redo', 'Redo', () => this.editor.commands.redo(), undefined, '⌘⇧Z'));
+    }
+    if (group1.length > 0) sections.push(group1);
 
-    // 3. Font Family: DM Sans ˅
-    leftGroup.appendChild(this._createFontDropdown());
+    // Group 2: Typography & Size (Block, Font, Size)
+    const group2: HTMLElement[] = [];
+    if (isEnabled('block')) group2.push(this._createBlockDropdown());
+    if (isEnabled('fontFamily')) group2.push(this._createFontDropdown());
+    if (isEnabled('fontSize')) group2.push(this._createFontSizeStepper());
+    if (group2.length > 0) sections.push(group2);
 
-    // 4. Font Size Stepper: - 14 +
-    leftGroup.appendChild(this._createFontSizeStepper());
-    leftGroup.appendChild(this._createDivider());
+    // Group 3: Bold & Character formatting dropdown
+    const group3: HTMLElement[] = [];
+    if (isEnabled('bold')) {
+      this.boldBtn = this._createBtn('bold', 'Bold', () => this.editor.commands.bold(), 'bold', '⌘B');
+      group3.push(this.boldBtn);
+    }
+    if (isEnabled('format')) {
+      group3.push(this._createFormatDropdown());
+    }
+    if (group3.length > 0) sections.push(group3);
 
-    // 5. Bold & Character Formatting Dropdown (Exact EDDYTER Match)
-    this.boldBtn = this._createBtn('bold', 'Bold', () => this.editor.commands.bold(), 'bold', '⌘B');
-    leftGroup.appendChild(this.boldBtn);
-    leftGroup.appendChild(this._createFormatDropdown());
+    // Group 4: Text Color & Highlight Popover
+    const group4: HTMLElement[] = [];
+    if (isEnabled('color')) {
+      group4.push(this._createColorDropdown());
+    }
+    if (group4.length > 0) sections.push(group4);
 
-    // 6. Text Color & Highlight Popover: A ˅
-    leftGroup.appendChild(this._createColorDropdown());
+    // Group 5: Alignment & Lists
+    const group5: HTMLElement[] = [];
+    if (isEnabled('align')) group5.push(this._createAlignDropdown());
+    if (isEnabled('lists')) group5.push(this._createListDropdown());
+    if (group5.length > 0) sections.push(group5);
 
-    // 7. Alignment Dropdown: ≡ ˅
-    leftGroup.appendChild(this._createAlignDropdown());
-    leftGroup.appendChild(this._createDivider());
+    // Group 6: Media & Embeds (Image, Table, Chart, Math, Link, Emoji, Symbol, Bookmark)
+    const group6: HTMLElement[] = [];
+    if (isEnabled('image')) group6.push(this._createImageButton());
+    if (isEnabled('table')) group6.push(this._createTableGridDropdown());
+    if (isEnabled('chart')) group6.push(this._createBtn('chart', 'Insert Chart', () => this._insertChartMock()));
+    if (isEnabled('math')) group6.push(this._createMathDropdown());
+    if (isEnabled('link')) group6.push(this._createLinkButton());
+    if (isEnabled('emoji')) group6.push(this._createEmojiDropdown());
+    if (isEnabled('symbol')) group6.push(this._createSymbolDropdown());
+    if (isEnabled('bookmark')) group6.push(this._createBtn('pin', 'Bookmark / Pin', () => this._insertBookmarkMock()));
+    if (group6.length > 0) sections.push(group6);
 
-    // 8. Lists Dropdown with nested flyouts: ≡ ˅
-    leftGroup.appendChild(this._createListDropdown());
-    leftGroup.appendChild(this._createDivider());
+    // Group 7: Secondary Utilities (Select All, Clear All, Comment, History, More)
+    const group7: HTMLElement[] = [];
+    if (isEnabled('selectAll')) {
+      group7.push(this._createBtn('typography', 'Select All', () => this.editor.commands.selectAll(), undefined, '⌘A'));
+    }
+    if (isEnabled('clearAll')) {
+      this.clearAllBtn = this._createBtn('clearFormat', 'Clear All Content', () => {
+        if (this.clearAllBtn && !this.clearAllBtn.disabled) {
+          this.editor.commands.clearAll();
+        }
+      });
+      this.clearAllBtn.disabled = true;
+      this.clearAllBtn.classList.add('vellora-tb-btn--disabled');
+      group7.push(this.clearAllBtn);
+    }
+    if (isEnabled('comment')) group7.push(this._createBtn('comment', 'Add Comment', () => this._addCommentMock()));
+    if (isEnabled('versionHistory')) group7.push(this._createBtn('clock', 'Version History', () => alert('Version History: Snapshot saved.')));
+    if (isEnabled('more')) group7.push(this._createMoreDropdown());
+    if (group7.length > 0) sections.push(group7);
 
-    // 9. Media & Embed Tools: Image, Table (with Grid Picker!), Chart, Math, Link, Emoji, Omega, Pin
-    leftGroup.appendChild(this._createImageButton());
-    leftGroup.appendChild(this._createTableGridDropdown());
-    leftGroup.appendChild(this._createBtn('chart', 'Insert Chart', () => this._insertChartMock()));
-    leftGroup.appendChild(this._createMathDropdown());
-    leftGroup.appendChild(this._createLinkButton());
-    leftGroup.appendChild(this._createEmojiDropdown());
-    leftGroup.appendChild(this._createSymbolDropdown());
-    leftGroup.appendChild(this._createBtn('pin', 'Bookmark / Pin', () => this._insertBookmarkMock()));
-    leftGroup.appendChild(this._createDivider());
-
-    // 10. Secondary Tools: Select All, Clear All, Comment, History, More
-    leftGroup.appendChild(this._createBtn('typography', 'Select All', () => this.editor.commands.selectAll(), undefined, '⌘A'));
-    this.clearAllBtn = this._createBtn('clearFormat', 'Clear All Content', () => {
-      if (!this.clearAllBtn.disabled) {
-        this.editor.commands.clearAll();
+    // Render sections with dividers in between
+    sections.forEach((section, idx) => {
+      section.forEach(el => leftGroup.appendChild(el));
+      if (idx < sections.length - 1) {
+        leftGroup.appendChild(this._createDivider());
       }
     });
-    this.clearAllBtn.disabled = true;
-    this.clearAllBtn.classList.add('vellora-tb-btn--disabled');
-    leftGroup.appendChild(this.clearAllBtn);
-    leftGroup.appendChild(this._createBtn('comment', 'Add Comment', () => this._addCommentMock()));
-    leftGroup.appendChild(this._createBtn('clock', 'Version History', () => alert('Version History: Snapshot saved.')));
-    leftGroup.appendChild(this._createMoreDropdown());
 
     this.element.appendChild(leftGroup);
   }
