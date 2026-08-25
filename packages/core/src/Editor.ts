@@ -35,6 +35,8 @@ const MARK_TAG_MAP: Record<string, string> = {
   underline: 'U',
   strikethrough: 'S',
   code: 'CODE',
+  keyboard: 'KBD',
+  kbd: 'KBD',
   subscript: 'SUB',
   superscript: 'SUP',
 };
@@ -49,6 +51,7 @@ const TAG_MARK_MAP: Record<string, string> = {
   'STRIKE': 'strikethrough',
   'DEL': 'strikethrough',
   'CODE': 'code',
+  'KBD': 'keyboard',
   'SUB': 'subscript',
   'SUP': 'superscript',
 };
@@ -391,6 +394,7 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
     underline: () => this._toggleInlineFormat('underline'),
     strikethrough: () => this._toggleInlineFormat('strikethrough'),
     code: () => this._toggleInlineTag('CODE'),
+    keyboardInput: () => this._toggleInlineTag('KBD'),
     subscript: () => this._toggleInlineFormat('subscript'),
     superscript: () => this._toggleInlineFormat('superscript'),
 

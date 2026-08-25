@@ -32,6 +32,7 @@ export const icons: Record<string, string> = {
   underline: svg('<path d="M6 4v6a6 6 0 0 0 12 0V4"></path><line x1="4" y1="20" x2="20" y2="20"></line>'),
   strikethrough: svg('<path d="M16 4c-.5-1.5-2.5-3-5-3-3 0-5 2-5 4 0 1.5.5 2.5 2 3.5"></path><path d="M8 20c.5 1.5 2.5 3 5 3 3 0 5-2 5-4 0-1.5-.5-2.5-2-3.5"></path><line x1="4" y1="12" x2="20" y2="12"></line>'),
   code: svg('<polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline>'),
+  keyboard: svg('<rect x="3" y="4" width="18" height="16" rx="4"></rect><path d="M7 8h10"></path><path d="M7 12h10"></path><path d="M9 16h6"></path>'),
   subscript: svg('<path d="M4 19h6l5-9 5 9h-6"></path><path d="M20 22h-4c0-1.5 4-2 4-4 0-.5-.5-1-1-1s-1 .5-1 1"></path>', { strokeWidth: '1.5' }),
   superscript: svg('<path d="M4 19h6l5-9 5 9h-6"></path><path d="M20 8h-4c0-1.5 4-2 4-4 0-.5-.5-1-1-1s-1 .5-1 1"></path>', { strokeWidth: '1.5' }),
 

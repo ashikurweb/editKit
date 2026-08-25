@@ -101,11 +101,10 @@ export class VelloraToolbar {
     leftGroup.appendChild(this._createFontSizeStepper());
     leftGroup.appendChild(this._createDivider());
 
-    // 5. Bold, Italic / Format
+    // 5. Bold & Character Formatting Dropdown (Exact EDDYTER Match)
     this.boldBtn = this._createBtn('bold', 'Bold (Ctrl+B)', () => this.editor.commands.bold(), 'bold');
-    this.italicBtn = this._createBtn('italic', 'Italic (Ctrl+I)', () => this.editor.commands.italic(), 'italic');
     leftGroup.appendChild(this.boldBtn);
-    leftGroup.appendChild(this.italicBtn);
+    leftGroup.appendChild(this._createFormatDropdown());
 
     // 6. Text Color & Highlight Popover: A ˅
     leftGroup.appendChild(this._createColorDropdown());
@@ -345,6 +344,53 @@ export class VelloraToolbar {
     wrap.appendChild(minus);
     wrap.appendChild(this.sizeDisplay);
     wrap.appendChild(plus);
+    return wrap;
+  }
+
+  // ── 3.5. Character Formatting Dropdown: [Icon] ˅ (Exact EDDYTER Match) ──
+  private _createFormatDropdown(): HTMLElement {
+    const wrap = document.createElement('div');
+    wrap.classList.add('vellora-tb-dropdown-wrap');
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.classList.add('vellora-tb-btn', 'vellora-tb-btn--chevron');
+    trigger.setAttribute('title', 'More Formatting');
+    trigger.innerHTML = `${icons.keyboard} <span class="vellora-tb-chevron-sm">${icons.chevronDown}</span>`;
+
+    const menu = document.createElement('div');
+    menu.classList.add('vellora-tb-dropdown-menu', 'vellora-tb-dropdown-menu--format');
+
+    const items = [
+      { id: 'italic', icon: icons.italic, label: 'Italic', action: () => this.editor.commands.italic() },
+      { id: 'strikethrough', icon: icons.strikethrough, label: 'Strikethrough', action: () => this.editor.commands.strikethrough() },
+      { id: 'underline', icon: icons.underline, label: 'Underline', action: () => this.editor.commands.underline() },
+      { id: 'subscript', icon: icons.subscript, label: 'Subscript', action: () => this.editor.commands.subscript() },
+      { id: 'superscript', icon: icons.superscript, label: 'Superscript', action: () => this.editor.commands.superscript() },
+      { id: 'keyboard', icon: icons.keyboard, label: 'Keyboard Input', action: () => this.editor.commands.keyboardInput() },
+    ];
+
+    for (const it of items) {
+      const itBtn = document.createElement('button');
+      itBtn.type = 'button';
+      itBtn.classList.add('vellora-tb-menu-item');
+      itBtn.setAttribute('data-format-id', it.id);
+      itBtn.innerHTML = `<span class="vellora-tb-menu-prefix">${it.icon}</span> <span class="vellora-tb-menu-label">${it.label}</span>`;
+      itBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        it.action();
+        this._closeDropdown();
+      });
+      menu.appendChild(itBtn);
+    }
+
+    trigger.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      this._toggleDropdown(wrap);
+    });
+
+    wrap.appendChild(trigger);
+    wrap.appendChild(menu);
     return wrap;
   }
 
@@ -949,9 +995,14 @@ export class VelloraToolbar {
     if (this.boldBtn) {
       this.boldBtn.classList.toggle('vellora-tb-btn--active', this.editor.isActive('bold'));
     }
-    if (this.italicBtn) {
-      this.italicBtn.classList.toggle('vellora-tb-btn--active', this.editor.isActive('italic'));
-    }
+
+    const formatItems = this.element.querySelectorAll('[data-format-id]');
+    formatItems.forEach(b => {
+      const id = b.getAttribute('data-format-id');
+      if (id) {
+        b.classList.toggle('vellora-tb-menu-item--active', this.editor.isActive(id));
+      }
+    });
 
     if (this.blockLabel) {
       if (this.editor.isActive('h1')) this.blockLabel.textContent = 'Heading 1';
