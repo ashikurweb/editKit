@@ -94,13 +94,10 @@ export class VelloraToolbar {
     this.element.innerHTML = '';
 
     const leftGroup = document.createElement('div');
-    leftGroup.classList.add('vellora-toolbar-group', 'vellora-toolbar-group--left');
-
-    const rightGroup = document.createElement('div');
-    rightGroup.classList.add('vellora-toolbar-group', 'vellora-toolbar-group--right');
+    leftGroup.classList.add('vellora-toolbar-group');
 
     // ──────────────────────────────────────────
-    // LEFT CONTROLS
+    // TOOLBAR CONTROLS (Single seamless row)
     // ──────────────────────────────────────────
 
     // 1. Undo / Redo
@@ -143,37 +140,16 @@ export class VelloraToolbar {
     leftGroup.appendChild(this._createEmojiDropdown());
     leftGroup.appendChild(this._createSymbolDropdown());
     leftGroup.appendChild(this._createBtn('pin', 'Bookmark / Pin', () => this._insertBookmarkMock()));
+    leftGroup.appendChild(this._createDivider());
 
-    // ──────────────────────────────────────────
-    // RIGHT CONTROLS
-    // ──────────────────────────────────────────
-
-    // 1. Language pill: EN
-    const langBtn = document.createElement('div');
-    langBtn.classList.add('vellora-toolbar-pill-badge');
-    langBtn.textContent = 'EN';
-    rightGroup.appendChild(langBtn);
-
-    // 2. ✦ AI ˅ button with dropdown
-    rightGroup.appendChild(this._createAIDropdown());
-
-    // 3. Typography & Case tool: T.
-    rightGroup.appendChild(this._createTypographyDropdown());
-
-    // 4. Clear formatting: ✕
-    rightGroup.appendChild(this._createBtn('clearFormat', 'Clear Formatting', () => this.editor.commands.clearFormatting()));
-
-    // 5. Comment: 💬
-    rightGroup.appendChild(this._createBtn('comment', 'Add Comment', () => this._addCommentMock()));
-
-    // 6. History / Clock: 🕒
-    rightGroup.appendChild(this._createBtn('clock', 'Version History', () => alert('Version History: Snapshot saved.')));
-
-    // 7. More Add: + ˅
-    rightGroup.appendChild(this._createMoreDropdown());
+    // 10. Secondary Tools: Typography, Clear Formatting, Comment, History, More
+    leftGroup.appendChild(this._createTypographyDropdown());
+    leftGroup.appendChild(this._createBtn('clearFormat', 'Clear Formatting', () => this.editor.commands.clearFormatting()));
+    leftGroup.appendChild(this._createBtn('comment', 'Add Comment', () => this._addCommentMock()));
+    leftGroup.appendChild(this._createBtn('clock', 'Version History', () => alert('Version History: Snapshot saved.')));
+    leftGroup.appendChild(this._createMoreDropdown());
 
     this.element.appendChild(leftGroup);
-    this.element.appendChild(rightGroup);
   }
 
   // ── Helper: Basic Button ──
@@ -857,50 +833,6 @@ export class VelloraToolbar {
 
     wrap.appendChild(trigger);
     wrap.appendChild(symbolPicker.element);
-    return wrap;
-  }
-
-  // ── ✦ AI Assistant Dropdown ──
-  private _createAIDropdown(): HTMLElement {
-    const wrap = document.createElement('div');
-    wrap.classList.add('vellora-tb-dropdown-wrap');
-
-    const trigger = document.createElement('button');
-    trigger.type = 'button';
-    trigger.classList.add('vellora-tb-ai-btn');
-    trigger.innerHTML = `${icons.sparkles} <span>AI</span> <span class="vellora-tb-chevron-sm">${icons.chevronDown}</span>`;
-
-    const menu = document.createElement('div');
-    menu.classList.add('vellora-tb-dropdown-menu', 'vellora-tb-dropdown-menu--ai');
-
-    const aiActions = [
-      { label: '✨ Improve Writing', prompt: 'Improve and polish tone' },
-      { label: '🔍 Fix Spelling & Grammar', prompt: 'Fix all typos and grammar' },
-      { label: '⚡ Make Shorter', prompt: 'Summarize concisely' },
-      { label: '📝 Make Longer', prompt: 'Expand with more details' },
-      { label: '🌐 Translate to Spanish', prompt: 'Translate' },
-    ];
-
-    for (const a of aiActions) {
-      const it = document.createElement('button');
-      it.type = 'button';
-      it.classList.add('vellora-tb-menu-item');
-      it.textContent = a.label;
-      it.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        alert(`✦ AI Assistant: "${a.label}" executed.`);
-        this._closeDropdown();
-      });
-      menu.appendChild(it);
-    }
-
-    trigger.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      this._toggleDropdown(wrap);
-    });
-
-    wrap.appendChild(trigger);
-    wrap.appendChild(menu);
     return wrap;
   }
 
