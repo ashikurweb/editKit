@@ -12,6 +12,8 @@ import { ImageModal } from './ImageModal';
 import { LinkPopover } from './LinkPopover';
 import { MathModal } from './MathModal';
 import { DividerModal } from './DividerModal';
+import { DecorativeDividerModal } from './DecorativeDividerModal';
+import { DecorativeDividerMenu } from './DecorativeDividerMenu';
 import { SignatureModal } from './SignatureModal';
 import { TooltipManager } from './Tooltip';
 
@@ -69,6 +71,8 @@ export class EditKitToolbar {
   private mathModal: MathModal;
   private dividerModal: DividerModal;
   private signatureModal: SignatureModal;
+  private decDividerModal: DecorativeDividerModal;
+  private decDividerMenu: DecorativeDividerMenu;
   private openDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
@@ -93,6 +97,9 @@ export class EditKitToolbar {
     this.mathModal = new MathModal(editor);
     this.dividerModal = new DividerModal(editor);
     this.signatureModal = new SignatureModal(editor);
+    this.decDividerModal = new DecorativeDividerModal(editor);
+    this.decDividerMenu = new DecorativeDividerMenu(editor);
+    this.decDividerMenu.mount(editor.root as HTMLElement);
 
     TooltipManager.init();
 
@@ -1362,8 +1369,7 @@ export class EditKitToolbar {
   }
 
   private _insertDecorativeDivider(): void {
-    const html = `<div class="editkit-decorative-divider" contenteditable="false"><span class="editkit-divider-line"></span><span class="editkit-divider-symbol">✦&nbsp;&nbsp;✦&nbsp;&nbsp;✦</span><span class="editkit-divider-line"></span></div><p><br></p>`;
-    document.execCommand('insertHTML', false, html);
+    this.decDividerModal.show();
   }
 
   private _insertSectionHeading(): void {

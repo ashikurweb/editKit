@@ -16,6 +16,8 @@ export { ImageFloatingMenu } from './ImageFloatingMenu';
 export { LinkPopover } from './LinkPopover';
 export { MathModal, formatMathFormula } from './MathModal';
 export { DividerModal } from './DividerModal';
+export { DecorativeDividerModal } from './DecorativeDividerModal';
+export { DecorativeDividerMenu } from './DecorativeDividerMenu';
 export { SignatureModal } from './SignatureModal';
 export { CropModal } from './CropModal';
 export { EmojiPicker } from './EmojiPicker';
