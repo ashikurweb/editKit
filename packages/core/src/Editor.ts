@@ -197,7 +197,7 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
   private _selectionChangeHandler: (() => void) | null = null;
   private _currentFontSize: number = 14;
   private _currentFontFamily: string = 'DM Sans';
-  private _currentLineHeight: string = '1.7';
+  private _currentLineHeight: string = '1.5';
 
   constructor(config: VelloraConfig = {}) {
     super();

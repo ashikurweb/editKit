@@ -34,6 +34,7 @@ export class VelloraToolbar {
   private sizeDisplay!: HTMLElement;
   private boldBtn!: HTMLElement;
   private italicBtn!: HTMLElement;
+  private alignTrigger!: HTMLElement;
 
   constructor(editor: VelloraEditor, config: ToolbarConfig = {}) {
     this.editor = editor;
@@ -44,6 +45,7 @@ export class VelloraToolbar {
     this.element.setAttribute('aria-label', 'Editor formatting toolbar');
 
     this._buildToolbar();
+    this._syncStates();
 
     // Selection & update listeners
     const unsub1 = editor.on('selectionUpdate', () => this._syncStates());
@@ -427,6 +429,7 @@ export class VelloraToolbar {
     trigger.classList.add('vellora-tb-btn', 'vellora-tb-btn--chevron');
     trigger.setAttribute('title', 'Text Alignment & Line Height');
     trigger.innerHTML = `${icons.alignLeft} <span class="vellora-tb-chevron-sm">${icons.chevronDown}</span>`;
+    this.alignTrigger = trigger;
 
     const menu = document.createElement('div');
     menu.classList.add('vellora-tb-dropdown-menu', 'vellora-tb-dropdown-menu--align');
@@ -447,7 +450,7 @@ export class VelloraToolbar {
       it.addEventListener('mousedown', (e) => {
         e.preventDefault();
         a.action();
-        trigger.innerHTML = `${a.icon} <span class="vellora-tb-chevron-sm">${icons.chevronDown}</span>`;
+        this._syncStates();
         this._closeDropdown();
       });
       menu.appendChild(it);
@@ -473,13 +476,12 @@ export class VelloraToolbar {
       const lhBtn = document.createElement('button');
       lhBtn.type = 'button';
       lhBtn.classList.add('vellora-tb-menu-item');
-      if (lh === '1.5') lhBtn.classList.add('vellora-tb-menu-item--active');
+      lhBtn.setAttribute('data-lineheight-id', lh);
       lhBtn.textContent = lh;
       lhBtn.addEventListener('mousedown', (e) => {
         e.preventDefault();
         this.editor.commands.setLineHeight(lh);
-        lhSub.querySelectorAll('.vellora-tb-menu-item').forEach(b => b.classList.remove('vellora-tb-menu-item--active'));
-        lhBtn.classList.add('vellora-tb-menu-item--active');
+        this._syncStates();
         this._closeDropdown();
       });
       lhSub.appendChild(lhBtn);
@@ -966,6 +968,7 @@ export class VelloraToolbar {
       this._closeDropdown();
     } else {
       this._closeDropdown();
+      this._syncStates();
       wrap.classList.add('vellora-tb-dropdown-wrap--open');
       this.openDropdown = wrap;
     }
@@ -990,6 +993,53 @@ export class VelloraToolbar {
       if (id) {
         b.classList.toggle('vellora-tb-menu-item--active', this.editor.isActive(id));
       }
+    });
+
+    // 1. Sync Alignment items & Trigger Icon
+    let activeAlign = 'left';
+    if (this.editor.isActive('alignCenter') || this.editor.isActive('aligncenter')) activeAlign = 'center';
+    else if (this.editor.isActive('alignRight') || this.editor.isActive('alignright')) activeAlign = 'right';
+    else if (this.editor.isActive('alignJustify') || this.editor.isActive('alignjustify')) activeAlign = 'justify';
+    else activeAlign = 'left';
+
+    const alignIconMap: Record<string, string> = {
+      left: icons.alignLeft,
+      center: icons.alignCenter,
+      right: icons.alignRight,
+      justify: icons.alignJustify,
+    };
+
+    if (this.alignTrigger) {
+      this.alignTrigger.innerHTML = `${alignIconMap[activeAlign] || icons.alignLeft} <span class="vellora-tb-chevron-sm">${icons.chevronDown}</span>`;
+    }
+
+    const alignButtons = this.element.querySelectorAll('[data-align-id]');
+    alignButtons.forEach(b => {
+      const id = b.getAttribute('data-align-id');
+      b.classList.toggle('vellora-tb-menu-item--active', id === activeAlign);
+    });
+
+    // 2. Sync Line Height items
+    const curLH = String(this.editor.commands.getLineHeight() || '1.5');
+    const lhButtons = this.element.querySelectorAll('[data-lineheight-id]');
+    lhButtons.forEach(b => {
+      const id = b.getAttribute('data-lineheight-id');
+      b.classList.toggle('vellora-tb-menu-item--active', id === curLH);
+    });
+
+    // 3. Sync Block type items
+    let activeBlock = 'paragraph';
+    if (this.editor.isActive('h1')) activeBlock = 'h1';
+    else if (this.editor.isActive('h2')) activeBlock = 'h2';
+    else if (this.editor.isActive('h3')) activeBlock = 'h3';
+    else if (this.editor.isActive('h4')) activeBlock = 'h4';
+    else if (this.editor.isActive('h5')) activeBlock = 'h5';
+    else if (this.editor.isActive('h6')) activeBlock = 'h6';
+
+    const blockButtons = this.element.querySelectorAll('[data-block-id]');
+    blockButtons.forEach(b => {
+      const id = b.getAttribute('data-block-id');
+      b.classList.toggle('vellora-tb-menu-item--active', id === activeBlock);
     });
 
     if (this.blockLabel) {

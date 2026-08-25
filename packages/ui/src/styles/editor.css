@@ -17,7 +17,7 @@
   --vellora-card-bg: #141519;
   --vellora-toolbar-bg: #18191e;
   --vellora-surface-hover: #22242c;
-  --vellora-surface-active: #2b2e38;
+  --vellora-surface-active: #323543;
   --vellora-surface-elevated: #1e2027;
 
   /* Text & Labels */
@@ -404,12 +404,6 @@
   font-size: 12px;
 }
 
-.vellora-tb-menu-item--active {
-  background: var(--vellora-surface-active);
-  color: var(--vellora-text);
-  font-weight: 600;
-}
-
 .vellora-tb-dropdown-menu--ai {
   min-width: 200px;
   right: 0;
@@ -436,6 +430,15 @@
 
 .vellora-tb-menu-item:hover {
   background: var(--vellora-surface-hover);
+}
+
+.vellora-tb-menu-item.vellora-tb-menu-item--active,
+.vellora-tb-dropdown-menu .vellora-tb-menu-item.vellora-tb-menu-item--active,
+.vellora-tb-submenu .vellora-tb-menu-item.vellora-tb-menu-item--active,
+.vellora-tb-submenu--lh .vellora-tb-menu-item.vellora-tb-menu-item--active {
+  background: var(--vellora-surface-active) !important;
+  color: #ffffff !important;
+  font-weight: 600;
 }
 
 .vellora-tb-menu-prefix {
