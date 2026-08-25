@@ -83,11 +83,11 @@ export class SignatureModal extends Modal {
 
     headerRight.appendChild(uploadBtn);
     headerRight.appendChild(this.uploadInputEl);
+    headerRight.appendChild(this.closeBtn);
 
     this.headerEl.innerHTML = '';
     this.headerEl.appendChild(headerLeft);
     this.headerEl.appendChild(headerRight);
-    this.headerEl.appendChild(this.closeBtn);
 
     // ── Name Field ──
     const nameWrap = document.createElement('div');
@@ -100,7 +100,7 @@ export class SignatureModal extends Modal {
     this.nameInputEl = document.createElement('input');
     this.nameInputEl.type = 'text';
     this.nameInputEl.classList.add('editkit-sig-name-input');
-    this.nameInputEl.value = "Eddyter's Support";
+    this.nameInputEl.value = 'Editkit Support';
     this.nameInputEl.placeholder = 'Your name or title...';
 
     nameWrap.appendChild(nameLabel);
@@ -207,8 +207,8 @@ export class SignatureModal extends Modal {
     // Actual HTML Canvas
     this.canvasEl = document.createElement('canvas');
     this.canvasEl.classList.add('editkit-sig-canvas');
-    this.canvasEl.width = 600 * 2; // Hi-DPI
-    this.canvasEl.height = 240 * 2;
+    this.canvasEl.width = 640 * 2; // Hi-DPI
+    this.canvasEl.height = 280 * 2;
     this.ctx = this.canvasEl.getContext('2d')!;
     this.ctx.scale(2, 2);
     this.ctx.lineCap = 'round';
@@ -255,8 +255,8 @@ export class SignatureModal extends Modal {
   private _setupCanvasEvents(): void {
     const getPos = (e: MouseEvent | Touch): StrokePoint => {
       const rect = this.canvasEl.getBoundingClientRect();
-      const scaleX = 600 / rect.width;
-      const scaleY = 240 / rect.height;
+      const scaleX = 640 / rect.width;
+      const scaleY = 280 / rect.height;
       return {
         x: (e.clientX - rect.left) * scaleX,
         y: (e.clientY - rect.top) * scaleY,
@@ -322,7 +322,7 @@ export class SignatureModal extends Modal {
   }
 
   private _redraw(): void {
-    this.ctx.clearRect(0, 0, 600, 240);
+    this.ctx.clearRect(0, 0, 640, 280);
 
     for (const stroke of this.strokes) {
       if (stroke.points.length === 0) continue;
@@ -386,13 +386,13 @@ export class SignatureModal extends Modal {
     reader.onload = (loadEvt) => {
       const img = new Image();
       img.onload = () => {
-        this.ctx.clearRect(0, 0, 600, 240);
+        this.ctx.clearRect(0, 0, 640, 280);
         // Draw centered and scaled
-        const scale = Math.min((600 - 40) / img.width, (240 - 40) / img.height, 1);
+        const scale = Math.min((640 - 40) / img.width, (280 - 40) / img.height, 1);
         const w = img.width * scale;
         const h = img.height * scale;
-        const x = (600 - w) / 2;
-        const y = (240 - h) / 2;
+        const x = (640 - w) / 2;
+        const y = (280 - h) / 2;
         this.ctx.drawImage(img, x, y, w, h);
       };
       img.src = loadEvt.target?.result as string;
@@ -407,8 +407,6 @@ export class SignatureModal extends Modal {
       return;
     }
 
-    // Export trimmed / clean signature
-    const dataUrl = this.canvasEl.toDataURL('image/png');
     const name = this.nameInputEl.value.trim() || 'Signature';
 
     const now = new Date();
@@ -422,6 +420,8 @@ export class SignatureModal extends Modal {
       hour12: true,
     });
 
+    const cardDataUrl = this._exportSignatureCard(name, dateStr);
+
     if (this.savedRange) {
       const sel = window.getSelection();
       if (sel) {
@@ -430,15 +430,75 @@ export class SignatureModal extends Modal {
       }
     }
 
-    // Insert signature card / image with caption into editor
+    // Insert signature card image into editor
     this.editor.commands.insertImage({
-      src: dataUrl,
-      alt: `Signature of ${name} (${dateStr})`,
+      src: cardDataUrl,
+      alt: `Signature by ${name} (${dateStr})`,
       title: `${name} — ${dateStr}`,
-      width: '280px',
+      width: '360px',
     });
 
     this.hide();
+  }
+
+  private _exportSignatureCard(name: string, dateStr: string): string {
+    const scale = 2;
+    const cardW = 380 * scale;
+    const cardH = 250 * scale;
+    const radius = 14 * scale;
+
+    const exportCanvas = document.createElement('canvas');
+    exportCanvas.width = cardW;
+    exportCanvas.height = cardH;
+    const ctx = exportCanvas.getContext('2d')!;
+
+    // 1. White rounded card background
+    ctx.beginPath();
+    ctx.moveTo(radius, 0);
+    ctx.lineTo(cardW - radius, 0);
+    ctx.quadraticCurveTo(cardW, 0, cardW, radius);
+    ctx.lineTo(cardW, cardH - radius);
+    ctx.quadraticCurveTo(cardW, cardH, cardW - radius, cardH);
+    ctx.lineTo(radius, cardH);
+    ctx.quadraticCurveTo(0, cardH, 0, cardH - radius);
+    ctx.lineTo(0, radius);
+    ctx.quadraticCurveTo(0, 0, radius, 0);
+    ctx.closePath();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1.5 * scale;
+    ctx.stroke();
+
+    // 2. Draw drawn signature centered in top section (height = 175 * scale)
+    const sigSectionH = 175 * scale;
+    const fitScale = Math.min((cardW - 40 * scale) / this.canvasEl.width, (sigSectionH - 24 * scale) / this.canvasEl.height);
+    const drawW = this.canvasEl.width * fitScale;
+    const drawH = this.canvasEl.height * fitScale;
+    const drawX = (cardW - drawW) / 2;
+    const drawY = (sigSectionH - drawH) / 2 + 6 * scale;
+
+    ctx.drawImage(this.canvasEl, drawX, drawY, drawW, drawH);
+
+    // 3. Divider line
+    ctx.beginPath();
+    ctx.moveTo(0, sigSectionH);
+    ctx.lineTo(cardW, sigSectionH);
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1 * scale;
+    ctx.stroke();
+
+    // 4. Metadata footer: "by {Name}" and "{Timestamp}"
+    ctx.fillStyle = '#0f172a';
+    ctx.font = `700 ${13 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
+    ctx.fillText(`by ${name}`, 18 * scale, sigSectionH + 28 * scale);
+
+    ctx.fillStyle = '#64748b';
+    ctx.font = `500 ${11 * scale}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
+    ctx.fillText(dateStr, 18 * scale, sigSectionH + 52 * scale);
+
+    return exportCanvas.toDataURL('image/png');
   }
 
   private _isCanvasBlank(): boolean {

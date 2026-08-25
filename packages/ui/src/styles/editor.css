@@ -3519,9 +3519,10 @@
 .editkit-img-tb-btn--pill {
   width: auto;
   padding: 0 6px;
-  font-weight: 700;
-  font-size: 10px;
-  color: #cbd5e1;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: #fb923c;
 }
 
 .editkit-img-tb-divider {
@@ -4065,7 +4066,32 @@
   align-items: center;
   gap: 10px;
   margin-left: auto;
-  margin-right: 32px;
+}
+
+.editkit-signature-modal .editkit-modal-close {
+  position: static !important;
+  top: auto !important;
+  right: auto !important;
+  transform: none !important;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: #1a1c27;
+  border: 1px solid #2b2e3f;
+  color: #8e94a6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: 0;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.editkit-signature-modal .editkit-modal-close:hover {
+  background: #252838;
+  color: #ffffff;
+  border-color: #3d425a;
 }
 
 .editkit-sig-upload-btn {
@@ -4093,15 +4119,21 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: var(--editkit-surface-hover, #1a1c27);
-  border: 1px solid var(--editkit-border, #282b3d);
+  background: #161722;
+  border: 1px solid #36394c;
   border-radius: 10px;
-  padding: 8px 14px;
-  margin-top: 14px;
+  padding: 9px 14px;
+  margin-top: 16px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.editkit-sig-name-wrap:focus-within {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
 }
 
 .editkit-sig-name-label {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #94a3b8;
 }
@@ -4214,9 +4246,9 @@
 
 .editkit-sig-canvas {
   width: 100%;
-  height: 220px;
+  height: 280px;
   display: block;
-  cursor: crosshair;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z'/%3E%3Cpath d='m15 5 4 4'/%3E%3C/svg%3E") 2 20, crosshair;
   touch-action: none;
 }
 

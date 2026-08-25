@@ -301,9 +301,11 @@ export class ImageFloatingMenu {
     this.toolbar.appendChild(createBtn(icons.breakText, 'Break text (Block)', () => {
       if (!this.activeImg) return;
       this.activeImg.style.display = 'block';
-      this.activeImg.style.margin = '1em auto';
+      this.activeImg.style.margin = '1em 0';
       this.activeImg.style.float = 'none';
     }));
+
+    addDivider();
 
     // 3. Align Left
     this.toolbar.appendChild(createBtn(icons.alignImageLeft, 'Align Left', () => {
@@ -346,27 +348,19 @@ export class ImageFloatingMenu {
       }
     }));
 
-    // 7. Crop / Resize Modal (Screenshot 3)
+    // 7. Crop / Resize Modal
     this.toolbar.appendChild(createBtn(icons.crop, 'Crop / Resize Image', () => {
       if (!this.activeImg) return;
       this.cropModal.openForImage(this.activeImg);
     }));
 
-    // 8. Rotate ↻
-    this.toolbar.appendChild(createBtn(icons.rotate, 'Rotate 90°', () => {
-      if (!this.activeImg) return;
-      this.currentRotation = (this.currentRotation + 90) % 360;
-      this.activeImg.setAttribute('data-rotation', String(this.currentRotation));
-      this.activeImg.style.transform = `rotate(${this.currentRotation}deg)`;
-    }));
-
-    // 9. Frame / Border
+    // 8. Frame / Border
     this.toolbar.appendChild(createBtn(icons.frame, 'Toggle Frame / Border', () => {
       if (!this.activeImg) return;
       this.activeImg.classList.toggle('editkit-image--framed');
     }));
 
-    // 10. ALT Text Button with Popup (Screenshot exact match)
+    // 9. ALT Text Button with Popup
     const altBtn = createBtn('', 'Edit Alt Text', () => {
       if (!this.activeImg) return;
       if (this.altPopoverEl.classList.contains('editkit-alt-popover--open')) {
@@ -377,16 +371,14 @@ export class ImageFloatingMenu {
     }, false, true, 'ALT');
     this.toolbar.appendChild(altBtn);
 
-    // 11. Open Link ↗
+    // 10. Open Link ↗
     this.toolbar.appendChild(createBtn(icons.externalLink, 'Open image in new tab', () => {
       if (this.activeImg?.src) {
         this._openImageInNewTab(this.activeImg.src, this.activeImg.alt || 'Image Preview');
       }
     }));
 
-    addDivider();
-
-    // 12. Delete 🗑
+    // 11. Delete 🗑
     this.toolbar.appendChild(createBtn(icons.trash, 'Delete image', () => {
       this.deleteActiveImage();
     }, true));
