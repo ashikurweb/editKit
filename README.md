@@ -1,7 +1,7 @@
-# EditKit Editor ✨
+# EditKit ✨
 
 <p align="center">
-  <strong>A Premium, Framework-Agnostic, Zero-Dependency Rich Text Editor SDK</strong>
+  <strong>A Premium, Framework-Agnostic, Zero-Dependency Rich Text Editor SDK for Modern Web Apps</strong>
 </p>
 
 <p align="center">
@@ -12,282 +12,300 @@
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
 </p>
 
+<p align="center">
+  <img src="./assets/editkit-preview.png" alt="EditKit Rich Text Editor Preview" width="100%" style="border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.4);" />
+</p>
+
 ---
 
 ## 🚀 Overview
 
-**EditKit Editor** is a modern, extensible rich text editor built **100% from scratch** in TypeScript with **zero external dependencies**. Inspired by the high-end **EDITKIT** aesthetic, it features first-class tables, an interactive 2D HSV color picker, floating selection bubble toolbars, custom plugin architecture, and CSS-variable-driven dark & light themes.
+**EditKit** is a state-of-the-art, extensible rich text editor built **100% from scratch** in pure TypeScript with **zero external dependencies** (no ProseMirror, Lexical, Slate, or Quill required).
+
+Crafted with high-end modern aesthetics, it delivers:
+- ⚡ **Blazing Fast Performance**: Zero-bundle overhead, lightweight and instant startup.
+- 🎨 **Sleek Modern UI**: Premium dark & light theme built with pure CSS variables.
+- 📊 **First-Class Interactive Tables**: 6×6 visual hover grid, dynamic rows/cols manipulation, and cell coloring.
+- 🌈 **2D HSV Custom Color Picker**: Full palette swatches + 2D saturation/brightness spectrum and hue slider.
+- 🫧 **Contextual Floating Menus**: Smart text selection bubble toolbar, floating table controls, and image resizer.
+- 🔌 **Modular Architecture**: Dedicated official packages for **React**, **Vue 3**, **Svelte**, and **Vanilla JS**.
 
 ---
 
-## ✨ Features
+## 📦 Compatibility & Supported Versions
 
-- **⚡ Zero External Dependencies**: No ProseMirror, Lexical, Quill, or Tailwind required. Pure native performance.
-- **🌐 Framework Agnostic**: One single core engine that works seamlessly in **React**, **Next.js**, **Vue 3**, **Nuxt**, **Svelte**, **SvelteKit**, **Angular**, or **Vanilla JS**.
-- **📊 First-Class Table System**:
-  - Interactive **6×6 visual NxM hover grid selector**.
-  - Insert/Delete Rows & Columns with a single click.
-  - Header Row toggling & individual cell background colors.
-  - **Contextual Table Toolbar** that appears whenever the cursor is inside a table.
-  - Excel-style `Tab` / `Shift+Tab` cell navigation.
-- **🎨 2D HSV Custom Color Picker**:
-  - `Text A` and `Background` color tabs.
-  - `#000000` editable hex input with live preview swatch box.
-  - 21 curated palette swatches (3×7 grid).
-  - Collapsible **2D Saturation-Brightness Canvas** + **Rainbow Hue Slider** for infinite custom colors.
-- **🫧 Floating Selection Bubble Toolbar**: Automatically appears on text selection with quick actions (`✦ AI ˅`, `- 14 +`, `Bold`, `Italic`, `Underline`, `Code`, `Link`, `Color`).
-- **🔌 Pluggable Extension Architecture**: Write custom extensions, commands, toolbar items, and keyboard shortcuts.
-- **🌗 Pure CSS Variable Theming**: Out-of-the-box **Dark Mode** and **Light Mode**. Easily customize every color, border, and radius via standard CSS variables.
+| Framework / Environment | Minimum Version | Supported Range | Package to Install |
+| :--- | :--- | :--- | :--- |
+| **Node.js** | `>= 18.0.0` | `18.x`, `20.x`, `22.x+` | - |
+| **React** | **16.8+** | `^16.8.0 \|\| ^17.0.0 \|\| ^18.0.0 \|\| ^19.0.0` | `@editkit/react` + `@editkit/ui` |
+| **Vue** | **3.0+** | `>= 3.0.0` (Vue 3.0 through Vue 3.5+) | `@editkit/vue` + `@editkit/ui` |
+| **Svelte** | **3.0+** | `^3.0.0 \|\| ^4.0.0 \|\| ^5.0.0` (Runes) | `@editkit/svelte` + `@editkit/ui` |
+| **Vanilla JS / TS** | **Any** | All modern browsers (Chrome, Safari, Firefox, Edge) | `@editkit/core` + `@editkit/ui` |
 
 ---
 
-## 📦 Requirements
+## 📥 Installation & Setup by Framework
 
-| Requirement | Minimum Version | Recommended |
-|---|---|---|
-| **Node.js** | `>= 18.0.0` | `20.x LTS` or `22.x` |
-| **Package Manager** | `pnpm >= 9.x` / `npm >= 9.x` / `yarn >= 1.22.x` | `pnpm 9+` |
-| **Browser Support** | All modern browsers (Chrome, Edge, Firefox, Safari) | Latest evergreen |
-
----
-
-## 📥 Installation
-
-Install the packages via your preferred package manager:
+### 1. ⚛️ React / Next.js / Laravel Inertia React
 
 ```bash
-# Using pnpm (recommended)
-pnpm add @editkit/core @editkit/ui
+# npm
+npm install @editkit/react @editkit/ui
 
-# Using npm
-npm install @editkit/core @editkit/ui
+# pnpm
+pnpm add @editkit/react @editkit/ui
 
-# Using yarn
-yarn add @editkit/core @editkit/ui
+# yarn
+yarn add @editkit/react @editkit/ui
+```
+
+#### Component Usage (`<EditKitEditor />`):
+
+```tsx
+import React, { useState } from 'react';
+import { EditKitEditor } from '@editkit/react';
+import '@editkit/ui/styles';
+
+export default function App() {
+  const [content, setContent] = useState('<h1>Hello EditKit</h1><p>Start writing...</p>');
+
+  return (
+    <div className="max-w-4xl mx-auto p-4">
+      <EditKitEditor
+        value={content}
+        onChange={setContent}
+        theme="dark" // 'dark' | 'light' | 'system'
+        placeholder="Type something amazing..."
+        // Granularly toggle any feature on/off:
+        features={{
+          math: false,           // Hide LaTeX Math formula modal
+          chart: false,          // Hide Chart widget
+          comment: false,        // Hide Comment button
+          versionHistory: false, // Hide Snapshot button
+          bookmark: false,       // Hide Bookmark / Pin
+        }}
+        bubbleMenu={true}        // Floating selection bubble menu
+        tableMenu={true}         // Contextual floating table actions
+        imageMenu={true}         // Floating image resize bar
+      />
+    </div>
+  );
+}
+```
+
+#### Hook Usage (`useEditKitEditor`):
+
+```tsx
+import React from 'react';
+import { useEditKitEditor } from '@editkit/react';
+import '@editkit/ui/styles';
+
+export function CustomEditor() {
+  const { editor, containerRef } = useEditKitEditor({
+    content: '<p>Custom headless integration</p>',
+    theme: 'dark',
+    features: {
+      chart: false,
+    },
+  });
+
+  return (
+    <div>
+      <div className="custom-actions">
+        <button onClick={() => editor?.commands.bold()}>Bold</button>
+        <button onClick={() => editor?.commands.italic()}>Italic</button>
+      </div>
+      <div ref={containerRef} />
+    </div>
+  );
+}
 ```
 
 ---
 
-## 🛠️ Quick Start by Framework
+### 2. 🟢 Vue 3 / Nuxt 3 / Laravel Inertia Vue
 
-### 1. Vanilla JavaScript / TypeScript
+```bash
+# npm
+npm install @editkit/vue @editkit/ui
 
-```ts
-import { createEditor } from '@editkit/core';
-import { createToolbar, BubbleMenu, TableFloatingMenu } from '@editkit/ui';
+# pnpm
+pnpm add @editkit/vue @editkit/ui
+```
+
+#### Component Usage (`<EditKitEditor />` with `v-model`):
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { EditKitEditor } from '@editkit/vue';
 import '@editkit/ui/styles';
 
-// 1. Create Editor Instance
-const editor = createEditor({
+const content = ref('<p>Hello from Vue 3 and EditKit!</p>');
+</script>
+
+<template>
+  <div class="editor-wrapper">
+    <EditKitEditor
+      v-model="content"
+      theme="dark"
+      placeholder="Start typing in Vue..."
+      :features="{
+        math: false,
+        chart: false,
+        table: true,
+        emoji: true,
+      }"
+      :bubble-menu="true"
+      :table-menu="true"
+      :image-menu="true"
+    />
+  </div>
+</template>
+```
+
+#### Composable Usage (`useEditKitEditor`):
+
+```vue
+<script setup lang="ts">
+import { useTemplateRef } from 'vue';
+import { useEditKitEditor } from '@editkit/vue';
+import '@editkit/ui/styles';
+
+const editorEl = useTemplateRef<HTMLElement>('editorEl');
+const { editor } = useEditKitEditor(editorEl, {
+  content: '<p>Composable based editor</p>',
+  theme: 'dark',
+});
+</script>
+
+<template>
+  <div>
+    <button @click="editor?.commands.bold()">Bold</button>
+    <div ref="editorEl" />
+  </div>
+</template>
+```
+
+---
+
+### 3. 🟠 Svelte / SvelteKit (Svelte 3, 4, 5)
+
+```bash
+# npm
+npm install @editkit/svelte @editkit/ui
+
+# pnpm
+pnpm add @editkit/svelte @editkit/ui
+```
+
+#### Svelte Action Usage (`use:editkit`):
+
+```svelte
+<script lang="ts">
+  import { editkit } from '@editkit/svelte';
+  import '@editkit/ui/styles';
+
+  let content = '<p>Hello from Svelte!</p>';
+</script>
+
+<div
+  use:editkit={{
+    content,
+    theme: 'dark',
+    placeholder: 'Write with EditKit in Svelte...',
+    features: {
+      chart: false,
+      math: false,
+    },
+    onChange: (html) => {
+      content = html;
+    }
+  }}
+/>
+```
+
+---
+
+### 4. 🍦 Vanilla JavaScript / TypeScript
+
+```bash
+npm install @editkit/core @editkit/ui
+```
+
+```ts
+import { EditKitEditor } from '@editkit/core';
+import { createToolbar, BubbleMenu, TableFloatingMenu, ImageFloatingMenu } from '@editkit/ui';
+import '@editkit/ui/styles';
+
+// 1. Initialize core editor
+const editor = new EditKitEditor({
   theme: 'dark', // 'dark' | 'light' | 'system'
   defaultFontFamily: 'DM Sans',
   defaultFontSize: 14,
   placeholder: 'Start writing...',
-  content: '<p>Welcome to EditKit Editor!</p>',
-  onUpdate: (editor) => {
-    console.log('HTML:', editor.getHTML());
-    console.log('JSON:', editor.getJSON());
+  content: '<p>Welcome to EditKit!</p>',
+  onUpdate: (ed) => {
+    console.log('HTML:', ed.getHTML());
   },
 });
 
-// 2. Setup Toolbars
-const toolbar = createToolbar(editor);
+// 2. Attach Toolbar (with custom feature toggles)
+const toolbar = createToolbar(editor, {
+  features: {
+    chart: false,
+    math: false,
+  },
+});
 editor.root.insertBefore(toolbar.element, editor.contentEl);
 
-const bubbleMenu = new BubbleMenu(editor);
-bubbleMenu.mount(editor.root);
+// 3. Attach Floating Menus
+new BubbleMenu(editor).mount(editor.root);
+new TableFloatingMenu(editor).mount(editor.root);
+new ImageFloatingMenu(editor).mount(editor.root);
 
-const tableMenu = new TableFloatingMenu(editor);
-tableMenu.mount(editor.root);
-
-// 3. Mount into DOM Container
-editor.mount(document.getElementById('editor-container')!);
+// 4. Mount into container element
+editor.mount(document.getElementById('editor')!);
 ```
 
 ---
 
-### 2. React / Next.js
+## 🎛️ Feature & Toolbar Configuration Props
 
-```tsx
-import React, { useEffect, useRef } from 'react';
-import { createEditor, EditKitEditor } from '@editkit/core';
-import { createToolbar, BubbleMenu, TableFloatingMenu } from '@editkit/ui';
-import '@editkit/ui/styles';
+When configuring the toolbar via `features` (in React/Vue/Svelte or Vanilla), you can toggle any button or tool individually:
 
-export const EditKitReactEditor: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const editorRef = useRef<EditKitEditor | null>(null);
-
-  useEffect(() => {
-    if (!containerRef.current || editorRef.current) return;
-
-    // Initialize Editor
-    const editor = createEditor({
-      theme: 'dark',
-      defaultFontFamily: 'DM Sans',
-      defaultFontSize: 14,
-      content: '<h1>Hello from React!</h1><p>Start editing...</p>',
-    });
-
-    const toolbar = createToolbar(editor);
-    editor.root.insertBefore(toolbar.element, editor.contentEl);
-
-    const bubbleMenu = new BubbleMenu(editor);
-    bubbleMenu.mount(editor.root);
-
-    const tableMenu = new TableFloatingMenu(editor);
-    tableMenu.mount(editor.root);
-
-    editor.mount(containerRef.current);
-    editorRef.current = editor;
-
-    return () => {
-      editor.destroy();
-      editorRef.current = null;
-    };
-  }, []);
-
-  return <div ref={containerRef} className="my-editor-wrapper" />;
-};
-```
-
----
-
-### 3. Vue 3 / Nuxt
-
-```vue
-<template>
-  <div ref="editorContainer" class="my-editor-wrapper" />
-</template>
-
-<script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import { createEditor, EditKitEditor } from '@editkit/core';
-import { createToolbar, BubbleMenu, TableFloatingMenu } from '@editkit/ui';
-import '@editkit/ui/styles';
-
-const editorContainer = ref<HTMLElement | null>(null);
-let editor: EditKitEditor | null = null;
-
-onMounted(() => {
-  if (!editorContainer.value) return;
-
-  editor = createEditor({
-    theme: 'dark',
-    defaultFontFamily: 'DM Sans',
-    defaultFontSize: 14,
-    content: '<h1>Hello from Vue 3!</h1>',
-  });
-
-  const toolbar = createToolbar(editor);
-  editor.root.insertBefore(toolbar.element, editor.contentEl);
-
-  const bubbleMenu = new BubbleMenu(editor);
-  bubbleMenu.mount(editor.root);
-
-  const tableMenu = new TableFloatingMenu(editor);
-  tableMenu.mount(editor.root);
-
-  editor.mount(editorContainer.value);
-});
-
-onBeforeUnmount(() => {
-  editor?.destroy();
-});
-</script>
-```
-
----
-
-### 4. Svelte / SvelteKit
-
-```svelte
-<script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { createEditor, type EditKitEditor } from '@editkit/core';
-  import { createToolbar, BubbleMenu, TableFloatingMenu } from '@editkit/ui';
-  import '@editkit/ui/styles';
-
-  let container: HTMLElement;
-  let editor: EditKitEditor;
-
-  onMount(() => {
-    editor = createEditor({
-      theme: 'dark',
-      defaultFontFamily: 'DM Sans',
-      defaultFontSize: 14,
-      content: '<h1>Hello from Svelte!</h1>',
-    });
-
-    const toolbar = createToolbar(editor);
-    editor.root.insertBefore(toolbar.element, editor.contentEl);
-
-    const bubbleMenu = new BubbleMenu(editor);
-    bubbleMenu.mount(editor.root);
-
-    const tableMenu = new TableFloatingMenu(editor);
-    tableMenu.mount(editor.root);
-
-    editor.mount(container);
-  });
-
-  onDestroy(() => {
-    editor?.destroy();
-  });
-</script>
-
-<div bind:this={container} class="my-editor-wrapper" />
-```
-
----
-
-## 🔌 Custom Plugins & Extensions
-
-You can extend EditKit with custom business logic, shortcuts, and toolbar buttons:
-
-```ts
-import { Extension, type EditKitEditor } from '@editkit/core';
-
-export class MentionsExtension extends Extension {
-  get name() {
-    return 'mentions';
-  }
-
-  onInit(editor: EditKitEditor) {
-    console.log('Mentions extension loaded');
-  }
-
-  defineKeyboardShortcuts() {
-    return {
-      'Ctrl+Shift+M': (editor) => {
-        editor.commands.bold();
-      },
-    };
-  }
-
-  defineCommands(editor: EditKitEditor) {
-    return {
-      insertMention: (name: string) => {
-        document.execCommand('insertHTML', false, `<span class="mention">@${name}</span>`);
-      },
-    };
-  }
-}
-
-// Pass to editor config:
-const editor = createEditor({
-  extensions: [new MentionsExtension()],
-});
-```
+| Feature Key | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `history` | `boolean` | `true` | Undo & Redo button group |
+| `block` | `boolean` | `true` | Paragraph & Headings dropdown (Heading 1 to 6) |
+| `fontFamily` | `boolean` | `true` | Font family picker (DM Sans, Inter, Geist, etc.) |
+| `fontSize` | `boolean` | `true` | Font size stepper (`- 14 +`) |
+| `bold` | `boolean` | `true` | Bold formatting button (`B`) |
+| `format` | `boolean` | `true` | Extra formats (Italic, Underline, Strikethrough, Code, Sub/Superscript) |
+| `color` | `boolean` | `true` | Text color & background highlight color popover (`A ˅`) |
+| `align` | `boolean` | `true` | Alignment dropdown (Left, Center, Right, Justify) |
+| `lists` | `boolean` | `true` | Bullet, Numbered, Task lists, Indent/Outdent & Line Height |
+| `image` | `boolean` | `true` | Image dropzone upload & URL modal |
+| `table` | `boolean` | `true` | Interactive 6x6 visual hover grid table inserter |
+| `chart` | `boolean` | `true` | Insert Chart widget |
+| `math` | `boolean` | `true` | LaTeX Math & Equation editor modal |
+| `link` | `boolean` | `true` | In-place floating link preview & editor popover |
+| `emoji` | `boolean` | `true` | Searchable emoji picker with category tabs |
+| `symbol` | `boolean` | `true` | Special characters & math symbols picker |
+| `bookmark` | `boolean` | `true` | Pin / Bookmark action |
+| `selectAll` | `boolean` | `true` | Select all editor content (`⌘A`) |
+| `clearAll` | `boolean` | `true` | Clear all content button (Cross icon, enabled only when all selected) |
+| `comment` | `boolean` | `true` | Add comment button |
+| `versionHistory` | `boolean` | `true` | Version snapshot history button |
+| `more` | `boolean` | `true` | More tools dropdown (`+ ˅`) |
 
 ---
 
 ## 🎨 CSS Variable Theming
 
-EditKit uses standard CSS variables. You can completely customize its theme in plain CSS without touching TypeScript:
+EditKit is styled using standard, cleanly scoped CSS variables. You can easily override colors, radii, and surfaces in plain CSS:
 
 ```css
-/* Custom Theme Override */
 [data-editkit],
 [data-editkit-theme="dark"] {
   --editkit-bg: #0c0d10;
@@ -296,86 +314,24 @@ EditKit uses standard CSS variables. You can completely customize its theme in p
   --editkit-border: #23252f;
   --editkit-border-focus: #7c3aed;
   --editkit-primary: #7c3aed;
-  --editkit-table-header-bg: #2d3342;
-  --editkit-table-header-text: #e2e8f0;
   --editkit-font: 'DM Sans', sans-serif;
 }
 ```
 
-To switch themes dynamically at runtime:
-
-```ts
-// Switch between 'dark' and 'light'
-editor.setTheme('dark');
-editor.setTheme('light');
-```
-
 ---
 
-## 📖 Commands & API Reference
+## 💻 Local Playground & Development
 
-### Inline Formatting
-- `editor.commands.bold()` — Toggle Bold (`Ctrl+B`)
-- `editor.commands.italic()` — Toggle Italic (`Ctrl+I`)
-- `editor.commands.underline()` — Toggle Underline (`Ctrl+U`)
-- `editor.commands.strikethrough()` — Toggle Strikethrough
-- `editor.commands.code()` — Toggle Inline Code (`Ctrl+E`)
-- `editor.commands.subscript()` / `superscript()`
-- `editor.commands.setTextColor('#ff0000')`
-- `editor.commands.setHighlight('#ffff00')`
-
-### Typography & Blocks
-- `editor.commands.setFontFamily('DM Sans')`
-- `editor.commands.setFontSize(16)`
-- `editor.commands.increaseFontSize()` / `decreaseFontSize()`
-- `editor.commands.paragraph()`
-- `editor.commands.heading(1)` through `heading(6)`
-- `editor.commands.blockquote()`
-- `editor.commands.codeBlock()`
-- `editor.commands.horizontalRule()`
-
-### Lists & Alignment
-- `editor.commands.bulletList('default' | 'circle' | 'square')`
-- `editor.commands.orderedList('decimal' | 'lower-alpha' | 'lower-roman')`
-- `editor.commands.taskList()`
-- `editor.commands.indent()` / `outdent()`
-- `editor.commands.alignLeft()` / `alignCenter()` / `alignRight()` / `alignJustify()`
-
-### Tables (First-Class Feature)
-- `editor.commands.insertTable({ rows: 3, cols: 3, withHeaderRow: true })`
-- `editor.commands.addRowAbove()` / `addRowBelow()` / `deleteRow()`
-- `editor.commands.addColumnLeft()` / `addColumnRight()` / `deleteColumn()`
-- `editor.commands.toggleHeaderRow()`
-- `editor.commands.setCellBackground('#3b82f6')`
-- `editor.commands.deleteTable()`
-
-### Document & State
-- `editor.getHTML()` — Returns current content as HTML string
-- `editor.getJSON()` — Returns structured document tree as JSON
-- `editor.getText()` — Returns plain text content
-- `editor.setContent(html)` — Updates content programmatically
-- `editor.clearContent()` — Resets editor
-- `editor.isActive('bold' | 'h1' | 'ul')` — Checks if format is active
-- `editor.on('update' | 'selectionUpdate' | 'focus' | 'blur', callback)` — Event subscriptions
-
----
-
-## 💻 Monorepo Development
-
-To run and contribute to the editor locally:
+To run the interactive live playground locally:
 
 ```bash
-# 1. Clone repository
-git clone https://github.com/ashikurweb/editkit-editor.git
-cd editkit-editor
-
-# 2. Install dependencies
+# 1. Install dependencies
 pnpm install
 
-# 3. Start local playground dev server
+# 2. Start Playground dev server
 pnpm playground
 
-# Opens at http://localhost:3000
+# Runs at http://localhost:5173
 ```
 
 ---
