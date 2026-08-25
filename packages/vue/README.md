@@ -3,7 +3,7 @@
 Official Vue 3 integration & composables for **EditKit** — A premium, zero-dependency rich text editor SDK.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ashikurweb/editkit-editor/master/assets/editkit-preview.png" alt="EditKit Editor Preview" width="100%" />
+  <img src="https://raw.githubusercontent.com/ashikurweb/vellora-editor/master/assets/editkit-preview.png" alt="EditKit Editor Preview" width="100%" />
 </p>
 
 ## 📦 Installation

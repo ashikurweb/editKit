@@ -1,6 +1,6 @@
 {
   "name": "@editkit/core",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "EditKit core editor engine — zero dependencies, framework agnostic",
   "type": "module",
   "main": "./src/index.ts",

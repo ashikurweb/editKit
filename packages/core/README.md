@@ -3,7 +3,7 @@
 EditKit Core Engine — A zero-dependency, framework-agnostic rich text editor.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ashikurweb/editkit-editor/master/assets/editkit-preview.png" alt="EditKit Editor Preview" width="100%" />
+  <img src="https://raw.githubusercontent.com/ashikurweb/vellora-editor/master/assets/editkit-preview.png" alt="EditKit Editor Preview" width="100%" />
 </p>
 
 ## 📦 Installation
