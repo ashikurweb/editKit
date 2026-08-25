@@ -383,7 +383,7 @@ export class VelloraToolbar {
     return wrap;
   }
 
-  // ── 5. Alignment Dropdown: ≡ ˅ ──
+  // ── 5. Alignment Dropdown: ≡ ˅ (Exact EDDYTER Match) ──
   private _createAlignDropdown(): HTMLElement {
     const wrap = document.createElement('div');
     wrap.classList.add('vellora-tb-dropdown-wrap');
@@ -391,23 +391,24 @@ export class VelloraToolbar {
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.classList.add('vellora-tb-btn', 'vellora-tb-btn--chevron');
-    trigger.setAttribute('title', 'Text Alignment');
+    trigger.setAttribute('title', 'Text Alignment & Line Height');
     trigger.innerHTML = `${icons.alignLeft} <span class="vellora-tb-chevron-sm">${icons.chevronDown}</span>`;
 
     const menu = document.createElement('div');
-    menu.classList.add('vellora-tb-dropdown-menu', 'vellora-tb-dropdown-menu--compact');
+    menu.classList.add('vellora-tb-dropdown-menu', 'vellora-tb-dropdown-menu--align');
 
     const aligns = [
-      { id: 'left', icon: icons.alignLeft, label: 'Align Left', action: () => this.editor.commands.alignLeft() },
-      { id: 'center', icon: icons.alignCenter, label: 'Align Center', action: () => this.editor.commands.alignCenter() },
-      { id: 'right', icon: icons.alignRight, label: 'Align Right', action: () => this.editor.commands.alignRight() },
-      { id: 'justify', icon: icons.alignJustify, label: 'Justify', action: () => this.editor.commands.alignJustify() },
+      { id: 'left', icon: icons.alignLeft, label: 'Left Align', action: () => this.editor.commands.alignLeft() },
+      { id: 'center', icon: icons.alignCenter, label: 'Center Align', action: () => this.editor.commands.alignCenter() },
+      { id: 'right', icon: icons.alignRight, label: 'Right Align', action: () => this.editor.commands.alignRight() },
+      { id: 'justify', icon: icons.alignJustify, label: 'Justify Align', action: () => this.editor.commands.alignJustify() },
     ];
 
     for (const a of aligns) {
       const it = document.createElement('button');
       it.type = 'button';
       it.classList.add('vellora-tb-menu-item');
+      it.setAttribute('data-align-id', a.id);
       it.innerHTML = `<span class="vellora-tb-menu-prefix">${a.icon}</span> <span>${a.label}</span>`;
       it.addEventListener('mousedown', (e) => {
         e.preventDefault();
@@ -417,6 +418,42 @@ export class VelloraToolbar {
       });
       menu.appendChild(it);
     }
+
+    // ── Line Height Flyout Item (Exact match from screenshot) ──
+    const lhWrap = document.createElement('div');
+    lhWrap.classList.add('vellora-tb-submenu-wrap');
+
+    const lhItem = document.createElement('div');
+    lhItem.classList.add('vellora-tb-menu-item', 'vellora-tb-menu-item--has-sub');
+    lhItem.innerHTML = `
+      <span class="vellora-tb-menu-label">Line Height</span>
+      <span class="vellora-tb-menu-arrow">${icons.chevronRight}</span>
+    `;
+
+    const lhSub = document.createElement('div');
+    lhSub.classList.add('vellora-tb-submenu', 'vellora-tb-submenu--lh');
+
+    const lineHeights = ['1', '1.15', '1.5', '2', '2.5', '3'];
+
+    for (const lh of lineHeights) {
+      const lhBtn = document.createElement('button');
+      lhBtn.type = 'button';
+      lhBtn.classList.add('vellora-tb-menu-item');
+      if (lh === '1.5') lhBtn.classList.add('vellora-tb-menu-item--active');
+      lhBtn.textContent = lh;
+      lhBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        this.editor.commands.setLineHeight(lh);
+        lhSub.querySelectorAll('.vellora-tb-menu-item').forEach(b => b.classList.remove('vellora-tb-menu-item--active'));
+        lhBtn.classList.add('vellora-tb-menu-item--active');
+        this._closeDropdown();
+      });
+      lhSub.appendChild(lhBtn);
+    }
+
+    lhWrap.appendChild(lhItem);
+    lhWrap.appendChild(lhSub);
+    menu.appendChild(lhWrap);
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();

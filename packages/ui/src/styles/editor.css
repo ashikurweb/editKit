@@ -386,6 +386,26 @@
   min-width: 140px;
 }
 
+.vellora-tb-dropdown-menu--align {
+  min-width: 145px;
+}
+
+.vellora-tb-submenu--lh {
+  min-width: 80px;
+  padding: 4px;
+}
+
+.vellora-tb-submenu--lh .vellora-tb-menu-item {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.vellora-tb-menu-item--active {
+  background: var(--vellora-surface-active);
+  color: var(--vellora-text);
+  font-weight: 600;
+}
+
 .vellora-tb-dropdown-menu--ai {
   min-width: 200px;
   right: 0;

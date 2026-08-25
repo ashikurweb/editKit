@@ -194,6 +194,7 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
   private _selectionChangeHandler: (() => void) | null = null;
   private _currentFontSize: number = 14;
   private _currentFontFamily: string = 'DM Sans';
+  private _currentLineHeight: string = '1.7';
 
   constructor(config: VelloraConfig = {}) {
     super();
@@ -421,11 +422,13 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
     indent: () => this._indent(),
     outdent: () => this._outdent(),
 
-    // ── Alignment ──
+    // ── Alignment & Spacing ──
     alignLeft: () => this._setAlignment('left'),
     alignCenter: () => this._setAlignment('center'),
     alignRight: () => this._setAlignment('right'),
     alignJustify: () => this._setAlignment('justify'),
+    setLineHeight: (height: string | number) => this._setLineHeight(height),
+    getLineHeight: () => this._currentLineHeight,
 
     // ── Tables (First-Class Feature) ──
     insertTable: (options?: TableOptions) => this._insertTable(options),
@@ -1110,6 +1113,17 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
     const blocks = getSelectedBlocks(this.contentEl);
     for (const block of blocks) {
       block.style.textAlign = align === 'left' ? '' : align;
+    }
+    this._saveHistory();
+    this._emitUpdate();
+  }
+
+  private _setLineHeight(height: string | number): void {
+    this._ensureFocus();
+    this._currentLineHeight = String(height);
+    const blocks = getSelectedBlocks(this.contentEl);
+    for (const block of blocks) {
+      block.style.lineHeight = String(height);
     }
     this._saveHistory();
     this._emitUpdate();
