@@ -6,6 +6,7 @@
 import type { VelloraEditor, BulletListStyle, NumberedListStyle } from '@vellora/core';
 import { icons } from './icons';
 import { ColorPickerPopover } from './ColorPicker';
+import { EmojiPicker } from './EmojiPicker';
 import { ImageModal } from './ImageModal';
 import { LinkPopover } from './LinkPopover';
 import { MathModal } from './MathModal';
@@ -784,7 +785,7 @@ export class VelloraToolbar {
     return btn;
   }
 
-  // ── Emoji Picker Dropdown ──
+  // ── Emoji Picker Dropdown (Exact match to Eddyter Screenshot) ──
   private _createEmojiDropdown(): HTMLElement {
     const wrap = document.createElement('div');
     wrap.classList.add('vellora-tb-dropdown-wrap');
@@ -795,30 +796,22 @@ export class VelloraToolbar {
     trigger.setAttribute('title', 'Insert Emoji');
     trigger.innerHTML = icons.emoji;
 
-    const menu = document.createElement('div');
-    menu.classList.add('vellora-tb-dropdown-menu', 'vellora-tb-emoji-grid');
-
-    const emojis = ['😀', '🔥', '✨', '🚀', '🎉', '💡', '✅', '❤️', '👍', '📌', '⚡', '💻', '📝', '🎯', '🌟', '🎨'];
-    for (const em of emojis) {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.classList.add('vellora-tb-emoji-btn');
-      b.textContent = em;
-      b.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        document.execCommand('insertText', false, em);
-        this._closeDropdown();
-      });
-      menu.appendChild(b);
-    }
-
-    trigger.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      this._toggleDropdown(wrap);
+    const picker = new EmojiPicker(this.editor, () => {
+      this._closeDropdown();
     });
 
     wrap.appendChild(trigger);
-    wrap.appendChild(menu);
+    wrap.appendChild(picker.element);
+
+    trigger.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      const willOpen = !wrap.classList.contains('vellora-tb-dropdown-wrap--open');
+      this._toggleDropdown(wrap);
+      if (willOpen) {
+        picker.focusSearch();
+      }
+    });
+
     return wrap;
   }
 

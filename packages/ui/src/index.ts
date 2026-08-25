@@ -15,4 +15,5 @@ export { ImageModal } from './ImageModal';
 export { ImageFloatingMenu } from './ImageFloatingMenu';
 export { LinkPopover } from './LinkPopover';
 export { MathModal, formatMathFormula } from './MathModal';
+export { EmojiPicker } from './EmojiPicker';
 export { icons } from './icons';
