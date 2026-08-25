@@ -76,7 +76,7 @@ export class ColorPickerPopover {
   private hue: number = 0; // 0 to 1
   private sat: number = 1; // 0 to 1
   private val: number = 1; // 0 to 1
-  private isCustomPickerOpen: boolean = true;
+  private isCustomPickerOpen: boolean = false;
 
   // DOM Elements
   private previewBox!: HTMLElement;

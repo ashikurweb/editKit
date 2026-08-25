@@ -20,6 +20,7 @@ export { DecorativeDividerModal } from './DecorativeDividerModal';
 export { DecorativeDividerMenu } from './DecorativeDividerMenu';
 export { SectionHeadingMenu } from './SectionHeadingMenu';
 export { PullQuoteMenu } from './PullQuoteMenu';
+export { ButtonBlockMenu } from './ButtonBlockMenu';
 export { SignatureModal } from './SignatureModal';
 export { CropModal } from './CropModal';
 export { EmojiPicker } from './EmojiPicker';

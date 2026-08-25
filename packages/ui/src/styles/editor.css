@@ -2662,7 +2662,7 @@
 }
 
 /* Links (Exact rgb(118, 101, 255) match) */
-.editkit-content a {
+.editkit-content a:not(.editkit-btn-element):not(.editkit-cta-btn) {
   color: rgb(118, 101, 255);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -2670,7 +2670,7 @@
   transition: color 0.15s ease, opacity 0.15s ease;
 }
 
-.editkit-content a:hover {
+.editkit-content a:not(.editkit-btn-element):not(.editkit-cta-btn):hover {
   color: rgb(142, 128, 255);
   opacity: 0.9;
 }
@@ -5398,4 +5398,368 @@
 .editkit-pq-tb-btn svg {
   width: 14px;
   height: 14px;
+}
+
+/* ==========================================================================
+   22. BUTTON BLOCK COMPONENT & FLOATING MENU (SCREENSHOTS 1, 2)
+   ========================================================================== */
+
+.editkit-content .editkit-button-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 4px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px dashed transparent;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.editkit-content .editkit-button-block:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.editkit-content .editkit-button-block.editkit-button-block--focused {
+  border: 1px dashed #d97706;
+  background: rgba(217, 119, 6, 0.03);
+}
+
+.editkit-content .editkit-button-block[data-align="center"] {
+  justify-content: center;
+}
+
+.editkit-content .editkit-button-block[data-align="right"] {
+  justify-content: flex-end;
+}
+
+/* ── Button Element ── */
+.editkit-content .editkit-button-block .editkit-btn-element,
+.editkit-content a.editkit-btn-element,
+.editkit-btn-element {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none !important;
+  text-underline-offset: 0 !important;
+  cursor: text;
+  user-select: text;
+  outline: none;
+  transition: all 0.15s ease;
+  border: 1.5px solid transparent;
+  line-height: 1.2;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --editkit-btn-color: #f59e0b;
+}
+
+.editkit-content .editkit-button-block .editkit-btn-element:hover,
+.editkit-content a.editkit-btn-element:hover,
+.editkit-content .editkit-button-block .editkit-btn-element:focus,
+.editkit-content a.editkit-btn-element:focus {
+  text-decoration: none !important;
+  text-underline-offset: 0 !important;
+  opacity: 1 !important;
+}
+
+/* Variant: Filled */
+.editkit-content .editkit-button-block[data-variant="filled"] .editkit-btn-element {
+  background: var(--editkit-btn-color, #f59e0b);
+  color: #ffffff !important;
+  border-color: var(--editkit-btn-color, #f59e0b);
+}
+
+/* Variant: Outline */
+.editkit-content .editkit-button-block[data-variant="outline"] .editkit-btn-element {
+  background: transparent;
+  color: var(--editkit-btn-color, #f59e0b) !important;
+  border-color: var(--editkit-btn-color, #f59e0b);
+}
+
+/* Radius */
+.editkit-content .editkit-button-block[data-radius="small"] .editkit-btn-element {
+  border-radius: 4px;
+}
+
+.editkit-content .editkit-button-block[data-radius="rounded"] .editkit-btn-element {
+  border-radius: 8px;
+}
+
+.editkit-content .editkit-button-block[data-radius="pill"] .editkit-btn-element {
+  border-radius: 9999px;
+}
+
+/* Edit pencil icon */
+.editkit-btn-edit-icon {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.editkit-content .editkit-button-block.editkit-button-block--focused .editkit-btn-edit-icon {
+  display: inline-flex;
+}
+
+.editkit-btn-edit-icon:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Floating Menu for Button Block ── */
+
+.editkit-btn-floating-menu {
+  position: absolute;
+  display: none;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 6px;
+  background: #14151a;
+  border: 1px solid #282a36;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+  z-index: 45;
+  white-space: nowrap;
+  animation: editkitFadeIn 0.15s ease;
+  pointer-events: auto;
+}
+
+.editkit-btn-floating-menu--open {
+  display: flex;
+}
+
+.editkit-btn-tb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 3px 8px;
+  height: 24px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #a0a5b8;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transition: all 0.15s ease;
+}
+
+.editkit-btn-tb-btn--active {
+  background: #252838;
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.editkit-btn-tb-btn:hover {
+  background: #252834;
+  color: #ffffff;
+}
+
+.editkit-btn-tb-btn--danger:hover {
+  background: rgba(239, 68, 68, 0.18);
+  color: #ef4444;
+}
+
+.editkit-btn-tb-divider {
+  width: 1px;
+  height: 16px;
+  background: #282a36;
+  margin: 0 3px;
+}
+
+.editkit-btn-tb-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+.editkit-btn-tb-color-icon {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.editkit-btn-tb-color-a {
+  font-size: 11px;
+  font-weight: 800;
+  color: #cbd5e1;
+}
+
+.editkit-btn-tb-color-bar {
+  width: 12px;
+  height: 2.5px;
+  border-radius: 1px;
+  margin-top: 1px;
+}
+
+/* ── Button Alignment Dropdown (Screenshot 2 exact match) ── */
+.editkit-btn-align-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+  background: #14151a;
+  border: 1px solid #282a36;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+  z-index: 60;
+  min-width: 130px;
+  animation: editkitFadeIn 0.15s ease;
+}
+
+.editkit-btn-align-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.editkit-btn-align-item:hover {
+  background: #252838;
+  color: #ffffff;
+}
+
+.editkit-btn-align-item-icon {
+  display: inline-flex;
+  align-items: center;
+  color: #94a3b8;
+}
+
+.editkit-btn-align-item:hover .editkit-btn-align-item-icon {
+  color: #ffffff;
+}
+
+/* ── Button Color Picker Popover ── */
+.editkit-btn-color-picker-popover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75) !important;
+  border-radius: 12px !important;
+  border: 1px solid #2d3044 !important;
+  background: #14151c !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateY(0) !important;
+  animation: editkitFadeIn 0.15s ease;
+}
+
+/* ── Button Edit Popover (Screenshot exact match) ── */
+.editkit-btn-edit-popover {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  background: #14151a;
+  border: 1px solid #282a36;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+  z-index: 50;
+  animation: editkitFadeIn 0.15s ease;
+  pointer-events: auto;
+  white-space: nowrap;
+}
+
+.editkit-btn-edit-input {
+  background: #191b22;
+  border: 1px solid #2d3040;
+  border-radius: 6px;
+  color: #f1f5f9;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.15s ease;
+  height: 26px;
+  box-sizing: border-box;
+}
+
+.editkit-btn-edit-input:focus {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+
+.editkit-btn-edit-input--label {
+  width: 100px;
+}
+
+.editkit-btn-edit-input--url {
+  width: 170px;
+  color: #94a3b8;
+}
+
+.editkit-btn-edit-input--url:focus {
+  color: #f1f5f9;
+}
+
+.editkit-btn-edit-divider {
+  width: 1px;
+  height: 16px;
+  background: #282a36;
+  margin: 0 2px;
+}
+
+.editkit-btn-edit-done {
+  background: #ffffff;
+  color: #0f172a;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  height: 26px;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+
+.editkit-btn-edit-done:hover {
+  background: #f1f5f9;
+  transform: translateY(-0.5px);
+}
+
+.editkit-btn-edit-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  transition: all 0.15s ease;
+}
+
+.editkit-btn-edit-close:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
 }

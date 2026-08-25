@@ -16,6 +16,7 @@ import { DecorativeDividerModal } from './DecorativeDividerModal';
 import { DecorativeDividerMenu } from './DecorativeDividerMenu';
 import { SectionHeadingMenu } from './SectionHeadingMenu';
 import { PullQuoteMenu } from './PullQuoteMenu';
+import { ButtonBlockMenu } from './ButtonBlockMenu';
 import { SignatureModal } from './SignatureModal';
 import { TooltipManager } from './Tooltip';
 
@@ -77,6 +78,7 @@ export class EditKitToolbar {
   private decDividerMenu: DecorativeDividerMenu;
   private secHeadingMenu: SectionHeadingMenu;
   private pullQuoteMenu: PullQuoteMenu;
+  private buttonBlockMenu: ButtonBlockMenu;
   private openDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
@@ -108,6 +110,8 @@ export class EditKitToolbar {
     this.secHeadingMenu.mount(editor.root as HTMLElement);
     this.pullQuoteMenu = new PullQuoteMenu(editor);
     this.pullQuoteMenu.mount(editor.root as HTMLElement);
+    this.buttonBlockMenu = new ButtonBlockMenu(editor);
+    this.buttonBlockMenu.mount(editor.root as HTMLElement);
 
     TooltipManager.init();
 
@@ -1502,10 +1506,63 @@ export class EditKitToolbar {
   }
 
   private _insertButtonBlock(): void {
-    const text = prompt('Button label:', 'Get Started') || 'Get Started';
-    const link = prompt('Button URL:', 'https://') || '#';
-    const html = `<div class="editkit-btn-container" contenteditable="false"><a href="${link}" class="editkit-cta-btn" contenteditable="true">${text} &rarr;</a></div><p><br></p>`;
-    document.execCommand('insertHTML', false, html);
+    const btnWrap = document.createElement('div');
+    btnWrap.classList.add('editkit-button-block');
+    btnWrap.setAttribute('data-variant', 'filled');
+    btnWrap.setAttribute('data-radius', 'rounded');
+    btnWrap.setAttribute('data-align', 'left');
+    btnWrap.setAttribute('data-color', '#f59e0b');
+    btnWrap.setAttribute('contenteditable', 'false');
+
+    const linkEl = document.createElement('a');
+    linkEl.classList.add('editkit-btn-element');
+    linkEl.setAttribute('href', 'https://');
+    linkEl.setAttribute('target', '_blank');
+    linkEl.setAttribute('contenteditable', 'true');
+    linkEl.setAttribute('spellcheck', 'false');
+    linkEl.textContent = 'Button';
+
+    const editIcon = document.createElement('span');
+    editIcon.classList.add('editkit-btn-edit-icon');
+    editIcon.setAttribute('title', 'Edit link URL');
+    editIcon.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`;
+
+    btnWrap.appendChild(linkEl);
+    btnWrap.appendChild(editIcon);
+
+    const p = document.createElement('p');
+    p.innerHTML = '<br>';
+
+    const block = this.editor.commands.getActiveBlock?.() || null;
+    const contentEl = this.editor.contentEl;
+
+    const frag = document.createDocumentFragment();
+    frag.appendChild(btnWrap);
+    frag.appendChild(p);
+
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && contentEl.contains(sel.anchorNode)) {
+      const range = sel.getRangeAt(0);
+      range.collapse(false);
+      range.insertNode(frag);
+    } else if (block && block !== contentEl && block.parentNode) {
+      block.parentNode.insertBefore(frag, block.nextSibling);
+    } else {
+      contentEl.appendChild(frag);
+    }
+
+    this.editor.emit('update', { editor: this.editor });
+    this.buttonBlockMenu.selectButton(btnWrap);
+
+    // Focus inside button text
+    setTimeout(() => {
+      const r = document.createRange();
+      r.selectNodeContents(linkEl);
+      r.collapse(false);
+      const s = window.getSelection();
+      s?.removeAllRanges();
+      s?.addRange(r);
+    }, 20);
   }
 
   private _insertFAQBlock(): void {
