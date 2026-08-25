@@ -21,10 +21,10 @@
 }
 
 [data-theme="light"] {
-  --page-bg: #f0ede8;
-  --page-text: #1a1714;
-  --page-text-muted: #6b6560;
-  --page-border: #e4e0d9;
+  --page-bg: #ffffff;
+  --page-text: #18181b;
+  --page-text-muted: #71717a;
+  --page-border: #e4e4e7;
   --page-primary: #6366f1;
 }
 

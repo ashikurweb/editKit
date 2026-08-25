@@ -56,50 +56,52 @@
   /* Shadows & Radii */
   --vellora-shadow-popup: 0 12px 32px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4);
   --vellora-shadow-floating: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --vellora-shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
   --vellora-radius-card: 14px;
   --vellora-radius-btn: 6px;
   --vellora-radius-pill: 9999px;
 }
 
 [data-vellora-theme="light"] {
-  /* Premium Warm Ivory Surfaces */
-  --vellora-bg: #f5f3ef;
+  /* ── Clean White Surfaces ── */
+  --vellora-bg: #ffffff;
   --vellora-card-bg: #ffffff;
-  --vellora-toolbar-bg: #faf9f7;
-  --vellora-surface-hover: #f0eee9;
-  --vellora-surface-active: #e8e5df;
-  --vellora-surface-elevated: #faf9f7;
+  --vellora-toolbar-bg: #fafafa;
+  --vellora-surface-hover: #f4f4f5;
+  --vellora-surface-active: #e4e4e7;
+  --vellora-surface-elevated: #fafafa;
   --vellora-popup-bg: #ffffff;
-  --vellora-popup-border: #e4e0d9;
+  --vellora-popup-border: #e4e4e7;
 
-  /* Rich Warm Text */
-  --vellora-text: #1a1714;
-  --vellora-text-muted: #6b6560;
-  --vellora-text-dim: #9e9891;
-  --vellora-placeholder: #c4bfb8;
+  /* ── Crisp Neutral Text ── */
+  --vellora-text: #18181b;
+  --vellora-text-muted: #71717a;
+  --vellora-text-dim: #a1a1aa;
+  --vellora-placeholder: #d4d4d8;
 
-  /* Warm Stone Borders */
-  --vellora-border: #e4e0d9;
-  --vellora-border-hover: #d4cfc7;
+  /* ── Cool Gray Borders ── */
+  --vellora-border: #e4e4e7;
+  --vellora-border-hover: #d4d4d8;
   --vellora-border-focus: #6366f1;
-  --vellora-divider: #eae7e2;
+  --vellora-divider: #f4f4f5;
 
-  /* Refined Indigo Accent */
+  /* ── Indigo Accent ── */
   --vellora-primary: #6366f1;
   --vellora-primary-hover: #4f46e5;
-  --vellora-primary-light: rgba(99, 102, 241, 0.08);
+  --vellora-primary-light: rgba(99, 102, 241, 0.06);
   --vellora-ai-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
-  --vellora-selection: rgba(99, 102, 241, 0.12);
+  --vellora-selection: rgba(99, 102, 241, 0.10);
 
-  /* Warm Table Tones */
-  --vellora-table-header-bg: #f0ede8;
-  --vellora-table-header-text: #2d2924;
-  --vellora-table-border: #e4e0d9;
+  /* ── Table ── */
+  --vellora-table-header-bg: #fafafa;
+  --vellora-table-header-text: #27272a;
+  --vellora-table-border: #e4e4e7;
   --vellora-table-cell-hover: rgba(99, 102, 241, 0.04);
 
-  /* Premium Depth Shadows */
-  --vellora-shadow-popup: 0 12px 40px rgba(26, 23, 20, 0.10), 0 2px 8px rgba(26, 23, 20, 0.05);
-  --vellora-shadow-floating: 0 8px 24px rgba(26, 23, 20, 0.08);
+  /* ── Minimal Shadows ── */
+  --vellora-shadow-popup: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+  --vellora-shadow-floating: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --vellora-shadow-card: 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 /* ==========================================================================
@@ -113,7 +115,7 @@
   background: var(--vellora-card-bg);
   border: 1px solid var(--vellora-border);
   border-radius: var(--vellora-radius-card);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--vellora-shadow-card);
   position: relative;
   display: flex;
   flex-direction: column;
