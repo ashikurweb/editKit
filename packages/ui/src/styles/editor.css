@@ -172,39 +172,47 @@
   border: none;
   border-radius: var(--vellora-radius-btn);
   background: transparent;
-  color: var(--vellora-text-muted);
+  color: var(--vellora-text);
   cursor: pointer;
   transition: all 0.15s ease;
   position: relative;
   flex-shrink: 0;
+  opacity: 0.9;
 }
 
-.vellora-tb-btn:hover {
+.vellora-tb-btn:hover:not(:disabled):not(.vellora-tb-btn--disabled) {
   background: var(--vellora-surface-hover);
   color: var(--vellora-text);
+  opacity: 1;
 }
 
-.vellora-tb-btn:active {
+.vellora-tb-btn:active:not(:disabled):not(.vellora-tb-btn--disabled) {
   background: var(--vellora-surface-active);
   transform: scale(0.95);
+  opacity: 1;
 }
 
+/* ── Distinct Disabled State (Undo/Redo/Clear etc) ── */
 .vellora-tb-btn:disabled,
 .vellora-tb-btn--disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
+  opacity: 0.22 !important;
+  color: var(--vellora-text-muted) !important;
+  cursor: not-allowed !important;
+  filter: grayscale(1);
 }
 
 .vellora-tb-btn:disabled:hover,
 .vellora-tb-btn--disabled:hover {
-  background: transparent;
-  color: var(--vellora-text-muted);
-  transform: none;
+  background: transparent !important;
+  color: var(--vellora-text-muted) !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .vellora-tb-btn--active {
   background: var(--vellora-surface-active);
   color: var(--vellora-text);
+  opacity: 1;
 }
 
 .vellora-tb-btn--chevron {

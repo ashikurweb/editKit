@@ -67,6 +67,8 @@ export class VelloraToolbar {
   private _unsubscribers: (() => void)[] = [];
 
   // Active state trackers
+  private undoBtn?: HTMLButtonElement;
+  private redoBtn?: HTMLButtonElement;
   private blockLabel?: HTMLElement;
   private fontLabel?: HTMLElement;
   private sizeDisplay?: HTMLElement;
@@ -139,10 +141,18 @@ export class VelloraToolbar {
     const group1: HTMLElement[] = [];
     const showHistory = isEnabled('history');
     if (showHistory && isEnabled('undo')) {
-      group1.push(this._createBtn('undo', 'Undo', () => this.editor.commands.undo(), undefined, '⌘Z'));
+      this.undoBtn = this._createBtn('undo', 'Undo', () => this.editor.commands.undo(), undefined, '⌘Z');
+      const canUndo = this.editor.can().undo();
+      this.undoBtn.disabled = !canUndo;
+      this.undoBtn.classList.toggle('vellora-tb-btn--disabled', !canUndo);
+      group1.push(this.undoBtn);
     }
     if (showHistory && isEnabled('redo')) {
-      group1.push(this._createBtn('redo', 'Redo', () => this.editor.commands.redo(), undefined, '⌘⇧Z'));
+      this.redoBtn = this._createBtn('redo', 'Redo', () => this.editor.commands.redo(), undefined, '⌘⇧Z');
+      const canRedo = this.editor.can().redo();
+      this.redoBtn.disabled = !canRedo;
+      this.redoBtn.classList.toggle('vellora-tb-btn--disabled', !canRedo);
+      group1.push(this.redoBtn);
     }
     if (group1.length > 0) sections.push(group1);
 
@@ -993,6 +1003,18 @@ export class VelloraToolbar {
 
   // ── Sync Active States ──
   private _syncStates(): void {
+    // 0. Sync Undo & Redo disabled/enabled states
+    if (this.undoBtn) {
+      const canUndo = this.editor.can().undo();
+      this.undoBtn.disabled = !canUndo;
+      this.undoBtn.classList.toggle('vellora-tb-btn--disabled', !canUndo);
+    }
+    if (this.redoBtn) {
+      const canRedo = this.editor.can().redo();
+      this.redoBtn.disabled = !canRedo;
+      this.redoBtn.classList.toggle('vellora-tb-btn--disabled', !canRedo);
+    }
+
     if (this.boldBtn) {
       this.boldBtn.classList.toggle('vellora-tb-btn--active', this.editor.isActive('bold'));
     }
