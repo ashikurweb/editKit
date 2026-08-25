@@ -18,6 +18,7 @@ export { MathModal, formatMathFormula } from './MathModal';
 export { DividerModal } from './DividerModal';
 export { DecorativeDividerModal } from './DecorativeDividerModal';
 export { DecorativeDividerMenu } from './DecorativeDividerMenu';
+export { SectionHeadingMenu } from './SectionHeadingMenu';
 export { SignatureModal } from './SignatureModal';
 export { CropModal } from './CropModal';
 export { EmojiPicker } from './EmojiPicker';

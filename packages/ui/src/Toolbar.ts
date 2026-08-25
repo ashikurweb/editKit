@@ -14,6 +14,7 @@ import { MathModal } from './MathModal';
 import { DividerModal } from './DividerModal';
 import { DecorativeDividerModal } from './DecorativeDividerModal';
 import { DecorativeDividerMenu } from './DecorativeDividerMenu';
+import { SectionHeadingMenu } from './SectionHeadingMenu';
 import { SignatureModal } from './SignatureModal';
 import { TooltipManager } from './Tooltip';
 
@@ -73,6 +74,7 @@ export class EditKitToolbar {
   private signatureModal: SignatureModal;
   private decDividerModal: DecorativeDividerModal;
   private decDividerMenu: DecorativeDividerMenu;
+  private secHeadingMenu: SectionHeadingMenu;
   private openDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
@@ -100,6 +102,8 @@ export class EditKitToolbar {
     this.decDividerModal = new DecorativeDividerModal(editor);
     this.decDividerMenu = new DecorativeDividerMenu(editor);
     this.decDividerMenu.mount(editor.root as HTMLElement);
+    this.secHeadingMenu = new SectionHeadingMenu(editor);
+    this.secHeadingMenu.mount(editor.root as HTMLElement);
 
     TooltipManager.init();
 
@@ -1373,8 +1377,60 @@ export class EditKitToolbar {
   }
 
   private _insertSectionHeading(): void {
-    const html = `<h2 class="editkit-section-heading">Section Heading</h2><p><br></p>`;
-    document.execCommand('insertHTML', false, html);
+    const headingWrap = document.createElement('div');
+    headingWrap.classList.add('editkit-section-heading');
+    headingWrap.setAttribute('data-align', 'left');
+    headingWrap.setAttribute('data-badge', '01');
+    headingWrap.setAttribute('contenteditable', 'false');
+
+    const badgeSpan = document.createElement('span');
+    badgeSpan.classList.add('editkit-sec-badge');
+    badgeSpan.setAttribute('contenteditable', 'true');
+    badgeSpan.setAttribute('spellcheck', 'false');
+    badgeSpan.textContent = '01';
+
+    const titleH2 = document.createElement('h2');
+    titleH2.classList.add('editkit-sec-title');
+    titleH2.setAttribute('contenteditable', 'true');
+    titleH2.setAttribute('spellcheck', 'false');
+    titleH2.textContent = 'Section title';
+
+    headingWrap.appendChild(badgeSpan);
+    headingWrap.appendChild(titleH2);
+
+    const p = document.createElement('p');
+    p.innerHTML = '<br>';
+
+    const block = this.editor.commands.getActiveBlock?.() || null;
+    const contentEl = this.editor.contentEl;
+
+    const frag = document.createDocumentFragment();
+    frag.appendChild(headingWrap);
+    frag.appendChild(p);
+
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && contentEl.contains(sel.anchorNode)) {
+      const range = sel.getRangeAt(0);
+      range.collapse(false);
+      range.insertNode(frag);
+    } else if (block && block !== contentEl && block.parentNode) {
+      block.parentNode.insertBefore(frag, block.nextSibling);
+    } else {
+      contentEl.appendChild(frag);
+    }
+
+    this.editor.emit('update', { editor: this.editor });
+    this.secHeadingMenu.selectHeading(headingWrap);
+
+    // Focus inside title
+    setTimeout(() => {
+      const r = document.createRange();
+      r.selectNodeContents(titleH2);
+      r.collapse(false);
+      const s = window.getSelection();
+      s?.removeAllRanges();
+      s?.addRange(r);
+    }, 20);
   }
 
   private _insertPullQuote(): void {

@@ -3127,17 +3127,6 @@
   letter-spacing: 0.2em;
 }
 
-/* Section Heading */
-.editkit-content .editkit-section-heading {
-  font-size: 1.4em;
-  font-weight: 700;
-  margin: 1.3em 0 0.5em;
-  color: var(--editkit-text);
-  border-bottom: 2px solid var(--editkit-primary);
-  padding-bottom: 4px;
-  display: inline-block;
-}
-
 /* CTA Button Container */
 .editkit-content .editkit-btn-container {
   margin: 14px 0;
@@ -5119,6 +5108,157 @@
 }
 
 .editkit-dec-div-tb-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ==========================================================================
+   20. SECTION HEADING COMPONENT & FLOATING MENU (SCREENSHOT MATCH)
+   ========================================================================== */
+
+.editkit-content .editkit-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 3px 0;
+  padding: 2px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px dashed transparent;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.editkit-content .editkit-section-heading:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.editkit-content .editkit-section-heading.editkit-sec-head--focused {
+  border: 1px dashed #d97706;
+  background: rgba(217, 119, 6, 0.03);
+}
+
+.editkit-content .editkit-section-heading[data-align="center"] {
+  justify-content: center;
+  text-align: center;
+}
+
+.editkit-content .editkit-section-heading[data-align="right"] {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.editkit-sec-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border: 1px dashed rgba(251, 146, 60, 0.45);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fb923c;
+  background: rgba(251, 146, 60, 0.06);
+  font-family: monospace, -apple-system, BlinkMacSystemFont, sans-serif;
+  outline: none;
+  cursor: text;
+  flex-shrink: 0;
+  user-select: text;
+  transition: all 0.15s ease;
+}
+
+.editkit-sec-badge:focus {
+  border-color: #6366f1;
+  color: #ffffff;
+  background: rgba(99, 102, 241, 0.15);
+}
+
+.editkit-sec-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  display: inline-block;
+  line-height: 1.25;
+  cursor: text;
+  user-select: text;
+}
+
+/* ── Floating Menu for Section Heading ── */
+
+.editkit-sec-head-floating-menu {
+  position: absolute;
+  display: none;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 6px;
+  background: #14151a;
+  border: 1px solid #282a36;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+  z-index: 45;
+  white-space: nowrap;
+  animation: editkitFadeIn 0.15s ease;
+  pointer-events: auto;
+}
+
+.editkit-sec-head-floating-menu--open {
+  display: flex;
+}
+
+.editkit-sec-head-tb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #a0a5b8;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.editkit-sec-head-tb-btn--text {
+  font-weight: 700;
+  font-size: 11px;
+  font-family: monospace, sans-serif;
+  width: auto;
+  padding: 0 6px;
+  color: #cbd5e1;
+}
+
+.editkit-sec-head-tb-btn--active {
+  background: #252838;
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.editkit-sec-head-tb-btn:hover {
+  background: #252834;
+  color: #ffffff;
+}
+
+.editkit-sec-head-tb-btn--danger:hover {
+  background: rgba(239, 68, 68, 0.18);
+  color: #ef4444;
+}
+
+.editkit-sec-head-tb-divider {
+  width: 1px;
+  height: 16px;
+  background: #282a36;
+  margin: 0 3px;
+}
+
+.editkit-sec-head-tb-btn svg {
   width: 14px;
   height: 14px;
 }
