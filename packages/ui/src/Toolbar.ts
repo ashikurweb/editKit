@@ -6,6 +6,7 @@
 import type { VelloraEditor, BulletListStyle, NumberedListStyle } from '@vellora/core';
 import { icons } from './icons';
 import { ColorPickerPopover } from './ColorPicker';
+import { ImageModal } from './ImageModal';
 
 export interface ToolbarConfig {
   container?: HTMLElement;
@@ -25,6 +26,7 @@ const FONT_FAMILIES = [
 export class VelloraToolbar {
   readonly element: HTMLElement;
   private editor: VelloraEditor;
+  private imageModal: ImageModal;
   private openDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
@@ -38,6 +40,7 @@ export class VelloraToolbar {
 
   constructor(editor: VelloraEditor, config: ToolbarConfig = {}) {
     this.editor = editor;
+    this.imageModal = new ImageModal(editor);
 
     this.element = document.createElement('div');
     this.element.classList.add('vellora-toolbar');
@@ -717,13 +720,10 @@ export class VelloraToolbar {
     }
   }
 
-  // ── Image Button ──
+  // ── Image Button (Opens 2-Step Dropzone & URL Modal) ──
   private _createImageButton(): HTMLElement {
     return this._createBtn('image', 'Insert Image', () => {
-      const url = prompt('Enter Image URL:', 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800');
-      if (url) {
-        this.editor.commands.insertImage({ src: url, alt: 'Inserted image' });
-      }
+      this.imageModal.show('dropzone');
     });
   }
 

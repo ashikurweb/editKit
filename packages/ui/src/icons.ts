@@ -81,9 +81,23 @@ export const icons: Record<string, string> = {
   deleteTable: svg('<path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>'),
   tableHeader: svg('<rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18" stroke-width="3"></path>'),
 
-  // ── Chevrons & Controls ──
   chevronDown: svg('<path d="m6 9 6 6 6-6"></path>'),
   chevronRight: svg('<path d="m9 18 6-6-6-6"></path>'),
   check: svg('<polyline points="20 6 9 17 4 12"></polyline>'),
+  close: svg('<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>'),
   more: svg('<circle cx="12" cy="12" r="1.5" fill="currentColor"></circle><circle cx="19" cy="12" r="1.5" fill="currentColor"></circle><circle cx="5" cy="12" r="1.5" fill="currentColor"></circle>'),
+
+  // ── Image Manipulation & Upload ──
+  upload: svg('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line>'),
+  trash: svg('<polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>'),
+  rotate: svg('<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><polyline points="21 3 21 8 16 8"></polyline>'),
+  crop: svg('<path d="M6 2v14a2 2 0 0 0 2 2h14"></path><path d="M18 22V8a2 2 0 0 0-2-2H2"></path>'),
+  externalLink: svg('<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>'),
+  caption: svg('<rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="7" y1="8" x2="17" y2="8"></line><line x1="12" y1="8" x2="12" y2="16"></line>'),
+  alignImageLeft: svg('<rect x="3" y="6" width="7" height="7" rx="1"></rect><line x1="13" y1="6" x2="21" y2="6"></line><line x1="13" y1="10" x2="21" y2="10"></line><line x1="3" y1="17" x2="21" y2="17"></line>'),
+  alignImageCenter: svg('<rect x="8" y="5" width="8" height="8" rx="1"></rect><line x1="3" y1="17" x2="21" y2="17"></line><line x1="6" y1="19" x2="18" y2="19"></line>'),
+  alignImageRight: svg('<rect x="14" y="6" width="7" height="7" rx="1"></rect><line x1="3" y1="6" x2="11" y2="6"></line><line x1="3" y1="10" x2="11" y2="10"></line><line x1="3" y1="17" x2="21" y2="17"></line>'),
+  inlineWrap: svg('<line x1="3" y1="6" x2="21" y2="6"></line><rect x="6" y="9" width="12" height="6" rx="1"></rect><line x1="3" y1="18" x2="21" y2="18"></line>'),
+  breakText: svg('<path d="M4 14h10a4 4 0 0 0 0-8H4"></path><polyline points="7 17 4 14 7 11"></polyline>'),
+  frame: svg('<rect x="3" y="3" width="18" height="18" rx="3" stroke-width="2.5"></rect>'),
 };

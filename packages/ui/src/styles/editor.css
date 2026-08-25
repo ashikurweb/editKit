@@ -1158,3 +1158,526 @@
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+@keyframes velloraModalIn {
+  from { opacity: 0; transform: scale(0.96) translateY(-8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+
+/* ════════════════════════════════════════════
+   Image Modal (2-Step Dropzone & URL Insert)
+   ════════════════════════════════════════════ */
+
+.vellora-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+}
+
+.vellora-modal-overlay--open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.vellora-modal {
+  background: #15161e;
+  border: 1px solid #262936;
+  border-radius: 14px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 4px 12px rgba(0, 0, 0, 0.5);
+  position: relative;
+  padding: 24px;
+  max-width: 620px;
+  width: 92%;
+  animation: velloraModalIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  font-family: var(--vellora-font, 'DM Sans', sans-serif);
+}
+
+.vellora-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: #232530;
+  color: #8e94a6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  z-index: 10;
+}
+
+.vellora-modal-close:hover {
+  background: #313444;
+  color: #ffffff;
+}
+
+.vellora-modal-close svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Step 1: Dropzone */
+.vellora-img-dropzone {
+  border: 1.5px dashed #343746;
+  border-radius: 12px;
+  padding: 36px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #181a22;
+}
+
+.vellora-img-dropzone:hover,
+.vellora-img-dropzone--dragover {
+  border-color: #7c3aed;
+  background: #1d1a2c;
+}
+
+.vellora-img-icon-badge {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: #252834;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e2e8f0;
+}
+
+.vellora-img-icon-badge svg {
+  width: 20px;
+  height: 20px;
+}
+
+.vellora-img-dropzone-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 6px;
+  font-family: inherit;
+}
+
+.vellora-img-dropzone-subtitle {
+  font-size: 12px;
+  color: #8e94a6;
+  margin: 0;
+  font-family: inherit;
+}
+
+.vellora-img-or-divider {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64697d;
+  margin: 18px 0;
+  letter-spacing: 0.5px;
+  font-family: inherit;
+}
+
+.vellora-img-actions-center {
+  display: flex;
+  justify-content: center;
+}
+
+.vellora-img-url-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  color: #0c0d10;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: inherit;
+  padding: 9px 22px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.15s ease;
+}
+
+.vellora-img-url-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.vellora-img-url-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Step 1.5: Staging & Progress (Screenshot 1 exact match) */
+.vellora-img-staging-wrap {
+  margin: 14px 0 6px;
+}
+
+.vellora-img-staging-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.vellora-img-count-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  font-family: inherit;
+}
+
+.vellora-img-clear-all-btn {
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  color: #8e94a6;
+  cursor: pointer;
+  padding: 2px 6px;
+  font-family: inherit;
+}
+
+.vellora-img-clear-all-btn:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.vellora-img-staged-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.vellora-img-staged-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #1c1e27;
+  border: 1px solid #282a36;
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.vellora-img-staged-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #282a36;
+  background: #0f1015;
+  flex-shrink: 0;
+}
+
+.vellora-img-staged-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.vellora-img-staged-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: inherit;
+}
+
+.vellora-img-staged-alt {
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  color: #8e94a6;
+  outline: none;
+  padding: 0;
+  width: 100%;
+  font-family: inherit;
+}
+
+.vellora-img-staged-alt::placeholder {
+  color: #55596b;
+}
+
+.vellora-img-staged-del {
+  background: transparent;
+  border: none;
+  color: #8e94a6;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.vellora-img-staged-del:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.vellora-img-staged-del svg {
+  width: 14px;
+  height: 14px;
+}
+
+.vellora-img-upload-btn {
+  position: relative;
+  width: 100%;
+  height: 38px;
+  border-radius: 8px;
+  border: none;
+  background: #ffffff;
+  color: #0c0d10;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.15s ease;
+}
+
+.vellora-img-upload-btn:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.vellora-img-upload-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  background: #7c3aed;
+  transition: width 0.08s ease;
+  z-index: 1;
+}
+
+.vellora-img-upload-inner {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.15s ease;
+}
+
+.vellora-img-upload-btn--loading .vellora-img-upload-inner {
+  color: #ffffff;
+}
+
+.vellora-img-upload-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Step 2: URL Form */
+.vellora-img-url-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px 4px 4px;
+}
+
+.vellora-img-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vellora-img-form-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  font-family: inherit;
+}
+
+.vellora-img-input {
+  background: #0f1015;
+  border: 1px solid #282a36;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 13px;
+  color: #ffffff;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.vellora-img-input:focus {
+  border-color: #7c3aed;
+}
+
+.vellora-img-input::placeholder {
+  color: #55596b;
+}
+
+.vellora-img-form-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.vellora-img-submit-btn {
+  background: #464a5c;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: inherit;
+  padding: 9px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vellora-img-submit-btn:hover {
+  background: #585d73;
+}
+
+
+/* ════════════════════════════════════════════
+   Image Resizer & Floating Toolbar (Screenshot 2 exact match)
+   ════════════════════════════════════════════ */
+
+.vellora-image-overlay-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 90;
+  display: none;
+}
+
+.vellora-image-overlay-layer--active {
+  display: block;
+}
+
+.vellora-image-resizer-box {
+  position: absolute;
+  border: 2px solid #a78bfa;
+  pointer-events: auto;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.vellora-img-handle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #c084fc;
+  border: 1.5px solid #ffffff;
+  border-radius: 2px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  z-index: 2;
+  transform: translate(-50%, -50%);
+}
+
+.vellora-img-handle--tl { top: 0; left: 0; }
+.vellora-img-handle--tc { top: 0; left: 50%; }
+.vellora-img-handle--tr { top: 0; left: 100%; }
+.vellora-img-handle--ml { top: 50%; left: 0; }
+.vellora-img-handle--mr { top: 50%; left: 100%; }
+.vellora-img-handle--bl { top: 100%; left: 0; }
+.vellora-img-handle--bc { top: 100%; left: 50%; }
+.vellora-img-handle--br { top: 100%; left: 100%; }
+
+.vellora-image-floating-toolbar {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 6px;
+  background: #14151a;
+  border: 1px solid #282a36;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+  z-index: 10;
+  white-space: nowrap;
+  animation: velloraFadeIn 0.15s ease;
+}
+
+.vellora-img-tb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #a0a5b8;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.vellora-img-tb-btn:hover {
+  background: #252834;
+  color: #ffffff;
+}
+
+.vellora-img-tb-btn--danger:hover {
+  background: rgba(239, 68, 68, 0.18);
+  color: #ef4444;
+}
+
+.vellora-img-tb-btn--pill {
+  width: auto;
+  padding: 0 6px;
+  font-weight: 700;
+  font-size: 10px;
+  color: #cbd5e1;
+}
+
+.vellora-img-tb-divider {
+  width: 1px;
+  height: 16px;
+  background: #282a36;
+  margin: 0 3px;
+}
+
+.vellora-img-tb-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.vellora-image-caption {
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  font-style: italic;
+  color: #8e94a6;
+  margin-top: 6px;
+  outline: none;
+}
+
+.vellora-image--framed {
+  border: 2px solid #3b4252;
+  border-radius: 10px;
+  padding: 3px;
+}

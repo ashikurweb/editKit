@@ -3,14 +3,14 @@
 // ============================================================
 
 import { createEditor, Extension } from '@vellora/core';
-import { createToolbar, BubbleMenu, TableFloatingMenu } from '@vellora/ui';
+import { createToolbar, BubbleMenu, TableFloatingMenu, ImageFloatingMenu } from '@vellora/ui';
 import '@vellora/ui/styles';
 import './style.css';
 
-// ── Sample Rich Content with First-Class Table ──
+// ── Sample Rich Content with First-Class Table & Image ──
 const SAMPLE_CONTENT = `
 <h1>Build modern docs with Vellora ✨</h1>
-<p>A premium, framework-agnostic rich text editor built <strong>100% from scratch</strong> — zero external dependencies, full table support, and customizable via CSS variables.</p>
+<p>A premium, framework-agnostic rich text editor built <strong>100% from scratch</strong> — zero external dependencies, full table support, customizable via CSS variables, and native image manipulation.</p>
 
 <table class="vellora-table">
   <thead>
@@ -48,6 +48,7 @@ const SAMPLE_CONTENT = `
 <ul class="vellora-task-list">
   <li class="vellora-task-item vellora-task-done"><input type="checkbox" checked class="vellora-task-checkbox"> <span>First-class table support with hover grid</span></li>
   <li class="vellora-task-item vellora-task-done"><input type="checkbox" checked class="vellora-task-checkbox"> <span>Floating bubble toolbar on text selection</span></li>
+  <li class="vellora-task-item vellora-task-done"><input type="checkbox" checked class="vellora-task-checkbox"> <span>Interactive image resizer &amp; contextual toolbar</span></li>
   <li class="vellora-task-item"><input type="checkbox" class="vellora-task-checkbox"> <span>Custom Plugin &amp; Extension architecture</span></li>
 </ul>
 
@@ -136,6 +137,9 @@ function init() {
 
   const tableMenu = new TableFloatingMenu(editor);
   tableMenu.mount(editor.root);
+
+  const imageMenu = new ImageFloatingMenu(editor);
+  imageMenu.mount(editor.root);
 
   // ── Mount Editor into Card ──
   editor.mount(editorCard);

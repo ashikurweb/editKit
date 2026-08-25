@@ -754,8 +754,39 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
 
   private _handlePaste(e: ClipboardEvent): void {
     e.preventDefault();
+
+    // 1. Check for image files or screenshot blobs from clipboard
+    if (e.clipboardData?.items) {
+      for (const item of Array.from(e.clipboardData.items)) {
+        if (item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              const dataUrl = ev.target?.result as string;
+              if (dataUrl) {
+                this.commands.insertImage({ src: dataUrl, alt: 'Pasted image' });
+              }
+            };
+            reader.readAsDataURL(file);
+            return;
+          }
+        }
+      }
+    }
+
     const html = e.clipboardData?.getData('text/html');
-    const text = e.clipboardData?.getData('text/plain') || '';
+    const text = (e.clipboardData?.getData('text/plain') || '').trim();
+
+    // 2. Check if pasted text is an image URL
+    const isImageUrl = /^https?:\/\/.+\.(png|jpg|jpeg|gif|webp|svg|avif)(\?.*)?$/i.test(text)
+      || /^data:image\/[a-zA-Z+]+;base64,/.test(text)
+      || (/^https?:\/\/(images\.unsplash\.com|cdn\.|i\.imgur\.com|media\.)/i.test(text));
+
+    if (isImageUrl) {
+      this.commands.insertImage({ src: text, alt: 'Inserted image' });
+      return;
+    }
 
     if (html) {
       const sanitized = this._sanitizeHTML(html);
