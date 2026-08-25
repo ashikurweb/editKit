@@ -1,6 +1,6 @@
 {
   "name": "@editkit/react",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Official React wrapper & hooks for EditKit Rich Text Editor",
   "type": "module",
   "main": "./src/index.ts",
