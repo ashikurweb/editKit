@@ -1,0 +1,249 @@
+/* ============================================================
+   Vellora Playground — Page Layout (Eddyter Experience)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --page-bg: #07080a;
+  --page-text: #e2e8f0;
+  --page-text-muted: #71788e;
+  --page-border: #1a1c24;
+  --page-primary: #7c3aed;
+  --page-font: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --page-font-mono: 'Fira Code', monospace;
+}
+
+[data-theme="light"] {
+  --page-bg: #f1f5f9;
+  --page-text: #1e293b;
+  --page-text-muted: #64748b;
+  --page-border: #cbd5e1;
+  --page-primary: #6366f1;
+}
+
+body {
+  font-family: var(--page-font);
+  background-color: var(--page-bg);
+  color: var(--page-text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s ease;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ════════════════════════════════════════════
+   Top Header Banner (Screenshot 1 & 2 match)
+   ════════════════════════════════════════════ */
+
+.eddyter-top-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 48px;
+  border-bottom: 1px solid var(--page-border);
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  color: var(--page-text-muted);
+}
+
+.eddyter-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.eddyter-banner-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ec4899; /* Pink dot from screenshot */
+  box-shadow: 0 0 8px rgba(236, 72, 153, 0.6);
+}
+
+.eddyter-banner-title {
+  color: var(--page-text-muted);
+  font-weight: 500;
+}
+
+.eddyter-banner-title strong {
+  color: var(--page-text);
+  letter-spacing: 1px;
+}
+
+.eddyter-banner-sep {
+  opacity: 0.3;
+}
+
+.eddyter-banner-sub {
+  color: var(--page-text-muted);
+}
+
+.eddyter-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--page-border);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--page-text);
+  font-family: var(--page-font);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.eddyter-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--page-primary);
+}
+
+.theme-icon-sun { display: none; }
+.theme-icon-moon { display: inline; }
+.eddyter-theme-toggle--light .theme-icon-sun { display: inline; }
+.eddyter-theme-toggle--light .theme-icon-moon { display: none; }
+
+
+/* ════════════════════════════════════════════
+   Main Editor Container
+   ════════════════════════════════════════════ */
+
+.eddyter-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 48px 64px;
+}
+
+.eddyter-editor-card {
+  width: 100%;
+  max-width: 1060px;
+}
+
+/* Bottom Bar inside Editor Card */
+.eddyter-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 24px;
+  background: var(--vellora-toolbar-bg);
+  border-top: 1px solid var(--vellora-border);
+  border-bottom-left-radius: var(--vellora-radius-card);
+  border-bottom-right-radius: var(--vellora-radius-card);
+  font-size: 11px;
+  color: var(--vellora-text-dim);
+  user-select: none;
+}
+
+.eddyter-bottom-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.eddyter-stat-space {
+  margin-right: 8px;
+}
+
+.eddyter-bottom-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.eddyter-footer-link {
+  color: var(--vellora-text-muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.eddyter-footer-link:hover {
+  color: var(--vellora-text);
+}
+
+.eddyter-version-badge {
+  color: var(--vellora-text-dim);
+  font-family: var(--page-font-mono);
+  font-size: 10px;
+}
+
+
+/* ════════════════════════════════════════════
+   Developer Section Below Editor
+   ════════════════════════════════════════════ */
+
+.eddyter-dev-section {
+  width: 100%;
+  max-width: 1060px;
+  margin-top: 48px;
+}
+
+.eddyter-dev-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.eddyter-dev-card {
+  background: var(--vellora-card-bg);
+  border: 1px solid var(--vellora-border);
+  border-radius: var(--vellora-radius-card);
+  padding: 20px;
+}
+
+.eddyter-dev-card h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--page-text);
+}
+
+.eddyter-dev-card p {
+  font-size: 12px;
+  color: var(--page-text-muted);
+  margin-bottom: 12px;
+}
+
+.eddyter-dev-card pre {
+  background: #08090c;
+  border: 1px solid var(--vellora-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: var(--page-font-mono);
+  font-size: 11px;
+  color: #a5b4fc;
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  .eddyter-top-banner {
+    padding: 12px 16px;
+  }
+  .eddyter-main {
+    padding: 16px;
+  }
+  .eddyter-dev-grid {
+    grid-template-columns: 1fr;
+  }
+  .eddyter-bottom-bar {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}

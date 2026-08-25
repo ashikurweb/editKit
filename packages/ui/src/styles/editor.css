@@ -1,0 +1,1108 @@
+/* ============================================================
+   Vellora — Premium Editor Styles
+   Exact match for EDDYTER Design (Dark & Light Theme)
+   Pure Plain CSS + CSS Variables — 100% Customizable
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+
+/* ════════════════════════════════════════════
+   Design Tokens (CSS Variables)
+   ════════════════════════════════════════════ */
+
+[data-vellora],
+[data-vellora-theme="dark"] {
+  /* Surfaces & Backgrounds */
+  --vellora-bg: #0c0d10;
+  --vellora-card-bg: #141519;
+  --vellora-toolbar-bg: #18191e;
+  --vellora-surface-hover: #22242c;
+  --vellora-surface-active: #2b2e38;
+  --vellora-surface-elevated: #1e2027;
+
+  /* Text & Labels */
+  --vellora-text: #e6e8ee;
+  --vellora-text-muted: #8b90a0;
+  --vellora-text-dim: #5a5f70;
+  --vellora-placeholder: #454955;
+
+  /* Borders & Dividers */
+  --vellora-border: #23252f;
+  --vellora-border-hover: #323543;
+  --vellora-border-focus: #7c3aed;
+  --vellora-divider: #23252f;
+
+  /* Brand / Accent / AI */
+  --vellora-primary: #7c3aed;
+  --vellora-primary-hover: #6d28d9;
+  --vellora-primary-light: rgba(124, 58, 237, 0.15);
+  --vellora-ai-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --vellora-selection: rgba(124, 58, 237, 0.25);
+
+  /* Table Specific (Screenshot 2 exact slate tint) */
+  --vellora-table-header-bg: #2d3342;
+  --vellora-table-header-text: #e2e8f0;
+  --vellora-table-border: #2a2d39;
+  --vellora-table-cell-hover: rgba(124, 58, 237, 0.08);
+
+  /* Typography */
+  --vellora-font: 'DM Sans', 'Inter', -apple-system, sans-serif;
+  --vellora-font-mono: 'Fira Code', monospace;
+  --vellora-font-size: 14px;
+  --vellora-line-height: 1.7;
+
+  /* Shadows */
+  --vellora-shadow-popup: 0 12px 32px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4);
+  --vellora-shadow-floating: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --vellora-radius-card: 14px;
+  --vellora-radius-btn: 6px;
+  --vellora-radius-pill: 9999px;
+}
+
+[data-vellora-theme="light"] {
+  --vellora-bg: #f8fafc;
+  --vellora-card-bg: #ffffff;
+  --vellora-toolbar-bg: #ffffff;
+  --vellora-surface-hover: #f1f5f9;
+  --vellora-surface-active: #e2e8f0;
+  --vellora-surface-elevated: #ffffff;
+
+  --vellora-text: #1e293b;
+  --vellora-text-muted: #64748b;
+  --vellora-text-dim: #94a3b8;
+  --vellora-placeholder: #cbd5e1;
+
+  --vellora-border: #e2e8f0;
+  --vellora-border-hover: #cbd5e1;
+  --vellora-border-focus: #6366f1;
+  --vellora-divider: #e2e8f0;
+
+  --vellora-primary: #6366f1;
+  --vellora-primary-hover: #4f46e5;
+  --vellora-primary-light: rgba(99, 102, 241, 0.1);
+  --vellora-ai-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+  --vellora-selection: rgba(99, 102, 241, 0.15);
+
+  --vellora-table-header-bg: #f1f5f9;
+  --vellora-table-header-text: #334155;
+  --vellora-table-border: #e2e8f0;
+  --vellora-table-cell-hover: rgba(99, 102, 241, 0.05);
+
+  --vellora-shadow-popup: 0 10px 30px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.05);
+  --vellora-shadow-floating: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ════════════════════════════════════════════
+   Editor Main Container Card
+   ════════════════════════════════════════════ */
+
+.vellora {
+  font-family: var(--vellora-font);
+  font-size: var(--vellora-font-size);
+  color: var(--vellora-text);
+  background: var(--vellora-card-bg);
+  border: 1px solid var(--vellora-border);
+  border-radius: var(--vellora-radius-card);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  user-select: text;
+  overflow: visible;
+}
+
+.vellora--focused {
+  border-color: var(--vellora-border-hover);
+}
+
+
+/* ════════════════════════════════════════════
+   Toolbar
+   ════════════════════════════════════════════ */
+
+.vellora-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 6px 10px;
+  background: var(--vellora-toolbar-bg);
+  border-bottom: 1px solid var(--vellora-border);
+  border-top-left-radius: var(--vellora-radius-card);
+  border-top-right-radius: var(--vellora-radius-card);
+  user-select: none;
+  overflow: visible;
+  position: relative;
+  z-index: 30;
+}
+
+.vellora-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+/* Toolbar Icon Buttons */
+.vellora-tb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: var(--vellora-radius-btn);
+  background: transparent;
+  color: var(--vellora-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.vellora-tb-btn:hover {
+  background: var(--vellora-surface-hover);
+  color: var(--vellora-text);
+}
+
+.vellora-tb-btn:active {
+  background: var(--vellora-surface-active);
+  transform: scale(0.95);
+}
+
+.vellora-tb-btn--active {
+  background: var(--vellora-surface-active);
+  color: var(--vellora-text);
+}
+
+.vellora-tb-btn--chevron {
+  width: auto;
+  padding: 0 4px 0 6px;
+  gap: 2px;
+}
+
+.vellora-tb-chevron-sm {
+  opacity: 0.5;
+  display: inline-flex;
+}
+.vellora-tb-chevron-sm svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Divider */
+.vellora-tb-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--vellora-divider);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+/* Pill Buttons (Block & Font Dropdowns) */
+.vellora-tb-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--vellora-border);
+  border-radius: var(--vellora-radius-btn);
+  background: var(--vellora-card-bg);
+  color: var(--vellora-text);
+  font-family: var(--vellora-font);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vellora-tb-pill-btn:hover {
+  background: var(--vellora-surface-hover);
+  border-color: var(--vellora-border-hover);
+}
+
+.vellora-tb-pill-btn--font {
+  min-width: 86px;
+  justify-content: space-between;
+}
+
+.vellora-tb-pill-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vellora-tb-icon-sm svg {
+  width: 14px;
+  height: 14px;
+}
+
+.vellora-tb-chevron {
+  opacity: 0.5;
+  display: inline-flex;
+  transition: transform 0.15s ease;
+}
+.vellora-tb-chevron svg {
+  width: 12px;
+  height: 12px;
+}
+
+.vellora-tb-dropdown-wrap--open .vellora-tb-chevron {
+  transform: rotate(180deg);
+}
+
+/* Stepper (- 14 +) */
+.vellora-tb-stepper-wrap {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  border: 1px solid var(--vellora-border);
+  border-radius: var(--vellora-radius-btn);
+  background: var(--vellora-card-bg);
+  padding: 0 2px;
+}
+
+.vellora-tb-stepper-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 22px;
+  border: none;
+  background: transparent;
+  color: var(--vellora-text-muted);
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 0;
+}
+
+.vellora-tb-stepper-btn:hover {
+  background: var(--vellora-surface-hover);
+  color: var(--vellora-text);
+}
+
+.vellora-tb-stepper-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+.vellora-tb-stepper-val {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--vellora-text);
+  padding: 0 6px;
+  min-width: 22px;
+  text-align: center;
+}
+
+/* Right side elements */
+.vellora-toolbar-pill-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 7px;
+  border-radius: var(--vellora-radius-btn);
+  background: var(--vellora-surface-hover);
+  color: var(--vellora-text-muted);
+  border: 1px solid var(--vellora-border);
+}
+
+/* ✦ AI Button */
+.vellora-tb-ai-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 10px;
+  border: none;
+  border-radius: var(--vellora-radius-btn);
+  background: var(--vellora-ai-gradient);
+  color: #ffffff;
+  font-family: var(--vellora-font);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);
+  transition: all 0.15s ease;
+}
+
+.vellora-tb-ai-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.vellora-tb-ai-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* Color indicator underline */
+.vellora-tb-color-indicator {
+  position: absolute;
+  bottom: 3px;
+  left: 6px;
+  right: 6px;
+  height: 2px;
+  background: #ffff00;
+  border-radius: 1px;
+}
+
+
+/* ════════════════════════════════════════════
+   Dropdown Menus & Submenus
+   ════════════════════════════════════════════ */
+
+.vellora-tb-dropdown-wrap {
+  position: relative;
+}
+
+.vellora-tb-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 170px;
+  background: var(--vellora-surface-elevated);
+  border: 1px solid var(--vellora-border);
+  border-radius: 10px;
+  box-shadow: var(--vellora-shadow-popup);
+  padding: 4px;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vellora-tb-dropdown-wrap--open .vellora-tb-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.vellora-tb-dropdown-menu--compact {
+  min-width: 140px;
+}
+
+.vellora-tb-dropdown-menu--ai {
+  min-width: 200px;
+  right: 0;
+  left: auto;
+}
+
+.vellora-tb-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--vellora-text);
+  font-family: var(--vellora-font);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.1s ease;
+  position: relative;
+}
+
+.vellora-tb-menu-item:hover {
+  background: var(--vellora-surface-hover);
+}
+
+.vellora-tb-menu-prefix {
+  display: inline-flex;
+  align-items: center;
+  color: var(--vellora-text-muted);
+  width: 16px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.vellora-tb-menu-prefix svg {
+  width: 14px;
+  height: 14px;
+}
+
+.vellora-tb-menu-label {
+  flex: 1;
+}
+
+.vellora-tb-menu-arrow {
+  margin-left: auto;
+  opacity: 0.5;
+  display: inline-flex;
+}
+.vellora-tb-menu-arrow svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Nested Submenu Flyout (Screenshot 3 exact match) */
+.vellora-tb-submenu-wrap {
+  position: relative;
+}
+
+.vellora-tb-submenu {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 4px);
+  min-width: 130px;
+  background: var(--vellora-surface-elevated);
+  border: 1px solid var(--vellora-border);
+  border-radius: 10px;
+  box-shadow: var(--vellora-shadow-popup);
+  padding: 4px;
+  z-index: 105;
+  display: none;
+}
+
+.vellora-tb-submenu-wrap:hover .vellora-tb-submenu {
+  display: block;
+  animation: velloraFadeIn 0.15s ease;
+}
+
+.vellora-tb-bullet-symbol {
+  font-size: 14px;
+  width: 14px;
+  text-align: center;
+  color: var(--vellora-text-muted);
+}
+
+
+/* ════════════════════════════════════════════
+   Table Grid Picker
+   ════════════════════════════════════════════ */
+
+.vellora-tb-table-picker {
+  min-width: 160px;
+  padding: 10px;
+}
+
+.vellora-tb-table-picker-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--vellora-text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.vellora-tb-table-size-text {
+  color: var(--vellora-primary);
+}
+
+.vellora-tb-table-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 18px);
+  gap: 3px;
+}
+
+.vellora-tb-grid-cell {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--vellora-border);
+  border-radius: 3px;
+  background: var(--vellora-surface-hover);
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.vellora-tb-grid-cell--active {
+  background: var(--vellora-primary);
+  border-color: var(--vellora-primary-hover);
+}
+
+
+/* ════════════════════════════════════════════
+   Color Picker Popover (100% EDDYTER Match)
+   ════════════════════════════════════════════ */
+
+.vellora-color-picker {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 252px;
+  background: var(--vellora-surface-elevated);
+  border: 1px solid var(--vellora-border);
+  border-radius: 12px;
+  box-shadow: var(--vellora-shadow-popup);
+  padding: 12px;
+  z-index: 120;
+  user-select: none;
+}
+
+/* Tabs: Text A | Background */
+.vellora-color-tabs {
+  display: flex;
+  gap: 4px;
+  background: #0e0f13;
+  padding: 3px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.vellora-color-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--vellora-text-muted);
+  font-family: var(--vellora-font);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vellora-color-tab--active {
+  background: #252833;
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.vellora-color-tab-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 5px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  color: #ffffff;
+}
+
+/* Section Title: Colours */
+.vellora-color-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--vellora-text-muted);
+  margin-bottom: 8px;
+  letter-spacing: 0.2px;
+}
+
+/* Hex Bar */
+.vellora-color-hex-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.vellora-color-preview-box {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  border: 1px solid var(--vellora-border);
+  flex-shrink: 0;
+}
+
+.vellora-color-hex-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #0e0f13;
+  border: 1px solid var(--vellora-border);
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+
+.vellora-color-hash-symbol {
+  font-size: 12px;
+  color: var(--vellora-text-dim);
+  font-family: var(--vellora-font-mono);
+}
+
+.vellora-color-hex-text {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-family: var(--vellora-font-mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  outline: none;
+}
+
+/* Swatches Grid: 3 rows x 7 cols */
+.vellora-color-swatches-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-bottom: 12px;
+}
+
+.vellora-color-swatch-btn {
+  width: 26px;
+  height: 24px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  position: relative;
+}
+
+.vellora-color-swatch-btn:hover {
+  transform: scale(1.15);
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.vellora-color-swatch-btn--active {
+  box-shadow: 0 0 0 2px #ffffff;
+  z-index: 3;
+}
+
+/* Collapsible Custom Picker */
+.vellora-color-custom-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--vellora-text-muted);
+  cursor: pointer;
+  margin-bottom: 8px;
+  user-select: none;
+}
+
+.vellora-color-custom-header:hover {
+  color: var(--vellora-text);
+}
+
+.vellora-color-custom-arrow {
+  font-size: 8px;
+  opacity: 0.7;
+}
+
+.vellora-color-custom-body {
+  margin-top: 6px;
+}
+
+/* 2D Saturation / Brightness Canvas */
+.vellora-color-satval-canvas {
+  position: relative;
+  width: 100%;
+  height: 124px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: crosshair;
+  background-color: #ff0000;
+}
+
+.vellora-color-satval-white {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
+}
+
+.vellora-color-satval-black {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #000000);
+}
+
+.vellora-color-satval-thumb {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(0, 0, 0, 0.4);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Hue Slider Bar */
+.vellora-color-hue-wrap {
+  margin-top: 10px;
+}
+
+.vellora-color-hue-slider {
+  position: relative;
+  width: 100%;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+  cursor: pointer;
+}
+
+.vellora-color-hue-thumb {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Emoji / Symbol Grid */
+.vellora-tb-emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  min-width: 140px;
+  padding: 6px;
+}
+
+.vellora-tb-emoji-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.vellora-tb-emoji-btn:hover {
+  background: var(--vellora-surface-hover);
+}
+
+
+/* ════════════════════════════════════════════
+   Floating Bubble Menu
+   ════════════════════════════════════════════ */
+
+.vellora-bubble-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  background: var(--vellora-surface-elevated);
+  border: 1px solid var(--vellora-border);
+  border-radius: 10px;
+  box-shadow: var(--vellora-shadow-floating);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+  transition: transform 0.1s ease;
+}
+
+.vellora-bubble-menu--visible {
+  display: flex;
+  animation: velloraFadeIn 0.15s ease;
+}
+
+.vellora-bubble-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--vellora-text-muted);
+  cursor: pointer;
+  padding: 0;
+}
+
+.vellora-bubble-btn:hover {
+  background: var(--vellora-surface-hover);
+  color: var(--vellora-text);
+}
+
+.vellora-bubble-btn--active {
+  background: var(--vellora-surface-active);
+  color: var(--vellora-text);
+}
+
+.vellora-bubble-btn--ai {
+  width: auto;
+  padding: 0 8px;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #8b5cf6;
+}
+
+.vellora-bubble-chevron svg {
+  width: 10px;
+  height: 10px;
+}
+
+.vellora-bubble-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--vellora-border);
+  margin: 0 3px;
+}
+
+.vellora-bubble-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.vellora-bubble-btn--stepper {
+  width: 18px;
+  height: 20px;
+}
+.vellora-bubble-btn--stepper svg {
+  width: 10px;
+  height: 10px;
+}
+
+.vellora-bubble-stepper-value {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--vellora-text);
+  padding: 0 2px;
+}
+
+
+/* ════════════════════════════════════════════
+   Table Floating Contextual Menu
+   ════════════════════════════════════════════ */
+
+.vellora-table-floating-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  background: var(--vellora-surface-elevated);
+  border: 1px solid var(--vellora-border);
+  border-radius: 8px;
+  box-shadow: var(--vellora-shadow-floating);
+  z-index: 95;
+  transition: transform 0.1s ease;
+}
+
+.vellora-table-floating-menu--visible {
+  display: flex;
+  animation: velloraFadeIn 0.15s ease;
+}
+
+.vellora-table-menu-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--vellora-text-muted);
+  padding: 0 4px;
+}
+.vellora-table-menu-label svg {
+  width: 12px;
+  height: 12px;
+}
+
+.vellora-table-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--vellora-text-muted);
+  cursor: pointer;
+  padding: 0;
+}
+
+.vellora-table-btn:hover {
+  background: var(--vellora-surface-hover);
+  color: var(--vellora-text);
+}
+
+.vellora-table-btn--danger:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.vellora-table-btn-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--vellora-border);
+  margin: 0 3px;
+}
+
+
+/* ════════════════════════════════════════════
+   Content Editable Typography & Elements
+   ════════════════════════════════════════════ */
+
+.vellora-content {
+  padding: 24px 32px;
+  min-height: 280px;
+  max-height: 65vh;
+  overflow-y: auto;
+  outline: none;
+  font-family: var(--vellora-font);
+  font-size: var(--vellora-font-size);
+  line-height: var(--vellora-line-height);
+  color: var(--vellora-text);
+  caret-color: var(--vellora-primary);
+  border-bottom-left-radius: var(--vellora-radius-card);
+  border-bottom-right-radius: var(--vellora-radius-card);
+}
+
+.vellora-content ::selection {
+  background: var(--vellora-selection);
+}
+
+.vellora-content--empty::before {
+  content: attr(data-placeholder);
+  color: var(--vellora-placeholder);
+  pointer-events: none;
+  position: absolute;
+  font-style: italic;
+}
+
+/* Headings */
+.vellora-content h1 { font-size: 2em; font-weight: 700; margin: 1em 0 0.4em; }
+.vellora-content h2 { font-size: 1.5em; font-weight: 700; margin: 1em 0 0.4em; }
+.vellora-content h3 { font-size: 1.25em; font-weight: 600; margin: 0.8em 0 0.3em; }
+.vellora-content h4 { font-size: 1.1em; font-weight: 600; margin: 0.6em 0 0.2em; }
+.vellora-content h5 { font-size: 1em; font-weight: 600; margin: 0.5em 0 0.2em; }
+.vellora-content h6 { font-size: 0.9em; font-weight: 600; color: var(--vellora-text-muted); margin: 0.4em 0 0.2em; }
+
+.vellora-content p {
+  margin: 0 0 0.5em 0;
+}
+
+/* Table in content (Screenshot 2 exact match) */
+.vellora-content table,
+.vellora-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  border: 1px solid var(--vellora-table-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.vellora-content th {
+  background: var(--vellora-table-header-bg);
+  color: var(--vellora-table-header-text);
+  font-weight: 600;
+  padding: 10px 14px;
+  text-align: left;
+  border: 1px solid var(--vellora-table-border);
+  position: relative;
+}
+
+.vellora-content td {
+  padding: 10px 14px;
+  border: 1px solid var(--vellora-table-border);
+  vertical-align: top;
+  transition: background 0.1s ease;
+}
+
+.vellora-content td:hover {
+  background: var(--vellora-table-cell-hover);
+}
+
+.vellora-table--striped tbody tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Lists */
+.vellora-content ul,
+.vellora-content ol {
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+
+.vellora-content li {
+  margin: 0.25em 0;
+}
+
+.vellora-content .vellora-task-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.vellora-content .vellora-task-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vellora-content .vellora-task-checkbox {
+  accent-color: var(--vellora-primary);
+  cursor: pointer;
+}
+
+.vellora-content .vellora-task-done > span {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+/* Code & Blockquote */
+.vellora-content code {
+  font-family: var(--vellora-font-mono);
+  font-size: 0.85em;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: var(--vellora-surface-hover);
+  color: #f472b6;
+}
+
+.vellora-content pre {
+  font-family: var(--vellora-font-mono);
+  font-size: 0.85em;
+  background: #0d0e12;
+  border: 1px solid var(--vellora-border);
+  padding: 14px 18px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.vellora-content pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.vellora-content blockquote {
+  border-left: 3px solid var(--vellora-primary);
+  background: var(--vellora-primary-light);
+  padding: 10px 16px;
+  margin: 1em 0;
+  border-radius: 0 6px 6px 0;
+  font-style: italic;
+}
+
+.vellora-content hr {
+  border: none;
+  height: 1px;
+  background: var(--vellora-divider);
+  margin: 1.5em 0;
+}
+
+.vellora-content img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 1em 0;
+}
+
+@keyframes velloraFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
