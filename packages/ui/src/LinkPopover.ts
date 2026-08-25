@@ -1,6 +1,7 @@
 // ============================================================
 // Vellora — In-Place Floating Link Popover & Hover Preview/Editor
 // Supports hover preview on existing links + direct in-place editing
+// Warning popup toast if user attempts to link with no text selected
 // ============================================================
 
 import type { VelloraEditor } from '@vellora/core';
@@ -261,11 +262,47 @@ export class LinkPopover {
 
   show(): void {
     const sel = window.getSelection();
+    let hasSelectedText = false;
+    let anchor: HTMLAnchorElement | null = null;
+
     if (sel && sel.rangeCount > 0 && this.editor.contentEl.contains(sel.anchorNode)) {
       this.savedRange = sel.getRangeAt(0).cloneRange();
-      this.targetAnchor = this._findAnchor(sel.anchorNode);
+      anchor = this._findAnchor(sel.anchorNode);
+      hasSelectedText = !sel.isCollapsed && sel.toString().trim().length > 0;
+    } else if (this.savedRange) {
+      hasSelectedText = !this.savedRange.collapsed && this.savedRange.toString().trim().length > 0;
+      anchor = this._findAnchor(this.savedRange.startContainer);
     }
+
+    // If no text is selected and cursor is not inside an existing link -> Show Warning Toast!
+    if (!hasSelectedText && !anchor) {
+      this.showWarning('Please select text first to insert a link');
+      return;
+    }
+
+    this.targetAnchor = anchor;
     this.showEdit();
+  }
+
+  showWarning(message: string = 'Please select text first to insert a link'): void {
+    const existing = this.editor.root.querySelector('.vellora-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.classList.add('vellora-toast', 'vellora-toast--warning');
+    toast.innerHTML = `
+      <span class="vellora-toast-icon">${icons.alertTriangle}</span>
+      <span class="vellora-toast-msg">${message}</span>
+    `;
+
+    this.editor.root.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.add('vellora-toast--hiding');
+      setTimeout(() => toast.remove(), 200);
+    }, 2500);
+
+    toast.addEventListener('click', () => toast.remove());
   }
 
   hide(): void {

@@ -2134,3 +2134,60 @@
   font-weight: 500;
   padding: 0 2px;
 }
+
+/* ════════════════════════════════════════════
+   Toast Notification (Warning / Alert)
+   ════════════════════════════════════════════ */
+
+.vellora-toast {
+  position: absolute;
+  top: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #181922;
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  color: #fef3c7;
+  font-family: var(--vellora-font, 'DM Sans', sans-serif);
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 200;
+  cursor: pointer;
+  animation: velloraToastIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.vellora-toast-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.vellora-toast-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.vellora-toast--hiding {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-6px);
+  transition: all 0.2s ease;
+}
+
+@keyframes velloraToastIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
