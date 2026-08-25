@@ -1,9 +1,10 @@
 // ============================================================
 // Vellora — Image Upload & Insert Modal
-// Exact match for Eddyter with Staging, Progress & URL insertion
+// Extends global reusable Modal component with Staging, Progress & URL insertion
 // ============================================================
 
 import type { VelloraEditor } from '@vellora/core';
+import { Modal } from './Modal';
 import { icons } from './icons';
 
 interface StagedImage {
@@ -14,40 +15,34 @@ interface StagedImage {
   alt: string;
 }
 
-export class ImageModal {
-  readonly element: HTMLElement;
-  private editor: VelloraEditor;
-  private modalEl!: HTMLElement;
-  private bodyEl!: HTMLElement;
+export class ImageModal extends Modal {
   private currentView: 'dropzone' | 'url' = 'dropzone';
   private stagedImages: StagedImage[] = [];
   private isUploading: boolean = false;
 
   constructor(editor: VelloraEditor) {
-    this.editor = editor;
-
-    // Outer backdrop overlay
-    this.element = document.createElement('div');
-    this.element.classList.add('vellora-modal-overlay');
-    this.element.setAttribute('role', 'dialog');
-    this.element.setAttribute('aria-modal', 'true');
-
-    this._buildModal();
-
-    // Close when clicking backdrop
-    this.element.addEventListener('mousedown', (e) => {
-      if (e.target === this.element && !this.isUploading) {
-        this.hide();
-      }
+    super(editor, {
+      className: 'vellora-image-modal',
+      maxWidth: '640px',
     });
 
-    // Close on Escape
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && this.isOpen() && !this.isUploading) {
-        this.hide();
-      }
-    });
+    this._setupImageListeners();
+  }
 
+  show(initialView: 'dropzone' | 'url' = 'dropzone'): void {
+    this.currentView = initialView;
+    this._renderView();
+    super.show();
+  }
+
+  hide(): void {
+    if (this.isUploading) return;
+    super.hide();
+    this.currentView = 'dropzone';
+    this.stagedImages = [];
+  }
+
+  private _setupImageListeners(): void {
     // Support direct clipboard paste when modal is open
     document.addEventListener('paste', (e: ClipboardEvent) => {
       if (!this.isOpen() || this.isUploading) return;
@@ -84,52 +79,6 @@ export class ImageModal {
     });
   }
 
-  isOpen(): boolean {
-    return this.element.classList.contains('vellora-modal-overlay--open');
-  }
-
-  show(initialView: 'dropzone' | 'url' = 'dropzone'): void {
-    this.currentView = initialView;
-    this._renderView();
-    if (!this.element.parentElement) {
-      document.body.appendChild(this.element);
-    }
-    this.element.classList.add('vellora-modal-overlay--open');
-  }
-
-  hide(): void {
-    if (this.isUploading) return;
-    this.element.classList.remove('vellora-modal-overlay--open');
-    this.currentView = 'dropzone';
-    this.stagedImages = [];
-  }
-
-  private _buildModal(): void {
-    this.element.innerHTML = '';
-
-    this.modalEl = document.createElement('div');
-    this.modalEl.classList.add('vellora-modal', 'vellora-image-modal');
-
-    // Close ✕ button at top right
-    const closeBtn = document.createElement('button');
-    closeBtn.type = 'button';
-    closeBtn.classList.add('vellora-modal-close');
-    closeBtn.setAttribute('title', 'Close modal');
-    closeBtn.setAttribute('aria-label', 'Close');
-    closeBtn.innerHTML = icons.close || icons.clearFormat;
-    closeBtn.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      this.hide();
-    });
-
-    this.bodyEl = document.createElement('div');
-    this.bodyEl.classList.add('vellora-modal-body');
-
-    this.modalEl.appendChild(closeBtn);
-    this.modalEl.appendChild(this.bodyEl);
-    this.element.appendChild(this.modalEl);
-  }
-
   private _renderView(): void {
     this.bodyEl.innerHTML = '';
 
@@ -140,9 +89,8 @@ export class ImageModal {
     }
   }
 
-  // ── 1. Dropzone View (Step 1 from Screenshot 1) ──
+  // ── 1. Dropzone View ──
   private _renderDropzoneView(): void {
-    // Dropzone container
     const dropzone = document.createElement('div');
     dropzone.classList.add('vellora-img-dropzone');
 
@@ -199,7 +147,7 @@ export class ImageModal {
 
     this.bodyEl.appendChild(dropzone);
 
-    // ── Staged Images List (Screenshot 1 Exact Match) ──
+    // ── Staged Images List ──
     if (this.stagedImages.length > 0) {
       const stagingWrap = document.createElement('div');
       stagingWrap.classList.add('vellora-img-staging-wrap');
@@ -276,7 +224,7 @@ export class ImageModal {
 
       stagingWrap.appendChild(list);
 
-      // Upload N Images Button (White pill button with 1...2...45% animation)
+      // Upload Button with animated progress
       const uploadBtn = document.createElement('button');
       uploadBtn.type = 'button';
       uploadBtn.classList.add('vellora-img-upload-btn');
@@ -332,10 +280,7 @@ export class ImageModal {
     const text = btn.querySelector('.vellora-img-upload-text') as HTMLElement;
 
     let progress = 0;
-    const totalCount = this.stagedImages.length;
-
     const interval = setInterval(() => {
-      // Smooth incremental progress simulation 1...2...45...100%
       progress += Math.floor(Math.random() * 8) + 4;
       if (progress > 100) progress = 100;
 
@@ -345,7 +290,6 @@ export class ImageModal {
       if (progress >= 100) {
         clearInterval(interval);
         setTimeout(() => {
-          // Insert all staged images into the editor
           for (const item of this.stagedImages) {
             this.editor.commands.insertImage({
               src: item.dataUrl,
@@ -387,7 +331,7 @@ export class ImageModal {
     });
   }
 
-  // ── 2. URL View (Step 2 from Screenshot 2) ──
+  // ── 2. URL View ──
   private _renderUrlView(): void {
     const form = document.createElement('div');
     form.classList.add('vellora-img-url-form');

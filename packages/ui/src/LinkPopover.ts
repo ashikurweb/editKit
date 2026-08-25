@@ -6,6 +6,7 @@
 
 import type { VelloraEditor } from '@vellora/core';
 import { icons } from './icons';
+import { showToast } from './Toast';
 
 export class LinkPopover {
   readonly element: HTMLElement;
@@ -274,35 +275,18 @@ export class LinkPopover {
       anchor = this._findAnchor(this.savedRange.startContainer);
     }
 
-    // If no text is selected and cursor is not inside an existing link -> Show Warning Toast!
+    // If no text is selected and cursor is not inside an existing link -> Show Global Warning Toast!
     if (!hasSelectedText && !anchor) {
-      this.showWarning('Please select text first to insert a link');
+      showToast(this.editor, {
+        message: 'Please select text first to insert a link',
+        type: 'warning',
+        duration: 2500,
+      });
       return;
     }
 
     this.targetAnchor = anchor;
     this.showEdit();
-  }
-
-  showWarning(message: string = 'Please select text first to insert a link'): void {
-    const existing = this.editor.root.querySelector('.vellora-toast');
-    if (existing) existing.remove();
-
-    const toast = document.createElement('div');
-    toast.classList.add('vellora-toast', 'vellora-toast--warning');
-    toast.innerHTML = `
-      <span class="vellora-toast-icon">${icons.alertTriangle}</span>
-      <span class="vellora-toast-msg">${message}</span>
-    `;
-
-    this.editor.root.appendChild(toast);
-
-    setTimeout(() => {
-      toast.classList.add('vellora-toast--hiding');
-      setTimeout(() => toast.remove(), 200);
-    }, 2500);
-
-    toast.addEventListener('click', () => toast.remove());
   }
 
   hide(): void {

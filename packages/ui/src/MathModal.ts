@@ -1,55 +1,33 @@
 // ============================================================
 // Vellora — LaTeX / Math Equation Modal & Live Renderer
-// Supports both Block Equations and Inline Equations
+// Extends global reusable Modal component
 // ============================================================
 
 import type { VelloraEditor } from '@vellora/core';
+import { Modal } from './Modal';
 import { icons } from './icons';
 
-export class MathModal {
-  readonly element: HTMLElement;
-  private editor: VelloraEditor;
+export class MathModal extends Modal {
   private currentType: 'block' | 'inline' = 'block';
   private targetEl: HTMLElement | null = null;
 
   private textareaEl!: HTMLTextAreaElement;
   private previewEl!: HTMLElement;
-  private titleEl!: HTMLElement;
   private submitBtn!: HTMLElement;
   private deleteBtn!: HTMLElement;
 
-  private isVisible: boolean = false;
-
   constructor(editor: VelloraEditor) {
-    this.editor = editor;
+    super(editor, {
+      title: 'Insert Math Equation',
+      className: 'vellora-math-modal',
+      maxWidth: '540px',
+    });
 
-    this.element = document.createElement('div');
-    this.element.classList.add('vellora-modal-overlay');
-    this.element.setAttribute('role', 'dialog');
-    this.element.setAttribute('aria-modal', 'true');
-
-    this._buildUI();
-    this._setupGlobalListeners();
+    this._buildMathUI();
+    this._setupMathListeners();
   }
 
-  private _buildUI(): void {
-    const modal = document.createElement('div');
-    modal.classList.add('vellora-modal', 'vellora-math-modal');
-
-    // Close X
-    const closeBtn = document.createElement('button');
-    closeBtn.type = 'button';
-    closeBtn.classList.add('vellora-modal-close');
-    closeBtn.innerHTML = icons.close;
-    closeBtn.addEventListener('click', () => this.hide());
-    modal.appendChild(closeBtn);
-
-    // Title
-    this.titleEl = document.createElement('h3');
-    this.titleEl.classList.add('vellora-modal-title');
-    this.titleEl.textContent = 'Insert Math Equation';
-    modal.appendChild(this.titleEl);
-
+  private _buildMathUI(): void {
     // Quick formula chips
     const chipsWrap = document.createElement('div');
     chipsWrap.classList.add('vellora-math-chips');
@@ -76,7 +54,7 @@ export class MathModal {
       });
       chipsWrap.appendChild(chip);
     });
-    modal.appendChild(chipsWrap);
+    this.bodyEl.appendChild(chipsWrap);
 
     // Textarea input
     const inputGroup = document.createElement('div');
@@ -94,7 +72,7 @@ export class MathModal {
 
     inputGroup.appendChild(inputLabel);
     inputGroup.appendChild(this.textareaEl);
-    modal.appendChild(inputGroup);
+    this.bodyEl.appendChild(inputGroup);
 
     // Live Preview
     const previewGroup = document.createElement('div');
@@ -109,7 +87,7 @@ export class MathModal {
 
     previewGroup.appendChild(previewLabel);
     previewGroup.appendChild(this.previewEl);
-    modal.appendChild(previewGroup);
+    this.bodyEl.appendChild(previewGroup);
 
     // Actions (Submit / Delete / Cancel)
     const actions = document.createElement('div');
@@ -148,17 +126,10 @@ export class MathModal {
 
     actions.appendChild(this.deleteBtn);
     actions.appendChild(rightActions);
-    modal.appendChild(actions);
-
-    this.element.appendChild(modal);
-
-    // Overlay click to close
-    this.element.addEventListener('click', (e) => {
-      if (e.target === this.element) this.hide();
-    });
+    this.bodyEl.appendChild(actions);
   }
 
-  private _setupGlobalListeners(): void {
+  private _setupMathListeners(): void {
     // Click on math equations in editor to edit
     this.editor.contentEl.addEventListener('click', (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -169,19 +140,12 @@ export class MathModal {
         this.edit(mathEl);
       }
     });
-
-    // Close on Escape
-    document.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (this.isVisible && e.key === 'Escape') {
-        this.hide();
-      }
-    });
   }
 
-  show(type: 'block' | 'inline' = 'block'): void {
+  showMath(type: 'block' | 'inline' = 'block'): void {
     this.currentType = type;
     this.targetEl = null;
-    this.titleEl.textContent = type === 'block' ? 'Insert Block Equation' : 'Insert Inline Equation';
+    this.setTitle(type === 'block' ? 'Insert Block Equation' : 'Insert Inline Equation');
     this.submitBtn.textContent = 'Insert Equation';
     this.deleteBtn.style.display = 'none';
 
@@ -190,49 +154,34 @@ export class MathModal {
     }
 
     this._updatePreview();
-
-    if (!this.element.parentElement) {
-      document.body.appendChild(this.element);
-    }
-
-    this.element.classList.add('vellora-modal-overlay--open');
-    this.isVisible = true;
+    super.show();
 
     setTimeout(() => {
       this.textareaEl.focus();
       this.textareaEl.select();
     }, 50);
+  }
+
+  // Alias for backward compatibility
+  show(type: 'block' | 'inline' = 'block'): void {
+    this.showMath(type);
   }
 
   edit(el: HTMLElement): void {
     this.targetEl = el;
     this.currentType = el.classList.contains('vellora-math-block') ? 'block' : 'inline';
-    this.titleEl.textContent = this.currentType === 'block' ? 'Edit Block Equation' : 'Edit Inline Equation';
+    this.setTitle(this.currentType === 'block' ? 'Edit Block Equation' : 'Edit Inline Equation');
     this.submitBtn.textContent = 'Update Equation';
     this.deleteBtn.style.display = 'inline-flex';
 
     this.textareaEl.value = el.getAttribute('data-math') || '';
     this._updatePreview();
-
-    if (!this.element.parentElement) {
-      document.body.appendChild(this.element);
-    }
-
-    this.element.classList.add('vellora-modal-overlay--open');
-    this.isVisible = true;
+    super.show();
 
     setTimeout(() => {
       this.textareaEl.focus();
       this.textareaEl.select();
     }, 50);
-  }
-
-  hide(): void {
-    if (this.isVisible) {
-      this.element.classList.remove('vellora-modal-overlay--open');
-      this.isVisible = false;
-      this.targetEl = null;
-    }
   }
 
   private _updatePreview(): void {

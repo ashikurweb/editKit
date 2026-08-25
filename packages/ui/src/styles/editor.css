@@ -2162,11 +2162,42 @@
   user-select: none;
 }
 
+.vellora-toast--warning {
+  border-color: #f59e0b;
+  color: #fef3c7;
+}
+.vellora-toast--warning .vellora-toast-icon {
+  color: #f59e0b;
+}
+
+.vellora-toast--success {
+  border-color: #10b981;
+  color: #d1fae5;
+}
+.vellora-toast--success .vellora-toast-icon {
+  color: #10b981;
+}
+
+.vellora-toast--error {
+  border-color: #ef4444;
+  color: #fee2e2;
+}
+.vellora-toast--error .vellora-toast-icon {
+  color: #ef4444;
+}
+
+.vellora-toast--info {
+  border-color: #7c3aed;
+  color: #ede9fe;
+}
+.vellora-toast--info .vellora-toast-icon {
+  color: #a78bfa;
+}
+
 .vellora-toast-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #f59e0b;
   flex-shrink: 0;
 }
 
