@@ -1,6 +1,6 @@
 {
   "name": "@editkit/react",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Premium React Rich Text Editor SDK with First-Class Tables, 2D Color Picker, Bubble Menu & Zero Dependencies. Fast alternative to TipTap, Quill, Lexical & Slate for Next.js, React 18/19 & Laravel Inertia.",
   "type": "module",
   "main": "./src/index.ts",
@@ -18,12 +18,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ashikurweb/vellora-editor.git",
+    "url": "https://github.com/ashikurweb/editKit.git",
     "directory": "packages/react"
   },
-  "homepage": "https://github.com/ashikurweb/vellora-editor#readme",
+  "homepage": "https://github.com/ashikurweb/editKit#readme",
   "bugs": {
-    "url": "https://github.com/ashikurweb/vellora-editor/issues"
+    "url": "https://github.com/ashikurweb/editKit/issues"
   },
   "keywords": [
     "editkit",

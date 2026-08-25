@@ -1,6 +1,6 @@
 {
   "name": "@editkit/vue",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Official Vue 3 Rich Text Editor Component & Composables with First-Class Tables, 2D Color Picker & Zero Dependencies. Fast alternative to TipTap & Quill for Nuxt 3, Vite & Laravel Inertia Vue.",
   "type": "module",
   "main": "./src/index.ts",

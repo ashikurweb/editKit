@@ -1,7 +1,7 @@
 {
   "name": "editkit",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "EditKit — Premium Framework-Agnostic Rich Text Editor",
   "scripts": {
     "dev": "turbo run dev",
