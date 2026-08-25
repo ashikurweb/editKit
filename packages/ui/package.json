@@ -1,6 +1,6 @@
 {
   "name": "@vellora/ui",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Vellora UI components — toolbar, menus, icons, themes",
   "type": "module",
   "main": "./src/index.ts",

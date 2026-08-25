@@ -156,7 +156,7 @@ function init() {
     <div class="eddyter-bottom-right">
       <a href="#feature" class="eddyter-footer-link">💡 Suggest a Feature</a>
       <a href="#bug" class="eddyter-footer-link">🐞 Report a Bug</a>
-      <span class="eddyter-version-badge">v1.4.22</span>
+      <span class="eddyter-version-badge">v1.0.0</span>
     </div>
   `;
   editor.root.appendChild(bottomBar);
