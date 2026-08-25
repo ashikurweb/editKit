@@ -33,6 +33,8 @@ export interface ToolbarFeaturesConfig {
   emoji?: boolean;
   symbol?: boolean;
   bookmark?: boolean;
+  panel?: boolean;
+  callout?: boolean;
   selectAll?: boolean;
   clearAll?: boolean;
   comment?: boolean;
@@ -198,7 +200,12 @@ export class EditKitToolbar {
     if (isEnabled('link')) group6.push(this._createLinkButton());
     if (isEnabled('emoji')) group6.push(this._createEmojiDropdown());
     if (isEnabled('symbol')) group6.push(this._createSymbolDropdown());
-    if (isEnabled('bookmark')) group6.push(this._createBtn('pin', 'Bookmark / Pin', () => this._insertBookmarkMock()));
+    if (isEnabled('panel') || isEnabled('bookmark') || isEnabled('callout')) {
+      group6.push(this._createPanelDropdown());
+    }
+    if (isEnabled('insertElements') || isEnabled('more') || isEnabled('panel') || isEnabled('bookmark')) {
+      group6.push(this._createInsertElementsDropdown());
+    }
     if (group6.length > 0) sections.push(group6);
 
     // Group 7: Secondary Utilities (Select All, Clear All, Comment, History, More)
@@ -1003,8 +1010,435 @@ export class EditKitToolbar {
     if (formula) document.execCommand('insertText', false, `[Math: ${formula}]`);
   }
 
-  private _insertBookmarkMock(): void {
-    alert('Pinned / Bookmarked location.');
+  // ── Callout / Alert Panels Dropdown (Info, Warning, Error, Success, Note) ──
+  private _createPanelDropdown(): HTMLElement {
+    const wrap = document.createElement('div');
+    wrap.classList.add('editkit-tb-dropdown-wrap');
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.classList.add('editkit-tb-btn');
+    trigger.setAttribute('data-editkit-tooltip', 'Panels');
+    trigger.setAttribute('aria-label', 'Panels');
+
+    const iconSpan = document.createElement('span');
+    iconSpan.classList.add('editkit-tb-btn-icon');
+    iconSpan.innerHTML = icons.pin;
+    trigger.appendChild(iconSpan);
+
+    const menu = document.createElement('div');
+    menu.classList.add('editkit-tb-dropdown-menu', 'editkit-tb-dropdown-menu--panels');
+
+    const items: Array<{
+      type: 'info' | 'warning' | 'error' | 'success' | 'note';
+      icon: string;
+      title: string;
+      subtitle: string;
+      colorClass: string;
+    }> = [
+      {
+        type: 'info',
+        icon: icons.panelInfo,
+        title: 'Info',
+        subtitle: 'Information panel',
+        colorClass: 'editkit-tb-panel-item--info',
+      },
+      {
+        type: 'warning',
+        icon: icons.panelWarning,
+        title: 'Warning',
+        subtitle: 'Warning panel',
+        colorClass: 'editkit-tb-panel-item--warning',
+      },
+      {
+        type: 'error',
+        icon: icons.panelError,
+        title: 'Error',
+        subtitle: 'Error panel',
+        colorClass: 'editkit-tb-panel-item--error',
+      },
+      {
+        type: 'success',
+        icon: icons.panelSuccess,
+        title: 'Success',
+        subtitle: 'Success panel',
+        colorClass: 'editkit-tb-panel-item--success',
+      },
+      {
+        type: 'note',
+        icon: icons.panelNote,
+        title: 'Note',
+        subtitle: 'General note panel',
+        colorClass: 'editkit-tb-panel-item--note',
+      },
+    ];
+
+    for (const item of items) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.classList.add('editkit-tb-menu-item', 'editkit-tb-panel-item', item.colorClass);
+
+      const icon = document.createElement('span');
+      icon.classList.add('editkit-tb-panel-item-icon');
+      icon.innerHTML = item.icon;
+
+      const textWrap = document.createElement('div');
+      textWrap.classList.add('editkit-tb-panel-item-text');
+
+      const title = document.createElement('div');
+      title.classList.add('editkit-tb-panel-item-title');
+      title.textContent = item.title;
+
+      const sub = document.createElement('div');
+      sub.classList.add('editkit-tb-panel-item-sub');
+      sub.textContent = item.subtitle;
+
+      textWrap.appendChild(title);
+      textWrap.appendChild(sub);
+
+      btn.appendChild(icon);
+      btn.appendChild(textWrap);
+
+      btn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        this.editor.commands.insertPanel(item.type);
+        this._closeDropdown();
+      });
+
+      menu.appendChild(btn);
+    }
+
+    trigger.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this._toggleDropdown(wrap);
+    });
+
+    wrap.appendChild(trigger);
+    wrap.appendChild(menu);
+    return wrap;
+  }
+
+  // ── 10. Insert Elements Dropdown (Horizontal Line, Upload File, Signature, Editorial >, Blocks >, Patterns >) ──
+  private _createInsertElementsDropdown(): HTMLElement {
+    const wrap = document.createElement('div');
+    wrap.classList.add('editkit-tb-dropdown-wrap', 'editkit-tb-dropdown-wrap--elements');
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.classList.add('editkit-tb-btn', 'editkit-tb-btn--chevron-standalone');
+    trigger.setAttribute('data-editkit-tooltip', 'Insert Elements');
+    trigger.setAttribute('aria-label', 'Insert Elements');
+
+    const chevron = document.createElement('span');
+    chevron.classList.add('editkit-tb-btn-icon');
+    chevron.innerHTML = icons.chevronDown;
+    trigger.appendChild(chevron);
+
+    const menu = document.createElement('div');
+    menu.classList.add('editkit-tb-dropdown-menu', 'editkit-tb-dropdown-menu--elements');
+
+    // 1. Horizontal Line
+    const hrBtn = document.createElement('button');
+    hrBtn.type = 'button';
+    hrBtn.classList.add('editkit-tb-menu-item');
+    hrBtn.innerHTML = `
+      <span class="editkit-tb-menu-prefix">${icons.horizontalLine}</span>
+      <span class="editkit-tb-menu-label">Horizontal Line</span>
+    `;
+    hrBtn.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      this.editor.commands.horizontalRule();
+      this._closeDropdown();
+    });
+    menu.appendChild(hrBtn);
+
+    // 2. Upload File
+    const uploadBtn = document.createElement('button');
+    uploadBtn.type = 'button';
+    uploadBtn.classList.add('editkit-tb-menu-item');
+    uploadBtn.innerHTML = `
+      <span class="editkit-tb-menu-prefix">${icons.paperclip}</span>
+      <span class="editkit-tb-menu-label">Upload File</span>
+    `;
+    uploadBtn.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      this._triggerFileUpload();
+      this._closeDropdown();
+    });
+    menu.appendChild(uploadBtn);
+
+    // 3. Signature
+    const sigBtn = document.createElement('button');
+    sigBtn.type = 'button';
+    sigBtn.classList.add('editkit-tb-menu-item');
+    sigBtn.innerHTML = `
+      <span class="editkit-tb-menu-prefix">${icons.signature}</span>
+      <span class="editkit-tb-menu-label">Signature</span>
+    `;
+    sigBtn.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      this._insertSignatureBlock();
+      this._closeDropdown();
+    });
+    menu.appendChild(sigBtn);
+
+    // 4. Editorial > (Submenu - Screenshot 1)
+    const editorialWrap = document.createElement('div');
+    editorialWrap.classList.add('editkit-tb-submenu-wrap');
+
+    const editorialTrigger = document.createElement('button');
+    editorialTrigger.type = 'button';
+    editorialTrigger.classList.add('editkit-tb-menu-item', 'editkit-tb-menu-item--has-sub');
+    editorialTrigger.innerHTML = `
+      <span class="editkit-tb-menu-prefix">${icons.pilcrow}</span>
+      <span class="editkit-tb-menu-label">Editorial</span>
+      <span class="editkit-tb-menu-chevron">${icons.chevronRight}</span>
+    `;
+
+    const editorialSub = document.createElement('div');
+    editorialSub.classList.add('editkit-tb-submenu');
+
+    const editorialItems = [
+      { label: 'Decorative Divider', icon: icons.decDivider, action: () => this._insertDecorativeDivider() },
+      { label: 'Section Heading', icon: icons.sectionHeading, action: () => this._insertSectionHeading() },
+      { label: 'Pull Quote', icon: icons.pullQuote, action: () => this._insertPullQuote() },
+    ];
+    editorialItems.forEach(it => {
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.classList.add('editkit-tb-menu-item');
+      item.innerHTML = `
+        <span class="editkit-tb-menu-prefix">${it.icon}</span>
+        <span class="editkit-tb-menu-label">${it.label}</span>
+      `;
+      item.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        it.action();
+        this._closeDropdown();
+      });
+      editorialSub.appendChild(item);
+    });
+
+    editorialWrap.appendChild(editorialTrigger);
+    editorialWrap.appendChild(editorialSub);
+    menu.appendChild(editorialWrap);
+
+    // 5. Blocks > (Submenu - Screenshot 2)
+    const blocksWrap = document.createElement('div');
+    blocksWrap.classList.add('editkit-tb-submenu-wrap');
+
+    const blocksTrigger = document.createElement('button');
+    blocksTrigger.type = 'button';
+    blocksTrigger.classList.add('editkit-tb-menu-item', 'editkit-tb-menu-item--has-sub');
+    blocksTrigger.innerHTML = `
+      <span class="editkit-tb-menu-prefix">${icons.blocks}</span>
+      <span class="editkit-tb-menu-label">Blocks</span>
+      <span class="editkit-tb-menu-chevron">${icons.chevronRight}</span>
+    `;
+
+    const blocksSub = document.createElement('div');
+    blocksSub.classList.add('editkit-tb-submenu');
+
+    const blockItems = [
+      { label: 'Columns', icon: icons.columns, action: () => this._insert2ColGrid() },
+      { label: 'Button', icon: icons.buttonPointer, action: () => this._insertButtonBlock() },
+      { label: 'FAQ', icon: icons.faq, action: () => this._insertFAQBlock() },
+    ];
+    blockItems.forEach(it => {
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.classList.add('editkit-tb-menu-item');
+      item.innerHTML = `
+        <span class="editkit-tb-menu-prefix">${it.icon}</span>
+        <span class="editkit-tb-menu-label">${it.label}</span>
+      `;
+      item.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        it.action();
+        this._closeDropdown();
+      });
+      blocksSub.appendChild(item);
+    });
+
+    blocksWrap.appendChild(blocksTrigger);
+    blocksWrap.appendChild(blocksSub);
+    menu.appendChild(blocksWrap);
+
+    // 6. Patterns > (Submenu - Screenshot 3)
+    const patternsWrap = document.createElement('div');
+    patternsWrap.classList.add('editkit-tb-submenu-wrap');
+
+    const patternsTrigger = document.createElement('button');
+    patternsTrigger.type = 'button';
+    patternsTrigger.classList.add('editkit-tb-menu-item', 'editkit-tb-menu-item--has-sub');
+    patternsTrigger.innerHTML = `
+      <span class="editkit-tb-menu-prefix">${icons.patterns}</span>
+      <span class="editkit-tb-menu-label">Patterns</span>
+      <span class="editkit-tb-menu-chevron">${icons.chevronRight}</span>
+    `;
+
+    const patternsSub = document.createElement('div');
+    patternsSub.classList.add('editkit-tb-submenu');
+
+    const patternItems = [
+      { label: 'Hero', icon: icons.hero, action: () => this._insertHeroBanner() },
+      { label: 'Feature row', icon: icons.featureRow, action: () => this._insertFeatureRow() },
+      { label: 'Three-up', icon: icons.threeUp, action: () => this._insert3ColGrid() },
+      { label: 'CTA band', icon: icons.ctaBand, action: () => this._insertCTABand() },
+    ];
+    patternItems.forEach(it => {
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.classList.add('editkit-tb-menu-item');
+      item.innerHTML = `
+        <span class="editkit-tb-menu-prefix">${it.icon}</span>
+        <span class="editkit-tb-menu-label">${it.label}</span>
+      `;
+      item.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        it.action();
+        this._closeDropdown();
+      });
+      patternsSub.appendChild(item);
+    });
+
+    patternsWrap.appendChild(patternsTrigger);
+    patternsWrap.appendChild(patternsSub);
+    menu.appendChild(patternsWrap);
+
+    trigger.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this._toggleDropdown(wrap);
+    });
+
+    wrap.appendChild(trigger);
+    wrap.appendChild(menu);
+    return wrap;
+  }
+
+  // ── Helper Insert Actions ──
+
+  private _triggerFileUpload(): void {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = () => {
+      const file = input.files?.[0];
+      if (file) {
+        const sizeStr = file.size > 1024 * 1024 ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : `${Math.round(file.size / 1024)} KB`;
+        const html = `
+          <div class="editkit-file-card" contenteditable="false">
+            <span class="editkit-file-card-icon">${icons.paperclip}</span>
+            <div class="editkit-file-card-info">
+              <span class="editkit-file-card-name">${file.name}</span>
+              <span class="editkit-file-card-size">${sizeStr}</span>
+            </div>
+            <a href="#" class="editkit-file-card-download" title="Download">↓</a>
+          </div><p><br></p>`;
+        document.execCommand('insertHTML', false, html);
+      }
+    };
+    input.click();
+  }
+
+  private _insertSignatureBlock(): void {
+    const html = `
+      <div class="editkit-signature-card" contenteditable="false">
+        <div class="editkit-signature-draw"><span class="editkit-signature-symbol">✎</span> <span class="editkit-signature-placeholder">Sign here</span></div>
+        <div class="editkit-signature-line"></div>
+        <div class="editkit-signature-meta">
+          <span class="editkit-signature-name" contenteditable="true">Authorized Signatory</span>
+          <span class="editkit-signature-date" contenteditable="true">Date: ${new Date().toLocaleDateString()}</span>
+        </div>
+      </div><p><br></p>`;
+    document.execCommand('insertHTML', false, html);
+  }
+
+  private _insertDecorativeDivider(): void {
+    const html = `<div class="editkit-decorative-divider" contenteditable="false"><span class="editkit-divider-line"></span><span class="editkit-divider-symbol">✦&nbsp;&nbsp;✦&nbsp;&nbsp;✦</span><span class="editkit-divider-line"></span></div><p><br></p>`;
+    document.execCommand('insertHTML', false, html);
+  }
+
+  private _insertSectionHeading(): void {
+    const html = `<h2 class="editkit-section-heading">Section Heading</h2><p><br></p>`;
+    document.execCommand('insertHTML', false, html);
+  }
+
+  private _insertPullQuote(): void {
+    const html = `<blockquote class="editkit-pull-quote"><p>“Simplicity is prerequisite for reliability.”</p><cite>— Edsger W. Dijkstra</cite></blockquote><p><br></p>`;
+    document.execCommand('insertHTML', false, html);
+  }
+
+  private _insertButtonBlock(): void {
+    const text = prompt('Button label:', 'Get Started') || 'Get Started';
+    const link = prompt('Button URL:', 'https://') || '#';
+    const html = `<div class="editkit-btn-container" contenteditable="false"><a href="${link}" class="editkit-cta-btn" contenteditable="true">${text} &rarr;</a></div><p><br></p>`;
+    document.execCommand('insertHTML', false, html);
+  }
+
+  private _insertFAQBlock(): void {
+    const html = `
+      <div class="editkit-faq-item">
+        <div class="editkit-faq-question" contenteditable="true">Frequently Asked Question?</div>
+        <div class="editkit-faq-answer">
+          <p>Write your detailed answer here. This FAQ item is fully customizable.</p>
+        </div>
+      </div><p><br></p>`;
+    document.execCommand('insertHTML', false, html);
+  }
+
+  private _insert2ColGrid(): void {
+    const html = `
+      <div class="editkit-grid editkit-grid-2">
+        <div class="editkit-grid-col"><p>Left column content goes here...</p></div>
+        <div class="editkit-grid-col"><p>Right column content goes here...</p></div>
+      </div><p><br></p>`;
+    document.execCommand('insertHTML', false, html);
+  }
+
+  private _insert3ColGrid(): void {
+    const html = `
+      <div class="editkit-grid editkit-grid-3">
+        <div class="editkit-grid-col"><p>Column 1 content...</p></div>
+        <div class="editkit-grid-col"><p>Column 2 content...</p></div>
+        <div class="editkit-grid-col"><p>Column 3 content...</p></div>
+      </div><p><br></p>`;
+    document.execCommand('insertHTML', false, html);
+  }
+
+  private _insertHeroBanner(): void {
+    const html = `
+      <div class="editkit-hero-banner">
+        <h2>✨ Spotlight Header</h2>
+        <p>A prominent hero banner to introduce key sections or documentation highlights.</p>
+        <div class="editkit-btn-container" contenteditable="false"><a href="#" class="editkit-cta-btn" contenteditable="true">Explore Features &rarr;</a></div>
+      </div><p><br></p>`;
+    document.execCommand('insertHTML', false, html);
+  }
+
+  private _insertFeatureRow(): void {
+    const html = `
+      <div class="editkit-feature-row">
+        <div class="editkit-feature-badge">⚡</div>
+        <div class="editkit-feature-content">
+          <h3>Lightning Fast Performance</h3>
+          <p>Engineered with zero external dependencies for instant startup and seamless publishing.</p>
+        </div>
+      </div><p><br></p>`;
+    document.execCommand('insertHTML', false, html);
+  }
+
+  private _insertCTABand(): void {
+    const html = `
+      <div class="editkit-cta-band">
+        <div class="editkit-cta-band-text">
+          <h3>Ready to get started?</h3>
+          <p>Join thousands of writers and developers creating clean, structured content.</p>
+        </div>
+        <a href="#" class="editkit-cta-btn" contenteditable="true">Get Started Free</a>
+      </div><p><br></p>`;
+    document.execCommand('insertHTML', false, html);
   }
 
   private _addCommentMock(): void {
@@ -1027,6 +1461,9 @@ export class EditKitToolbar {
   private _closeDropdown(): void {
     if (this.openDropdown) {
       this.openDropdown.classList.remove('editkit-tb-dropdown-wrap--open');
+      this.openDropdown.querySelectorAll('.editkit-tb-submenu-wrap--pinned').forEach(el => {
+        el.classList.remove('editkit-tb-submenu-wrap--pinned');
+      });
       this.openDropdown = null;
     }
   }

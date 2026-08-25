@@ -25,4 +25,5 @@ export type {
   TableCellInfo,
   BulletListStyle,
   NumberedListStyle,
+  PanelType,
 } from './types';

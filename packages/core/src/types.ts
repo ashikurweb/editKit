@@ -4,6 +4,9 @@
 
 import type { Extension, CustomToolbarItem } from './Extension';
 
+/** Callout / Alert Panel Types */
+export type PanelType = 'info' | 'warning' | 'error' | 'success' | 'note';
+
 /** Table Insertion and Styling Options */
 export interface TableOptions {
   rows?: number;

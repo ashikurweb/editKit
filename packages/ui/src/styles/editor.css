@@ -439,6 +439,107 @@
   left: auto;
 }
 
+.editkit-tb-dropdown-menu--panels {
+  min-width: 190px;
+  padding: 6px;
+}
+
+.editkit-tb-panel-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.editkit-tb-panel-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.editkit-tb-panel-item-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.editkit-tb-panel-item--info .editkit-tb-panel-item-icon {
+  color: #38bdf8;
+}
+
+.editkit-tb-panel-item--warning .editkit-tb-panel-item-icon {
+  color: #fbbf24;
+}
+
+.editkit-tb-panel-item--error .editkit-tb-panel-item-icon {
+  color: #f87171;
+}
+
+.editkit-tb-panel-item--success .editkit-tb-panel-item-icon {
+  color: #4ade80;
+}
+
+.editkit-tb-panel-item--note .editkit-tb-panel-item-icon {
+  color: #94a3b8;
+}
+
+.editkit-tb-panel-item-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.editkit-tb-panel-item-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--editkit-text);
+}
+
+.editkit-tb-panel-item-sub {
+  font-size: 11px;
+  color: var(--editkit-text-muted);
+  margin-top: 2px;
+}
+
+.editkit-tb-btn--chevron-standalone {
+  padding: 0 4px;
+  min-width: 18px;
+  margin-left: 2px;
+  border-radius: 4px;
+}
+
+.editkit-tb-btn--chevron-standalone .editkit-tb-btn-icon svg {
+  width: 12px;
+  height: 12px;
+}
+
+.editkit-tb-dropdown-menu--elements {
+  min-width: 180px;
+  padding: 6px;
+}
+
+.editkit-tb-menu-item--has-sub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.editkit-tb-menu-chevron {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  color: var(--editkit-text-muted);
+}
+
+.editkit-tb-menu-chevron svg {
+  width: 12px;
+  height: 12px;
+}
+
 .editkit-tb-submenu--lh {
   min-width: 80px;
   padding: 4px;
@@ -522,19 +623,35 @@
   position: absolute;
   top: 0;
   left: calc(100% + 4px);
-  min-width: 130px;
+  min-width: 140px;
   background: var(--editkit-surface-elevated);
   border: 1px solid var(--editkit-border);
   border-radius: 10px;
   box-shadow: var(--editkit-shadow-popup);
-  padding: 4px;
+  padding: 6px;
   z-index: 105;
   display: none;
+}
+
+/* Invisible bridge preventing hover drop between parent and submenu */
+.editkit-tb-submenu::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  left: -8px;
+  width: 10px;
+  background: transparent;
 }
 
 .editkit-tb-submenu-wrap:hover .editkit-tb-submenu {
   display: block;
   animation: editkitFadeIn 0.15s ease;
+}
+
+.editkit-tb-submenu-wrap:hover > .editkit-tb-menu-item {
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text);
 }
 
 .editkit-tb-bullet-symbol {
@@ -2677,6 +2794,505 @@
   max-width: 100%;
   border-radius: 8px;
   margin: 1em 0;
+}
+
+/* ==========================================================================
+   CALLOUT / ALERT PANELS (Info, Warning, Error, Success, Note)
+   ========================================================================== */
+
+.editkit-content .editkit-panel {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  margin: 1.2em 0;
+  border-radius: 8px;
+  border-left: 4px solid var(--panel-accent);
+  background: var(--panel-bg);
+  color: var(--panel-text);
+  font-size: var(--editkit-font-size);
+  line-height: 1.6;
+  position: relative;
+  transition: all 0.15s ease;
+}
+
+.editkit-content .editkit-panel-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  color: var(--panel-accent);
+  user-select: none;
+}
+
+.editkit-content .editkit-panel-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+}
+
+.editkit-content .editkit-panel-body {
+  flex: 1;
+  min-width: 0;
+  outline: none;
+  word-break: break-word;
+  position: relative;
+}
+
+.editkit-content .editkit-panel-body > p {
+  margin: 0;
+  line-height: 1.6;
+  min-height: 1.6em;
+  color: inherit;
+}
+
+.editkit-content .editkit-panel-body > p + p {
+  margin-top: 6px;
+}
+
+.editkit-content .editkit-panel-body > p:only-child:empty::before,
+.editkit-content .editkit-panel-body > p:only-child:has(> br:only-child)::before {
+  content: attr(data-placeholder);
+  color: var(--panel-placeholder, var(--editkit-placeholder));
+  opacity: 0.75;
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  user-select: none;
+  font-style: normal;
+  white-space: nowrap;
+  clip-path: inset(0 100% 0 0);
+  animation: editkitTyping 1.2s steps(38, end) forwards;
+}
+
+/* Light Mode / Default Panel Palettes */
+.editkit-content .editkit-panel--info {
+  --panel-accent: #0284c7;
+  --panel-bg: #f0f9ff;
+  --panel-text: #0c4a6e;
+  --panel-placeholder: #0284c7;
+}
+
+.editkit-content .editkit-panel--warning {
+  --panel-accent: #d97706;
+  --panel-bg: #fffbeb;
+  --panel-text: #78350f;
+  --panel-placeholder: #d97706;
+}
+
+.editkit-content .editkit-panel--error {
+  --panel-accent: #dc2626;
+  --panel-bg: #fef2f2;
+  --panel-text: #7f1d1d;
+  --panel-placeholder: #dc2626;
+}
+
+.editkit-content .editkit-panel--success {
+  --panel-accent: #16a34a;
+  --panel-bg: #edfcf2;
+  --panel-text: #064e3b;
+  --panel-placeholder: #16a34a;
+}
+
+.editkit-content .editkit-panel--note {
+  --panel-accent: #475569;
+  --panel-bg: #f1f5f9;
+  --panel-text: #1e293b;
+  --panel-placeholder: #475569;
+}
+
+/* Dark Mode Panel Palettes */
+[data-editkit-theme="dark"] .editkit-content .editkit-panel--info,
+[data-editkit] .editkit-content .editkit-panel--info {
+  --panel-accent: #38bdf8;
+  --panel-bg: rgba(56, 189, 248, 0.12);
+  --panel-text: #e0f2fe;
+  --panel-placeholder: rgba(224, 242, 254, 0.5);
+}
+
+[data-editkit-theme="dark"] .editkit-content .editkit-panel--warning,
+[data-editkit] .editkit-content .editkit-panel--warning {
+  --panel-accent: #fbbf24;
+  --panel-bg: rgba(251, 191, 36, 0.12);
+  --panel-text: #fef3c7;
+  --panel-placeholder: rgba(254, 243, 199, 0.5);
+}
+
+[data-editkit-theme="dark"] .editkit-content .editkit-panel--error,
+[data-editkit] .editkit-content .editkit-panel--error {
+  --panel-accent: #f87171;
+  --panel-bg: rgba(248, 113, 113, 0.12);
+  --panel-text: #fee2e2;
+  --panel-placeholder: rgba(254, 226, 226, 0.5);
+}
+
+[data-editkit-theme="dark"] .editkit-content .editkit-panel--success,
+[data-editkit] .editkit-content .editkit-panel--success {
+  --panel-accent: #4ade80;
+  --panel-bg: rgba(74, 222, 128, 0.12);
+  --panel-text: #dcfce7;
+  --panel-placeholder: rgba(220, 252, 231, 0.5);
+}
+
+[data-editkit-theme="dark"] .editkit-content .editkit-panel--note,
+[data-editkit] .editkit-content .editkit-panel--note {
+  --panel-accent: #94a3b8;
+  --panel-bg: rgba(148, 163, 184, 0.12);
+  --panel-text: #f1f5f9;
+  --panel-placeholder: rgba(241, 245, 249, 0.5);
+}
+
+/* Light Theme Explicit Override */
+[data-editkit-theme="light"] .editkit-content .editkit-panel--info {
+  --panel-accent: #0284c7;
+  --panel-bg: #f0f9ff;
+  --panel-text: #0c4a6e;
+  --panel-placeholder: #0284c7;
+}
+
+[data-editkit-theme="light"] .editkit-content .editkit-panel--warning {
+  --panel-accent: #d97706;
+  --panel-bg: #fffbeb;
+  --panel-text: #78350f;
+  --panel-placeholder: #d97706;
+}
+
+[data-editkit-theme="light"] .editkit-content .editkit-panel--error {
+  --panel-accent: #dc2626;
+  --panel-bg: #fef2f2;
+  --panel-text: #7f1d1d;
+  --panel-placeholder: #dc2626;
+}
+
+[data-editkit-theme="light"] .editkit-content .editkit-panel--success {
+  --panel-accent: #16a34a;
+  --panel-bg: #edfcf2;
+  --panel-text: #064e3b;
+  --panel-placeholder: #16a34a;
+}
+
+[data-editkit-theme="light"] .editkit-content .editkit-panel--note {
+  --panel-accent: #475569;
+  --panel-bg: #f1f5f9;
+  --panel-text: #1e293b;
+  --panel-placeholder: #475569;
+}
+
+/* ==========================================================================
+   INSERTED ELEMENTS & PATTERNS
+   ========================================================================== */
+
+/* File Attachment Card */
+.editkit-content .editkit-file-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--editkit-surface-hover);
+  border: 1px solid var(--editkit-border);
+  border-radius: 8px;
+  margin: 12px 0;
+  user-select: none;
+}
+.editkit-content .editkit-file-card-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--editkit-primary);
+}
+.editkit-content .editkit-file-card-icon svg {
+  width: 20px;
+  height: 20px;
+}
+.editkit-content .editkit-file-card-info {
+  display: flex;
+  flex-direction: column;
+}
+.editkit-content .editkit-file-card-name {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--editkit-text);
+}
+.editkit-content .editkit-file-card-size {
+  font-size: 11px;
+  color: var(--editkit-text-muted);
+}
+.editkit-content .editkit-file-card-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--editkit-surface-active);
+  color: var(--editkit-text);
+  text-decoration: none;
+  font-size: 13px;
+  margin-left: 8px;
+}
+
+/* Signature Card */
+.editkit-content .editkit-signature-card {
+  display: inline-block;
+  min-width: 240px;
+  padding: 16px 20px;
+  margin: 16px 0;
+  border: 1px dashed var(--editkit-border);
+  border-radius: 8px;
+  background: var(--editkit-surface-hover);
+}
+.editkit-content .editkit-signature-draw {
+  font-size: 18px;
+  color: var(--editkit-primary);
+  font-style: italic;
+  margin-bottom: 8px;
+}
+.editkit-content .editkit-signature-line {
+  height: 1.5px;
+  background: var(--editkit-text-muted);
+  width: 100%;
+  margin: 6px 0 10px;
+}
+.editkit-content .editkit-signature-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--editkit-text-muted);
+}
+
+/* Drop Cap */
+.editkit-content .editkit-drop-cap {
+  line-height: 1.7;
+}
+.editkit-content .editkit-drop-cap-letter {
+  float: left;
+  font-size: 3.2em;
+  line-height: 0.8;
+  font-weight: 700;
+  padding-right: 8px;
+  padding-top: 4px;
+  color: var(--editkit-primary);
+}
+
+/* Pull Quote */
+.editkit-content .editkit-pull-quote {
+  border-left: 4px solid var(--editkit-primary);
+  background: var(--editkit-primary-light);
+  padding: 14px 20px;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  font-size: 1.1em;
+  font-style: italic;
+}
+.editkit-content .editkit-pull-quote cite {
+  display: block;
+  font-size: 0.85em;
+  color: var(--editkit-text-muted);
+  margin-top: 8px;
+  font-style: normal;
+}
+
+/* Decorative Divider */
+.editkit-content .editkit-decorative-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 2em 0;
+  color: var(--editkit-text-muted);
+  user-select: none;
+}
+.editkit-content .editkit-divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--editkit-border);
+}
+.editkit-content .editkit-divider-symbol {
+  font-size: 13px;
+  letter-spacing: 0.2em;
+}
+
+/* Section Heading */
+.editkit-content .editkit-section-heading {
+  font-size: 1.4em;
+  font-weight: 700;
+  margin: 1.3em 0 0.5em;
+  color: var(--editkit-text);
+  border-bottom: 2px solid var(--editkit-primary);
+  padding-bottom: 4px;
+  display: inline-block;
+}
+
+/* CTA Button Container */
+.editkit-content .editkit-btn-container {
+  margin: 14px 0;
+  display: block;
+}
+.editkit-content .editkit-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 6px;
+  background: var(--editkit-primary);
+  color: #ffffff !important;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 13px;
+  transition: opacity 0.15s ease;
+}
+.editkit-content .editkit-cta-btn:hover {
+  opacity: 0.9;
+}
+
+/* FAQ Item */
+.editkit-content .editkit-faq-item {
+  margin: 14px 0;
+  border: 1px solid var(--editkit-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--editkit-surface-hover);
+}
+.editkit-content .editkit-faq-question {
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--editkit-border);
+  background: var(--editkit-surface-elevated);
+  color: var(--editkit-text);
+}
+.editkit-content .editkit-faq-answer {
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--editkit-text-muted);
+}
+.editkit-content .editkit-faq-answer p {
+  margin: 0;
+}
+
+/* Feature Row */
+.editkit-content .editkit-feature-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  margin: 16px 0;
+  border-radius: 10px;
+  background: var(--editkit-surface-hover);
+  border: 1px solid var(--editkit-border);
+}
+.editkit-content .editkit-feature-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--editkit-primary-light);
+  color: var(--editkit-primary);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.editkit-content .editkit-feature-content h3 {
+  margin: 0 0 6px;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+.editkit-content .editkit-feature-content p {
+  margin: 0;
+  font-size: 0.95em;
+  color: var(--editkit-text-muted);
+}
+
+/* Three-Up Grid */
+.editkit-content .editkit-three-up-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+.editkit-content .editkit-three-up-grid .editkit-card-item {
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--editkit-surface-hover);
+  border: 1px solid var(--editkit-border);
+}
+.editkit-content .editkit-three-up-grid .editkit-card-item h4 {
+  margin: 0 0 6px;
+  font-size: 1em;
+  font-weight: 600;
+}
+.editkit-content .editkit-three-up-grid .editkit-card-item p {
+  margin: 0;
+  font-size: 0.9em;
+  color: var(--editkit-text-muted);
+}
+
+/* CTA Band */
+.editkit-content .editkit-cta-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 24px;
+  margin: 20px 0;
+  border-radius: 10px;
+  background: var(--editkit-surface-elevated);
+  border: 1px solid var(--editkit-border);
+  flex-wrap: wrap;
+}
+.editkit-content .editkit-cta-band-text h3 {
+  margin: 0 0 4px;
+  font-size: 1.2em;
+  font-weight: 700;
+}
+.editkit-content .editkit-cta-band-text p {
+  margin: 0;
+  font-size: 0.9em;
+  color: var(--editkit-text-muted);
+}
+
+/* Multi-column Grid Layouts */
+.editkit-content .editkit-grid {
+  display: flex;
+  gap: 16px;
+  margin: 16px 0;
+}
+.editkit-content .editkit-grid-2 .editkit-grid-col {
+  flex: 1;
+  padding: 12px;
+  border: 1px dashed var(--editkit-border);
+  border-radius: 6px;
+}
+.editkit-content .editkit-grid-3 .editkit-grid-col {
+  flex: 1;
+  padding: 12px;
+  border: 1px dashed var(--editkit-border);
+  border-radius: 6px;
+}
+
+/* Card Box Container */
+.editkit-content .editkit-card-container {
+  padding: 16px 20px;
+  margin: 16px 0;
+  border: 1px solid var(--editkit-border);
+  border-radius: 10px;
+  background: var(--editkit-surface-hover);
+}
+
+/* Hero Banner */
+.editkit-content .editkit-hero-banner {
+  padding: 24px 28px;
+  margin: 20px 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.12));
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  text-align: center;
 }
 
 /* ==========================================================================

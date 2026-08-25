@@ -52,6 +52,15 @@ const SAMPLE_CONTENT = `
   <li class="editkit-task-item"><input type="checkbox" class="editkit-task-checkbox"> <span>Custom Plugin &amp; Extension architecture</span></li>
 </ul>
 
+<div class="editkit-panel editkit-panel--success" data-panel-type="success">
+  <span class="editkit-panel-icon" contenteditable="false">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>
+  </span>
+  <div class="editkit-panel-body" data-placeholder="Enter your success content...">
+    <p>EditKit now includes first-class Callout &amp; Alert Panels with live color themes (Info, Warning, Error, Success, Note)!</p>
+  </div>
+</div>
+
 <blockquote>
   <p>"Minimal by default. Powerful when needed." — Built for high-performance publishing.</p>
 </blockquote>

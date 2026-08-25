@@ -19,6 +19,7 @@ import type {
   TableCellInfo,
   BulletListStyle,
   NumberedListStyle,
+  PanelType,
 } from './types';
 
 // ── Block-level tag set ──────────────────────────────────────
@@ -464,6 +465,8 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     setLink: (opts: { url: string; target?: string }) => this._setLink(opts),
     unsetLink: () => this._unsetLink(),
     insertMath: (opts: { latex: string; type: 'block' | 'inline' }) => this._insertMath(opts),
+    insertPanel: (type: PanelType = 'info', initialContent?: string) => this._insertPanel(type, initialContent),
+    insertCallout: (type: PanelType = 'info', initialContent?: string) => this._insertPanel(type, initialContent),
 
     // ── History ──
     undo: () => this._undo(),
@@ -500,6 +503,11 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
       return this._isInsideTag('BLOCKQUOTE');
     }
 
+    // Check panel / callout
+    if (upperType === 'PANEL' || upperType === 'CALLOUT') {
+      return this.getActivePanel() !== null;
+    }
+
     // Check headings
     const headingMatch = type.match(/^heading(\d)$/i) || type.match(/^h(\d)$/i);
     if (headingMatch) {
@@ -528,6 +536,26 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     if (upperType === 'TABLE') return this._isInsideTag('TABLE');
 
     return false;
+  }
+
+  /** Check if cursor is currently inside a panel / callout */
+  getActivePanel(): { panel: HTMLElement; body: HTMLElement; type: PanelType } | null {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return null;
+
+    let node: Node | null = sel.anchorNode;
+    while (node && node !== this.contentEl) {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const el = node as HTMLElement;
+        if (el.classList.contains('editkit-panel')) {
+          const body = (el.querySelector('.editkit-panel-body') as HTMLElement) || el;
+          const type = (el.getAttribute('data-panel-type') as PanelType) || 'info';
+          return { panel: el, body, type };
+        }
+      }
+      node = node.parentNode;
+    }
+    return null;
   }
 
   /** Check if cursor is currently inside a table */
@@ -669,6 +697,30 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     } else if (mod && e.key === 'z' && !e.shiftKey) {
       e.preventDefault();
       this.commands.undo();
+    } else if (e.key === 'Backspace') {
+      const panelInfo = this.getActivePanel();
+      if (panelInfo) {
+        const { panel, body } = panelInfo;
+        const text = body.textContent || '';
+        if (text.trim() === '' || body.innerHTML === '<p><br></p>' || body.innerHTML === '<br>' || body.innerHTML === '') {
+          e.preventDefault();
+          const prev = panel.previousElementSibling as HTMLElement;
+          const next = panel.nextElementSibling as HTMLElement;
+          panel.remove();
+          
+          const target = prev || next || this.contentEl;
+          const range = document.createRange();
+          range.selectNodeContents(target);
+          range.collapse(false);
+          const sel = window.getSelection();
+          sel?.removeAllRanges();
+          sel?.addRange(range);
+          
+          this._saveHistory();
+          this._emitUpdate();
+          return;
+        }
+      }
     } else if (mod && ((e.key === 'z' && e.shiftKey) || e.key === 'y')) {
       e.preventDefault();
       this.commands.redo();
@@ -728,6 +780,32 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     // Inside a table cell — keep enter inside cell
     if (block.tagName === 'TD' || block.tagName === 'TH' || this._isInsideTag('TABLE')) {
       return; // Standard behavior or default line break
+    }
+
+    // Inside panel / callout
+    const panelInfo = this.getActivePanel();
+    if (panelInfo) {
+      const { panel, body } = panelInfo;
+      const paragraphs = Array.from(body.querySelectorAll('p'));
+      const activeBlock = this._getActiveBlock();
+      if (paragraphs.length > 1 && activeBlock === paragraphs[paragraphs.length - 1] && (activeBlock.textContent || '').trim() === '') {
+        e.preventDefault();
+        activeBlock.remove();
+        let next = panel.nextElementSibling as HTMLElement;
+        if (!next || next.tagName !== 'P') {
+          next = document.createElement('p');
+          next.innerHTML = '<br>';
+          panel.parentNode!.insertBefore(next, panel.nextSibling);
+        }
+        const range = document.createRange();
+        range.selectNodeContents(next);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        this._saveHistory();
+        this._emitUpdate();
+        return;
+      }
     }
 
     // Inside heading — create clean paragraph below
@@ -1601,6 +1679,91 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     html = html.replace(/_\{([^{}]+)\}/g, '<sub>$1</sub>');
     html = html.replace(/_([a-zA-Z0-9])/g, '<sub>$1</sub>');
     return `<span class="editkit-math-rendered">${html}</span>`;
+  }
+
+  // ── Callout / Alert Panels ──
+
+  private _getPanelIconSvg(type: PanelType): string {
+    switch (type) {
+      case 'info':
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+      case 'warning':
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
+      case 'error':
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+      case 'success':
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>`;
+      case 'note':
+      default:
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>`;
+    }
+  }
+
+  private _insertPanel(type: PanelType = 'info', initialContent?: string): HTMLElement {
+    this._ensureFocus();
+    const sel = window.getSelection();
+
+    const panel = document.createElement('div');
+    panel.classList.add('editkit-panel', `editkit-panel--${type}`);
+    panel.setAttribute('data-panel-type', type);
+
+    const iconEl = document.createElement('div');
+    iconEl.classList.add('editkit-panel-icon');
+    iconEl.setAttribute('contenteditable', 'false');
+    iconEl.innerHTML = this._getPanelIconSvg(type);
+
+    const bodyEl = document.createElement('div');
+    bodyEl.classList.add('editkit-panel-body');
+
+    const placeholders: Record<PanelType, string> = {
+      info: 'Enter your info content...',
+      warning: 'Enter your warning content...',
+      error: 'Enter your error content...',
+      success: 'Enter your success content...',
+      note: 'Enter your note content...',
+    };
+    bodyEl.setAttribute('data-placeholder', placeholders[type] || 'Enter panel content...');
+
+    if (initialContent) {
+      bodyEl.innerHTML = `<p>${initialContent}</p>`;
+    } else if (sel && sel.rangeCount > 0 && !sel.isCollapsed && this.contentEl.contains(sel.anchorNode)) {
+      const range = sel.getRangeAt(0);
+      const frag = range.extractContents();
+      const p = document.createElement('p');
+      p.appendChild(frag);
+      bodyEl.appendChild(p);
+    } else {
+      const p = document.createElement('p');
+      p.innerHTML = '<br>';
+      bodyEl.appendChild(p);
+    }
+
+    panel.appendChild(iconEl);
+    panel.appendChild(bodyEl);
+
+    const block = this._getActiveBlock();
+    if (block && block !== this.contentEl) {
+      block.parentNode!.insertBefore(panel, block.nextSibling);
+    } else {
+      this.contentEl.appendChild(panel);
+    }
+
+    // Add trailing paragraph after panel
+    const nextP = document.createElement('p');
+    nextP.innerHTML = '<br>';
+    panel.parentNode!.insertBefore(nextP, panel.nextSibling);
+
+    // Focus inside body
+    const firstP = bodyEl.querySelector('p') || bodyEl;
+    const range = document.createRange();
+    range.selectNodeContents(firstP);
+    range.collapse(true);
+    sel?.removeAllRanges();
+    sel?.addRange(range);
+
+    this._saveHistory();
+    this._emitUpdate();
+    return panel;
   }
 
   // ═══════════════════════════════════════════
