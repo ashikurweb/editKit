@@ -12,6 +12,7 @@ import { ImageModal } from './ImageModal';
 import { LinkPopover } from './LinkPopover';
 import { MathModal } from './MathModal';
 import { DividerModal } from './DividerModal';
+import { SignatureModal } from './SignatureModal';
 import { TooltipManager } from './Tooltip';
 
 export interface ToolbarFeaturesConfig {
@@ -67,6 +68,7 @@ export class EditKitToolbar {
   private linkPopover: LinkPopover;
   private mathModal: MathModal;
   private dividerModal: DividerModal;
+  private signatureModal: SignatureModal;
   private openDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
@@ -90,6 +92,7 @@ export class EditKitToolbar {
     this.linkPopover = new LinkPopover(editor);
     this.mathModal = new MathModal(editor);
     this.dividerModal = new DividerModal(editor);
+    this.signatureModal = new SignatureModal(editor);
 
     TooltipManager.init();
 
@@ -1181,7 +1184,7 @@ export class EditKitToolbar {
     `;
     sigBtn.addEventListener('mousedown', (e) => {
       e.preventDefault();
-      this._insertSignatureBlock();
+      this.signatureModal.show();
       this._closeDropdown();
     });
     menu.appendChild(sigBtn);

@@ -462,7 +462,7 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     setTableBorderColor: (color: string) => this._tableSetBorderColor(color),
 
     // ── Media & Links ──
-    insertImage: (opts: { src: string; alt?: string; title?: string }) => this._insertImage(opts),
+    insertImage: (opts: { src: string; alt?: string; title?: string; width?: string; height?: string }) => this._insertImage(opts),
     setLink: (opts: { url: string; target?: string }) => this._setLink(opts),
     unsetLink: () => this._unsetLink(),
     insertMath: (opts: { latex: string; type: 'block' | 'inline' }) => this._insertMath(opts),
@@ -1551,7 +1551,7 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
   // Private: Media & Links
   // ═══════════════════════════════════════════
 
-  private _insertImage(opts: { src: string; alt?: string; title?: string }): void {
+  private _insertImage(opts: { src: string; alt?: string; title?: string; width?: string; height?: string }): void {
     this._ensureFocus();
     const img = document.createElement('img');
     img.src = opts.src;
@@ -1559,12 +1559,23 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     if (opts.title) img.title = opts.title;
     img.classList.add('editkit-image');
 
-    const sel = window.getSelection();
-    if (sel && sel.rangeCount > 0) {
-      const range = sel.getRangeAt(0);
-      range.insertNode(img);
+    // Standard initial sizing
+    img.style.width = opts.width || '480px';
+    img.style.maxWidth = '100%';
+    img.style.height = opts.height || 'auto';
+    img.style.display = 'block';
+    img.style.margin = '1em 0';
+
+    const p = document.createElement('p');
+    p.innerHTML = '<br>';
+
+    const block = this._getActiveBlock();
+    if (block && block !== this.contentEl && block.parentNode) {
+      block.parentNode.insertBefore(img, block.nextSibling);
+      block.parentNode.insertBefore(p, img.nextSibling);
     } else {
       this.contentEl.appendChild(img);
+      this.contentEl.appendChild(p);
     }
 
     this._saveHistory();

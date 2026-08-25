@@ -1,10 +1,6 @@
-// ============================================================
-// EditKit — Image Floating Toolbar & 8-Handle Resizer
-// Exact match for the EditKit Image Contextual Controls & Resizing
-// ============================================================
-
 import type { EditKitEditor } from '@editkit/core';
 import { icons } from './icons';
+import { CropModal } from './CropModal';
 
 export class ImageFloatingMenu {
   readonly element: HTMLElement;
@@ -12,11 +8,13 @@ export class ImageFloatingMenu {
   private activeImg: HTMLImageElement | null = null;
   private resizerBox: HTMLElement;
   private toolbar: HTMLElement;
+  private cropModal: CropModal;
   private _unsubscribers: (() => void)[] = [];
   private currentRotation: number = 0;
 
   constructor(editor: EditKitEditor) {
     this.editor = editor;
+    this.cropModal = new CropModal(editor);
 
     // Main wrapper container
     this.element = document.createElement('div');
@@ -174,21 +172,22 @@ export class ImageFloatingMenu {
   }
 
   // ── Build 8 Resize Handles ──
+  // ── Build 8 Resize Handles (Screenshot 2 exact match) ──
   private _buildHandles(): void {
     const handles = [
-      { pos: 'tl', cursor: 'nwse-resize' },
-      { pos: 'tc', cursor: 'ns-resize' },
-      { pos: 'tr', cursor: 'nesw-resize' },
-      { pos: 'ml', cursor: 'ew-resize' },
-      { pos: 'mr', cursor: 'ew-resize' },
-      { pos: 'bl', cursor: 'nesw-resize' },
-      { pos: 'bc', cursor: 'ns-resize' },
-      { pos: 'br', cursor: 'nwse-resize' },
+      { pos: 'tl', type: 'corner', cursor: 'nwse-resize' },
+      { pos: 'tc', type: 'pill-h', cursor: 'ns-resize' },
+      { pos: 'tr', type: 'corner', cursor: 'nesw-resize' },
+      { pos: 'ml', type: 'pill-v', cursor: 'ew-resize' },
+      { pos: 'mr', type: 'pill-v', cursor: 'ew-resize' },
+      { pos: 'bl', type: 'corner', cursor: 'nesw-resize' },
+      { pos: 'bc', type: 'pill-h', cursor: 'ns-resize' },
+      { pos: 'br', type: 'corner', cursor: 'nwse-resize' },
     ];
 
     for (const h of handles) {
       const el = document.createElement('div');
-      el.classList.add('editkit-img-handle', `editkit-img-handle--${h.pos}`);
+      el.classList.add('editkit-img-handle', `editkit-img-handle--${h.pos}`, `editkit-img-handle--${h.type}`);
       el.style.cursor = h.cursor;
       this._attachHandleDrag(el, h.pos);
       this.resizerBox.appendChild(el);
@@ -215,26 +214,35 @@ export class ImageFloatingMenu {
         let newWidth = startWidth;
         let newHeight = startHeight;
 
-        if (pos === 'br' || pos === 'mr') {
-          newWidth = Math.max(60, startWidth + deltaX);
-          newHeight = newWidth / aspectRatio;
-        } else if (pos === 'bl' || pos === 'ml') {
-          newWidth = Math.max(60, startWidth - deltaX);
-          newHeight = newWidth / aspectRatio;
-        } else if (pos === 'tr') {
-          newWidth = Math.max(60, startWidth + deltaX);
-          newHeight = newWidth / aspectRatio;
-        } else if (pos === 'tl') {
-          newWidth = Math.max(60, startWidth - deltaX);
-          newHeight = newWidth / aspectRatio;
-        } else if (pos === 'bc') {
-          newHeight = Math.max(40, startHeight + deltaY);
+        // Middle Horizontal Pills (ml, mr) -> Change Width ONLY
+        if (pos === 'mr') {
+          newWidth = Math.max(40, startWidth + deltaX);
+        } else if (pos === 'ml') {
+          newWidth = Math.max(40, startWidth - deltaX);
+        }
+        // Middle Vertical Pills (tc, bc) -> Change Height ONLY
+        else if (pos === 'bc') {
+          newHeight = Math.max(30, startHeight + deltaY);
         } else if (pos === 'tc') {
-          newHeight = Math.max(40, startHeight - deltaY);
+          newHeight = Math.max(30, startHeight - deltaY);
+        }
+        // Corner Handles (tl, tr, bl, br) -> Change both (Proportional if Shift is held)
+        else if (pos === 'br') {
+          newWidth = Math.max(40, startWidth + deltaX);
+          newHeight = moveEvent.shiftKey ? (newWidth / aspectRatio) : Math.max(30, startHeight + deltaY);
+        } else if (pos === 'bl') {
+          newWidth = Math.max(40, startWidth - deltaX);
+          newHeight = moveEvent.shiftKey ? (newWidth / aspectRatio) : Math.max(30, startHeight + deltaY);
+        } else if (pos === 'tr') {
+          newWidth = Math.max(40, startWidth + deltaX);
+          newHeight = moveEvent.shiftKey ? (newWidth / aspectRatio) : Math.max(30, startHeight - deltaY);
+        } else if (pos === 'tl') {
+          newWidth = Math.max(40, startWidth - deltaX);
+          newHeight = moveEvent.shiftKey ? (newWidth / aspectRatio) : Math.max(30, startHeight - deltaY);
         }
 
         img.style.width = `${Math.round(newWidth)}px`;
-        img.style.height = (pos === 'bc' || pos === 'tc') ? `${Math.round(newHeight)}px` : 'auto';
+        img.style.height = `${Math.round(newHeight)}px`;
         img.style.maxWidth = '100%';
 
         this._updatePosition();
@@ -338,11 +346,10 @@ export class ImageFloatingMenu {
       }
     }));
 
-    // 7. Reset Size / Crop
-    this.toolbar.appendChild(createBtn(icons.crop, 'Reset size (100%)', () => {
+    // 7. Crop / Resize Modal (Screenshot 3)
+    this.toolbar.appendChild(createBtn(icons.crop, 'Crop / Resize Image', () => {
       if (!this.activeImg) return;
-      this.activeImg.style.width = '100%';
-      this.activeImg.style.height = 'auto';
+      this.cropModal.openForImage(this.activeImg);
     }));
 
     // 8. Rotate ↻
@@ -359,19 +366,21 @@ export class ImageFloatingMenu {
       this.activeImg.classList.toggle('editkit-image--framed');
     }));
 
-    // 10. ALT Text Button
-    this.toolbar.appendChild(createBtn('', 'Edit Alt Text', () => {
+    // 10. ALT Text Button with Popup (Screenshot exact match)
+    const altBtn = createBtn('', 'Edit Alt Text', () => {
       if (!this.activeImg) return;
-      const newAlt = prompt('Enter Alt Text (description for image):', this.activeImg.alt || '');
-      if (newAlt !== null) {
-        this.activeImg.alt = newAlt;
+      if (this.altPopoverEl.classList.contains('editkit-alt-popover--open')) {
+        this._hideAltPopover();
+      } else {
+        this._showAltPopover();
       }
-    }, false, true, 'ALT'));
+    }, false, true, 'ALT');
+    this.toolbar.appendChild(altBtn);
 
     // 11. Open Link ↗
     this.toolbar.appendChild(createBtn(icons.externalLink, 'Open image in new tab', () => {
       if (this.activeImg?.src) {
-        window.open(this.activeImg.src, '_blank');
+        this._openImageInNewTab(this.activeImg.src, this.activeImg.alt || 'Image Preview');
       }
     }));
 
@@ -381,5 +390,111 @@ export class ImageFloatingMenu {
     this.toolbar.appendChild(createBtn(icons.trash, 'Delete image', () => {
       this.deleteActiveImage();
     }, true));
+
+    // Build the Alt text popover container inside the toolbar
+    this._buildAltPopover();
+  }
+
+  private _openImageInNewTab(src: string, title: string): void {
+    if (!src) return;
+
+    if (src.startsWith('data:')) {
+      const newTab = window.open('', '_blank');
+      if (newTab) {
+        newTab.document.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${title}</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #0f1015;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    img {
+      max-width: 95vw;
+      max-height: 90vh;
+      object-fit: contain;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.85);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <img src="${src}" alt="${title}">
+</body>
+</html>`);
+        newTab.document.close();
+      }
+    } else {
+      window.open(src, '_blank', 'noopener,noreferrer');
+    }
+  }
+
+  private altPopoverEl!: HTMLElement;
+  private altInputEl!: HTMLInputElement;
+
+  private _buildAltPopover(): void {
+    this.altPopoverEl = document.createElement('div');
+    this.altPopoverEl.classList.add('editkit-alt-popover');
+    this.altPopoverEl.innerHTML = `
+      <div class="editkit-alt-title">Text alternative</div>
+      <div class="editkit-alt-row">
+        <input type="text" class="editkit-alt-input" placeholder="Describe this image...">
+        <button type="button" class="editkit-alt-save-btn">Save</button>
+      </div>
+    `;
+
+    this.altInputEl = this.altPopoverEl.querySelector('.editkit-alt-input')!;
+    const saveBtn = this.altPopoverEl.querySelector('.editkit-alt-save-btn')!;
+
+    saveBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this._saveAlt();
+    });
+
+    this.altInputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        this._saveAlt();
+      } else if (e.key === 'Escape') {
+        this._hideAltPopover();
+      }
+    });
+
+    this.altPopoverEl.addEventListener('mousedown', (e) => e.stopPropagation());
+    this.toolbar.appendChild(this.altPopoverEl);
+  }
+
+  private _showAltPopover(): void {
+    if (!this.activeImg) return;
+    this.altInputEl.value = this.activeImg.alt || '';
+    this.altPopoverEl.classList.add('editkit-alt-popover--open');
+    setTimeout(() => {
+      this.altInputEl.focus();
+      this.altInputEl.select();
+    }, 30);
+  }
+
+  private _hideAltPopover(): void {
+    this.altPopoverEl.classList.remove('editkit-alt-popover--open');
+  }
+
+  private _saveAlt(): void {
+    if (this.activeImg) {
+      const val = this.altInputEl.value.trim();
+      this.activeImg.alt = val;
+      this.activeImg.title = val;
+      this.editor.emit('update', { editor: this.editor });
+    }
+    this._hideAltPopover();
   }
 }

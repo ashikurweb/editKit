@@ -2800,8 +2800,11 @@
 
 .editkit-content img {
   max-width: 100%;
+  max-height: 480px;
+  object-fit: contain;
   border-radius: 8px;
   margin: 1em 0;
+  display: block;
 }
 
 /* ==========================================================================
@@ -3429,15 +3432,30 @@
 
 .editkit-img-handle {
   position: absolute;
-  width: 10px;
-  height: 10px;
   background: #c084fc;
   border: 1.5px solid #ffffff;
-  border-radius: 2px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
   z-index: 2;
   transform: translate(-50%, -50%);
   pointer-events: auto;
+}
+
+.editkit-img-handle--corner {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.editkit-img-handle--pill-h {
+  width: 22px;
+  height: 7px;
+  border-radius: 4px;
+}
+
+.editkit-img-handle--pill-v {
+  width: 7px;
+  height: 22px;
+  border-radius: 4px;
 }
 
 .editkit-img-handle--tl { top: 0; left: 0; }
@@ -3994,4 +4012,726 @@
   border: none;
   margin: 24px auto;
   display: block;
+}
+
+/* ==========================================================================
+   16. SIGNATURE MODAL (SCREENSHOT 1 EXACT MATCH)
+   ========================================================================== */
+
+.editkit-signature-modal {
+  max-width: 680px;
+  background: var(--editkit-popup-bg, #12131c);
+  border: 1px solid var(--editkit-popup-border, #242738);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+  padding: 22px 24px;
+}
+
+.editkit-signature-modal .editkit-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.editkit-sig-modal-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.editkit-sig-modal-tag-dot {
+  color: #64748b;
+  font-size: 8px;
+}
+
+.editkit-signature-modal .editkit-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+}
+
+.editkit-sig-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  margin-right: 32px;
+}
+
+.editkit-sig-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--editkit-surface-hover, #1a1c27);
+  border: 1px solid var(--editkit-border, #2b2e3f);
+  border-radius: 8px;
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.editkit-sig-upload-btn:hover {
+  background: #252838;
+  color: #ffffff;
+  border-color: #3d425a;
+}
+
+.editkit-sig-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--editkit-surface-hover, #1a1c27);
+  border: 1px solid var(--editkit-border, #282b3d);
+  border-radius: 10px;
+  padding: 8px 14px;
+  margin-top: 14px;
+}
+
+.editkit-sig-name-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.editkit-sig-name-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #f8fafc;
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  font-family: inherit;
+}
+
+.editkit-sig-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+
+.editkit-sig-color-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.editkit-sig-control-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.editkit-sig-swatches {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.editkit-sig-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.editkit-sig-swatch:hover {
+  transform: scale(1.15);
+}
+
+.editkit-sig-swatch--active {
+  box-shadow: 0 0 0 2px var(--editkit-popup-bg, #12131c), 0 0 0 4px #6366f1;
+}
+
+.editkit-sig-size-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--editkit-surface-hover, #1a1c27);
+  border: 1px solid var(--editkit-border, #282b3d);
+  border-radius: 20px;
+  padding: 3px 6px;
+}
+
+.editkit-sig-size-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  padding: 0;
+}
+
+.editkit-sig-size-btn--active {
+  background: #ffffff;
+}
+
+.editkit-sig-dot {
+  border-radius: 50%;
+  background: #94a3b8;
+  display: block;
+}
+
+.editkit-sig-size-btn--active .editkit-sig-dot {
+  background: #0f1016;
+}
+
+.editkit-sig-dot--sm { width: 3px; height: 3px; }
+.editkit-sig-dot--md { width: 6px; height: 6px; }
+.editkit-sig-dot--lg { width: 9px; height: 9px; }
+
+.editkit-sig-canvas-wrap {
+  position: relative;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.editkit-sig-canvas {
+  width: 100%;
+  height: 220px;
+  display: block;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.editkit-sig-canvas-actions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 5;
+}
+
+.editkit-sig-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 8px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  color: #475569;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.editkit-sig-action-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.editkit-sig-clear-btn {
+  gap: 4px;
+}
+
+.editkit-sig-baseline {
+  position: absolute;
+  bottom: 20px;
+  left: 24px;
+  right: 24px;
+  pointer-events: none;
+  text-align: center;
+}
+
+.editkit-sig-baseline-line {
+  border-top: 1px dashed #cbd5e1;
+  margin-bottom: 6px;
+}
+
+.editkit-sig-baseline-text {
+  font-size: 11px;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.editkit-sig-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.editkit-sig-cancel-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 16px;
+}
+
+.editkit-sig-cancel-btn:hover {
+  color: #f1f5f9;
+}
+
+.editkit-sig-insert-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  color: #090a10;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.editkit-sig-insert-btn:hover {
+  opacity: 0.9;
+}
+
+
+/* ==========================================================================
+   17. CROP MODAL (SCREENSHOT 3 EXACT MATCH)
+   ========================================================================== */
+
+.editkit-crop-modal {
+  max-width: 860px;
+  background: var(--editkit-popup-bg, #12131a);
+  border: 1px solid var(--editkit-popup-border, #242738);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+  padding: 24px;
+}
+
+.editkit-crop-layout {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.editkit-crop-preview-pane {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #090a10;
+  border: 1px solid #1f2230;
+  border-radius: 12px;
+  padding: 16px;
+  min-height: 380px;
+  position: relative;
+  overflow: hidden;
+  background-image:
+    linear-gradient(45deg, #161822 25%, transparent 25%),
+    linear-gradient(-45deg, #161822 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #161822 75%),
+    linear-gradient(-45deg, transparent 75%, #161822 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+.editkit-crop-preview-box {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  user-select: none;
+}
+
+.editkit-crop-preview-img {
+  max-width: 100%;
+  max-height: 340px;
+  display: block;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.editkit-crop-box {
+  position: absolute;
+  border: 2px solid #a78bfa;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.65);
+  cursor: move;
+  box-sizing: border-box;
+}
+
+.editkit-crop-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.editkit-crop-grid-h1 {
+  position: absolute;
+  top: 33.33%;
+  left: 0;
+  right: 0;
+  border-top: 1px solid rgba(167, 139, 250, 0.4);
+}
+
+.editkit-crop-grid-h2 {
+  position: absolute;
+  top: 66.66%;
+  left: 0;
+  right: 0;
+  border-top: 1px solid rgba(167, 139, 250, 0.4);
+}
+
+.editkit-crop-grid-v1 {
+  position: absolute;
+  left: 33.33%;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid rgba(167, 139, 250, 0.4);
+}
+
+.editkit-crop-grid-v2 {
+  position: absolute;
+  left: 66.66%;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid rgba(167, 139, 250, 0.4);
+}
+
+.editkit-crop-handle {
+  position: absolute;
+  background: #c084fc;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  z-index: 5;
+  transform: translate(-50%, -50%);
+}
+
+.editkit-crop-handle--corner {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.editkit-crop-handle--pill {
+  border-radius: 4px;
+}
+
+.editkit-crop-handle--tc,
+.editkit-crop-handle--bc {
+  width: 22px;
+  height: 6px;
+}
+
+.editkit-crop-handle--ml,
+.editkit-crop-handle--mr {
+  width: 6px;
+  height: 22px;
+}
+
+.editkit-crop-handle--tl { top: 0; left: 0; }
+.editkit-crop-handle--tr { top: 0; left: 100%; }
+.editkit-crop-handle--bl { top: 100%; left: 0; }
+.editkit-crop-handle--br { top: 100%; left: 100%; }
+.editkit-crop-handle--tc { top: 0; left: 50%; }
+.editkit-crop-handle--bc { top: 100%; left: 50%; }
+.editkit-crop-handle--ml { top: 50%; left: 0; }
+.editkit-crop-handle--mr { top: 50%; left: 100%; }
+
+/* Crop Sidebar */
+.editkit-crop-sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.editkit-crop-header-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.editkit-crop-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.editkit-crop-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.editkit-crop-close-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--editkit-surface-hover, #1a1c27);
+  border: none;
+  color: #8e94a6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.editkit-crop-close-btn:hover {
+  color: #ffffff;
+  background: #252838;
+}
+
+.editkit-crop-subtitle {
+  font-size: 12px;
+  color: #8e94a6;
+  margin: 4px 0 0;
+  line-height: 1.5;
+}
+
+.editkit-crop-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.editkit-crop-ratio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.editkit-crop-ratio-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 4px;
+  background: var(--editkit-surface-hover, #181a24);
+  border: 1px solid var(--editkit-border, #282b3a);
+  border-radius: 8px;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.editkit-crop-ratio-btn:hover {
+  background: var(--editkit-surface-active, #202331);
+  border-color: #3d425a;
+  color: #ffffff;
+}
+
+.editkit-crop-ratio-btn--active {
+  background: var(--editkit-surface-active, #1e2030);
+  border-color: #6366f1;
+  box-shadow: 0 0 0 1px #6366f1;
+  color: #ffffff;
+}
+
+.editkit-crop-ratio-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+}
+
+.editkit-crop-ratio-name {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.editkit-crop-info-card {
+  background: var(--editkit-surface-hover, #161822);
+  border: 1px solid var(--editkit-border, #242738);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.editkit-crop-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.editkit-crop-info-label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.editkit-crop-info-val {
+  color: #ffffff;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.editkit-crop-info-val--blue {
+  color: #60a5fa;
+}
+
+.editkit-crop-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.editkit-crop-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.editkit-crop-reset-btn:hover {
+  color: #ffffff;
+}
+
+.editkit-crop-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editkit-crop-cancel-btn {
+  background: var(--editkit-surface-hover, #1e202b);
+  border: 1px solid var(--editkit-border, #2e3244);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.editkit-crop-cancel-btn:hover {
+  color: #ffffff;
+}
+
+.editkit-crop-apply-btn {
+  background: #ffffff;
+  color: #0c0d12;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.editkit-crop-apply-btn:hover {
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   18. ALT TEXT POPOVER (SCREENSHOT EXACT MATCH)
+   ========================================================================== */
+
+.editkit-alt-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--editkit-popup-bg, #1a1b24);
+  border: 1px solid var(--editkit-popup-border, #2d3040);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+  padding: 12px 14px;
+  min-width: 320px;
+  z-index: 100;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  animation: editkitFadeIn 0.15s ease;
+  user-select: none;
+  pointer-events: auto;
+}
+
+.editkit-alt-popover--open {
+  display: flex;
+}
+
+.editkit-alt-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: 0.02em;
+}
+
+.editkit-alt-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editkit-alt-input {
+  flex: 1;
+  background: #101117;
+  border: 1px solid #282b3a;
+  border-radius: 6px;
+  padding: 7px 10px;
+  color: #f1f5f9;
+  font-size: 12px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.editkit-alt-input:focus {
+  border-color: #6366f1;
+}
+
+.editkit-alt-save-btn {
+  background: #ffffff;
+  color: #0c0d12;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+}
+
+.editkit-alt-save-btn:hover {
+  opacity: 0.9;
 }
