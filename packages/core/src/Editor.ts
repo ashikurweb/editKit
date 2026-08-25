@@ -20,6 +20,7 @@ import type {
   BulletListStyle,
   NumberedListStyle,
   PanelType,
+  DividerOptions,
 } from './types';
 
 // ── Block-level tag set ──────────────────────────────────────
@@ -467,6 +468,8 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     insertMath: (opts: { latex: string; type: 'block' | 'inline' }) => this._insertMath(opts),
     insertPanel: (type: PanelType = 'info', initialContent?: string) => this._insertPanel(type, initialContent),
     insertCallout: (type: PanelType = 'info', initialContent?: string) => this._insertPanel(type, initialContent),
+    insertDivider: (options?: DividerOptions) => this._insertCustomDivider(options),
+    insertCustomDivider: (options?: DividerOptions) => this._insertCustomDivider(options),
 
     // ── History ──
     undo: () => this._undo(),
@@ -1764,6 +1767,52 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     this._saveHistory();
     this._emitUpdate();
     return panel;
+  }
+
+  // ── Custom Dividers ──
+
+  private _insertCustomDivider(options: DividerOptions = {}): HTMLElement {
+    this._ensureFocus();
+    const color = options.color || '#000000';
+    const style = options.style || 'solid';
+    const width = options.width || '100%';
+    const thickness = options.thickness !== undefined ? options.thickness : 1;
+
+    const dThick = style === 'double' ? Math.max(thickness * 2, 3) : thickness;
+    const borderTopStyle = `${dThick}px ${style} ${color}`;
+
+    const hr = document.createElement('hr');
+    hr.classList.add('editkit-custom-divider');
+    hr.style.border = 'none';
+    hr.style.borderTop = borderTopStyle;
+    hr.style.width = width;
+    hr.style.margin = '24px auto';
+    hr.style.display = 'block';
+
+    const p = document.createElement('p');
+    p.innerHTML = '<br>';
+
+    const block = this._getActiveBlock();
+    if (block && block !== this.contentEl && block.parentNode) {
+      block.parentNode.insertBefore(hr, block.nextSibling);
+      block.parentNode.insertBefore(p, hr.nextSibling);
+    } else {
+      this.contentEl.appendChild(hr);
+      this.contentEl.appendChild(p);
+    }
+
+    const sel = window.getSelection();
+    if (sel) {
+      const range = document.createRange();
+      range.selectNodeContents(p);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+
+    this._saveHistory();
+    this._emitUpdate();
+    return hr;
   }
 
   // ═══════════════════════════════════════════

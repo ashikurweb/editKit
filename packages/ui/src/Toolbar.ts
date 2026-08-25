@@ -11,6 +11,7 @@ import { SymbolPicker } from './SymbolPicker';
 import { ImageModal } from './ImageModal';
 import { LinkPopover } from './LinkPopover';
 import { MathModal } from './MathModal';
+import { DividerModal } from './DividerModal';
 import { TooltipManager } from './Tooltip';
 
 export interface ToolbarFeaturesConfig {
@@ -65,6 +66,7 @@ export class EditKitToolbar {
   private imageModal: ImageModal;
   private linkPopover: LinkPopover;
   private mathModal: MathModal;
+  private dividerModal: DividerModal;
   private openDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
@@ -87,6 +89,7 @@ export class EditKitToolbar {
     this.imageModal = new ImageModal(editor);
     this.linkPopover = new LinkPopover(editor);
     this.mathModal = new MathModal(editor);
+    this.dividerModal = new DividerModal(editor);
 
     TooltipManager.init();
 
@@ -1148,7 +1151,7 @@ export class EditKitToolbar {
     `;
     hrBtn.addEventListener('mousedown', (e) => {
       e.preventDefault();
-      this.editor.commands.horizontalRule();
+      this._openDividerModal();
       this._closeDropdown();
     });
     menu.appendChild(hrBtn);
@@ -1444,6 +1447,10 @@ export class EditKitToolbar {
   private _addCommentMock(): void {
     const comment = prompt('Add a comment:');
     if (comment) alert(`Comment added: "${comment}"`);
+  }
+
+  private _openDividerModal(): void {
+    this.dividerModal.show();
   }
 
   // ── Dropdown Toggle & Close ──

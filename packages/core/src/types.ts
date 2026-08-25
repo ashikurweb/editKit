@@ -7,6 +7,14 @@ import type { Extension, CustomToolbarItem } from './Extension';
 /** Callout / Alert Panel Types */
 export type PanelType = 'info' | 'warning' | 'error' | 'success' | 'note';
 
+/** Custom Divider / Horizontal Rule Options */
+export interface DividerOptions {
+  color?: string;
+  style?: 'solid' | 'dashed' | 'dotted' | 'double' | string;
+  width?: string;
+  thickness?: number;
+}
+
 /** Table Insertion and Styling Options */
 export interface TableOptions {
   rows?: number;

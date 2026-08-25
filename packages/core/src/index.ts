@@ -26,4 +26,5 @@ export type {
   BulletListStyle,
   NumberedListStyle,
   PanelType,
+  DividerOptions,
 } from './types';
