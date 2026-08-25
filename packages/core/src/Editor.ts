@@ -644,9 +644,9 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
     } else if (mod && e.shiftKey && (e.key === 'S' || e.key === 's' || e.key === 'X' || e.key === 'x')) {
       e.preventDefault();
       this.commands.strikethrough();
-    } else if (mod && e.key === 'e') {
+    } else if (mod && (e.key === 'k' || e.key === 'K')) {
       e.preventDefault();
-      this.commands.code();
+      this.emit('openLinkPopover', { editor: this });
     } else if (mod && e.key === 'z' && !e.shiftKey) {
       e.preventDefault();
       this.commands.undo();

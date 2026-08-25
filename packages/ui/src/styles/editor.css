@@ -1025,6 +1025,20 @@
   margin: 0 0 0.5em 0;
 }
 
+/* Links (Exact rgb(118, 101, 255) match) */
+.vellora-content a {
+  color: rgb(118, 101, 255);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+.vellora-content a:hover {
+  color: rgb(142, 128, 255);
+  opacity: 0.9;
+}
+
 /* Table in content (Screenshot 2 exact match) */
 .vellora-content table,
 .vellora-table {
@@ -1680,4 +1694,174 @@
   border: 2px solid #3b4252;
   border-radius: 10px;
   padding: 3px;
+}
+
+/* ════════════════════════════════════════════
+   Floating Link Popover (Exact match to Screenshot)
+   ════════════════════════════════════════════ */
+
+.vellora-link-popover {
+  position: absolute;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  background: #0c0d12;
+  border: 1px solid #232530;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
+  z-index: 120;
+  animation: velloraFadeIn 0.15s ease;
+  font-family: var(--vellora-font, 'DM Sans', sans-serif);
+}
+
+.vellora-link-popover--visible {
+  display: inline-flex;
+}
+
+.vellora-link-input {
+  width: 240px;
+  background: #14151c;
+  border: 1px solid #383b4c;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  color: #ffffff;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.vellora-link-input:focus {
+  border-color: #585d77;
+}
+
+.vellora-link-input::placeholder {
+  color: #64697d;
+}
+
+.vellora-link-apply-btn {
+  width: 28px;
+  height: 28px;
+  background: #00c975;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  transition: transform 0.1s ease, filter 0.15s ease;
+}
+
+.vellora-link-apply-btn:hover {
+  filter: brightness(1.1);
+  transform: scale(1.04);
+}
+
+.vellora-link-apply-btn svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 3;
+}
+
+.vellora-link-cancel-btn {
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: 1px solid #333644;
+  color: #ffffff;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.vellora-link-cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #55596b;
+}
+
+.vellora-link-cancel-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.5;
+}
+
+/* Link Preview Tooltip & Actions */
+.vellora-link-preview-url {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #93c5fd;
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 500;
+  max-width: 220px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.vellora-link-preview-url span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vellora-link-preview-url:hover {
+  color: #60a5fa;
+  text-decoration: underline;
+}
+
+.vellora-link-preview-url svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.vellora-link-popover-divider {
+  width: 1px;
+  height: 16px;
+  background: #282a36;
+  margin: 0 2px;
+}
+
+.vellora-link-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 6px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #9499ad;
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vellora-link-action-btn:hover {
+  background: #222530;
+  color: #ffffff;
+}
+
+.vellora-link-action-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+.vellora-link-action-btn--unlink:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
 }

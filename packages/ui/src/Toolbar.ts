@@ -7,6 +7,7 @@ import type { VelloraEditor, BulletListStyle, NumberedListStyle } from '@vellora
 import { icons } from './icons';
 import { ColorPickerPopover } from './ColorPicker';
 import { ImageModal } from './ImageModal';
+import { LinkPopover } from './LinkPopover';
 
 export interface ToolbarConfig {
   container?: HTMLElement;
@@ -27,6 +28,7 @@ export class VelloraToolbar {
   readonly element: HTMLElement;
   private editor: VelloraEditor;
   private imageModal: ImageModal;
+  private linkPopover: LinkPopover;
   private openDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
@@ -41,6 +43,7 @@ export class VelloraToolbar {
   constructor(editor: VelloraEditor, config: ToolbarConfig = {}) {
     this.editor = editor;
     this.imageModal = new ImageModal(editor);
+    this.linkPopover = new LinkPopover(editor);
 
     this.element = document.createElement('div');
     this.element.classList.add('vellora-toolbar');
@@ -53,7 +56,8 @@ export class VelloraToolbar {
     // Selection & update listeners
     const unsub1 = editor.on('selectionUpdate', () => this._syncStates());
     const unsub2 = editor.on('update', () => this._syncStates());
-    this._unsubscribers.push(unsub1, unsub2);
+    const unsub3 = editor.on('openLinkPopover', () => this.linkPopover.show());
+    this._unsubscribers.push(unsub1, unsub2, unsub3);
 
     // Global outside click for dropdowns
     const outsideClick = (e: MouseEvent) => {
@@ -729,12 +733,10 @@ export class VelloraToolbar {
 
   // ── Link Button ──
   private _createLinkButton(): HTMLElement {
-    return this._createBtn('link', 'Add Link (Ctrl+K)', () => {
-      const url = prompt('Enter URL:', 'https://');
-      if (url) {
-        this.editor.commands.setLink({ url, target: '_blank' });
-      }
+    const btn = this._createBtn('link', 'Add Link (Ctrl+K)', () => {
+      this.linkPopover.show(btn.getBoundingClientRect());
     });
+    return btn;
   }
 
   // ── Emoji Picker Dropdown ──

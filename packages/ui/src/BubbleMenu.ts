@@ -6,16 +6,19 @@
 import type { VelloraEditor } from '@vellora/core';
 import { icons } from './icons';
 import { ColorPickerPopover } from './ColorPicker';
+import { LinkPopover } from './LinkPopover';
 
 export class BubbleMenu {
   readonly element: HTMLElement;
   private editor: VelloraEditor;
+  private linkPopover: LinkPopover;
   private isVisible: boolean = false;
   private colorPickerEl: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
   constructor(editor: VelloraEditor) {
     this.editor = editor;
+    this.linkPopover = new LinkPopover(editor);
 
     this.element = document.createElement('div');
     this.element.classList.add('vellora-bubble-menu');
@@ -131,10 +134,10 @@ export class BubbleMenu {
     this.element.appendChild(divider());
 
     // 4. Link button
-    this.element.appendChild(btn('link', 'Add Link', () => {
-      const url = prompt('Enter link URL:', 'https://');
-      if (url) this.editor.commands.setLink({ url, target: '_blank' });
-    }));
+    const linkBtn = btn('link', 'Add Link (Ctrl+K)', () => {
+      this.linkPopover.show(linkBtn.getBoundingClientRect());
+    });
+    this.element.appendChild(linkBtn);
 
     // 5. Color picker button
     const colorBtn = document.createElement('button');

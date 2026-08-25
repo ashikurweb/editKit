@@ -100,4 +100,6 @@ export const icons: Record<string, string> = {
   inlineWrap: svg('<line x1="3" y1="6" x2="21" y2="6"></line><rect x="6" y="9" width="12" height="6" rx="1"></rect><line x1="3" y1="18" x2="21" y2="18"></line>'),
   breakText: svg('<path d="M4 14h10a4 4 0 0 0 0-8H4"></path><polyline points="7 17 4 14 7 11"></polyline>'),
   frame: svg('<rect x="3" y="3" width="18" height="18" rx="3" stroke-width="2.5"></rect>'),
+  edit: svg('<path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>'),
+  unlink: svg('<path d="M18.84 12.25l1.72-1.71a4.5 4.5 0 0 0-6.36-6.36l-1.72 1.71"></path><path d="M5.16 11.75l-1.72 1.71a4.5 4.5 0 0 0 6.36 6.36l1.72-1.71"></path><line x1="2" y1="2" x2="22" y2="22"></line>'),
 };
