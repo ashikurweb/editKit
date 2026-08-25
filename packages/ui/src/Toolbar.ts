@@ -11,6 +11,7 @@ import { SymbolPicker } from './SymbolPicker';
 import { ImageModal } from './ImageModal';
 import { LinkPopover } from './LinkPopover';
 import { MathModal } from './MathModal';
+import { TooltipManager } from './Tooltip';
 
 export interface ToolbarConfig {
   container?: HTMLElement;
@@ -49,6 +50,8 @@ export class VelloraToolbar {
     this.imageModal = new ImageModal(editor);
     this.linkPopover = new LinkPopover(editor);
     this.mathModal = new MathModal(editor);
+
+    TooltipManager.init();
 
     this.element = document.createElement('div');
     this.element.classList.add('vellora-toolbar');
@@ -101,8 +104,8 @@ export class VelloraToolbar {
     // ──────────────────────────────────────────
 
     // 1. Undo / Redo
-    leftGroup.appendChild(this._createBtn('undo', 'Undo (Ctrl+Z)', () => this.editor.commands.undo()));
-    leftGroup.appendChild(this._createBtn('redo', 'Redo (Ctrl+Shift+Z)', () => this.editor.commands.redo()));
+    leftGroup.appendChild(this._createBtn('undo', 'Undo', () => this.editor.commands.undo(), undefined, '⌘Z'));
+    leftGroup.appendChild(this._createBtn('redo', 'Redo', () => this.editor.commands.redo(), undefined, '⌘⇧Z'));
     leftGroup.appendChild(this._createDivider());
 
     // 2. Block Type Selector: ¶ Normal ˅
@@ -116,7 +119,7 @@ export class VelloraToolbar {
     leftGroup.appendChild(this._createDivider());
 
     // 5. Bold & Character Formatting Dropdown (Exact EDDYTER Match)
-    this.boldBtn = this._createBtn('bold', 'Bold (Ctrl+B)', () => this.editor.commands.bold(), 'bold');
+    this.boldBtn = this._createBtn('bold', 'Bold', () => this.editor.commands.bold(), 'bold', '⌘B');
     leftGroup.appendChild(this.boldBtn);
     leftGroup.appendChild(this._createFormatDropdown());
 
@@ -174,12 +177,13 @@ export class VelloraToolbar {
   }
 
   // ── Helper: Basic Button ──
-  private _createBtn(iconKey: string, tooltip: string, action: () => void, activeKey?: string): HTMLElement {
+  private _createBtn(iconKey: string, tooltip: string, action: () => void, activeKey?: string, shortcut?: string): HTMLElement {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.classList.add('vellora-tb-btn');
-    btn.setAttribute('title', tooltip);
+    btn.setAttribute('data-vellora-tooltip', tooltip);
     btn.setAttribute('aria-label', tooltip);
+    if (shortcut) btn.setAttribute('data-tooltip-shortcut', shortcut);
     btn.innerHTML = icons[iconKey] || iconKey;
     if (activeKey) btn.setAttribute('data-active-key', activeKey);
 
@@ -206,7 +210,8 @@ export class VelloraToolbar {
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.classList.add('vellora-tb-pill-btn');
-    trigger.setAttribute('title', 'Text Style');
+    trigger.setAttribute('data-vellora-tooltip', 'Text Style');
+    trigger.setAttribute('aria-label', 'Text Style');
 
     const iconSpan = document.createElement('span');
     iconSpan.classList.add('vellora-tb-icon-sm');
@@ -332,7 +337,8 @@ export class VelloraToolbar {
     const minus = document.createElement('button');
     minus.type = 'button';
     minus.classList.add('vellora-tb-stepper-btn');
-    minus.setAttribute('title', 'Decrease Font Size');
+    minus.setAttribute('data-vellora-tooltip', 'Decrease Font Size');
+    minus.setAttribute('aria-label', 'Decrease Font Size');
     minus.innerHTML = icons.minus;
     minus.addEventListener('mousedown', (e) => {
       e.preventDefault();
@@ -347,7 +353,8 @@ export class VelloraToolbar {
     const plus = document.createElement('button');
     plus.type = 'button';
     plus.classList.add('vellora-tb-stepper-btn');
-    plus.setAttribute('title', 'Increase Font Size');
+    plus.setAttribute('data-vellora-tooltip', 'Increase Font Size');
+    plus.setAttribute('aria-label', 'Increase Font Size');
     plus.innerHTML = icons.plus;
     plus.addEventListener('mousedown', (e) => {
       e.preventDefault();
@@ -369,7 +376,8 @@ export class VelloraToolbar {
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.classList.add('vellora-tb-btn', 'vellora-tb-btn--chevron');
-    trigger.setAttribute('title', 'More Formatting');
+    trigger.setAttribute('data-vellora-tooltip', 'More Formatting');
+    trigger.setAttribute('aria-label', 'More Formatting');
     trigger.innerHTML = `${icons.keyboard} <span class="vellora-tb-chevron-sm">${icons.chevronDown}</span>`;
 
     const menu = document.createElement('div');
@@ -416,7 +424,8 @@ export class VelloraToolbar {
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.classList.add('vellora-tb-btn', 'vellora-tb-btn--color');
-    trigger.setAttribute('title', 'Text & Highlight Color');
+    trigger.setAttribute('data-vellora-tooltip', 'Text & Highlight Color');
+    trigger.setAttribute('aria-label', 'Text & Highlight Color');
     trigger.innerHTML = `${icons.textColor} <span class="vellora-tb-color-indicator"></span>`;
 
     const popover = new ColorPickerPopover(this.editor, undefined, () => this._closeDropdown());
@@ -439,7 +448,8 @@ export class VelloraToolbar {
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.classList.add('vellora-tb-btn', 'vellora-tb-btn--chevron');
-    trigger.setAttribute('title', 'Text Alignment & Line Height');
+    trigger.setAttribute('data-vellora-tooltip', 'Text Alignment & Line Height');
+    trigger.setAttribute('aria-label', 'Text Alignment & Line Height');
     trigger.innerHTML = `${icons.alignLeft} <span class="vellora-tb-chevron-sm">${icons.chevronDown}</span>`;
     this.alignTrigger = trigger;
 
@@ -521,7 +531,8 @@ export class VelloraToolbar {
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.classList.add('vellora-tb-btn', 'vellora-tb-btn--chevron');
-    trigger.setAttribute('title', 'Lists & Quotes');
+    trigger.setAttribute('data-vellora-tooltip', 'Lists & Quotes');
+    trigger.setAttribute('aria-label', 'Lists & Quotes');
     trigger.innerHTML = `${icons.bulletList} <span class="vellora-tb-chevron-sm">${icons.chevronDown}</span>`;
 
     const menu = document.createElement('div');
@@ -655,7 +666,8 @@ export class VelloraToolbar {
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.classList.add('vellora-tb-btn');
-    trigger.setAttribute('title', 'Insert Table');
+    trigger.setAttribute('data-vellora-tooltip', 'Insert Table');
+    trigger.setAttribute('aria-label', 'Insert Table');
     trigger.innerHTML = icons.table;
 
     const menu = document.createElement('div');
@@ -744,7 +756,8 @@ export class VelloraToolbar {
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.classList.add('vellora-tb-btn');
-    trigger.setAttribute('title', 'Formula / Equation');
+    trigger.setAttribute('data-vellora-tooltip', 'Formula / Equation');
+    trigger.setAttribute('aria-label', 'Formula / Equation');
     trigger.innerHTML = icons.math;
 
     const menu = document.createElement('div');
@@ -794,7 +807,8 @@ export class VelloraToolbar {
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.classList.add('vellora-tb-btn');
-    trigger.setAttribute('title', 'Insert Emoji');
+    trigger.setAttribute('data-vellora-tooltip', 'Insert Emoji');
+    trigger.setAttribute('aria-label', 'Insert Emoji');
     trigger.innerHTML = icons.emoji;
 
     const picker = new EmojiPicker(this.editor, () => {
@@ -824,7 +838,8 @@ export class VelloraToolbar {
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.classList.add('vellora-tb-btn');
-    trigger.setAttribute('title', 'Special Characters');
+    trigger.setAttribute('data-vellora-tooltip', 'Special Characters');
+    trigger.setAttribute('aria-label', 'Special Characters');
     trigger.innerHTML = icons.omega;
 
     const symbolPicker = new SymbolPicker(this.editor, () => {
@@ -897,7 +912,8 @@ export class VelloraToolbar {
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.classList.add('vellora-tb-btn');
-    trigger.setAttribute('title', 'Typography & Transform');
+    trigger.setAttribute('data-vellora-tooltip', 'Typography & Transform');
+    trigger.setAttribute('aria-label', 'Typography & Transform');
     trigger.innerHTML = icons.typography;
 
     const menu = document.createElement('div');
@@ -940,7 +956,8 @@ export class VelloraToolbar {
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.classList.add('vellora-tb-btn', 'vellora-tb-btn--chevron');
-    trigger.setAttribute('title', 'More Insert Items');
+    trigger.setAttribute('data-vellora-tooltip', 'More Insert Items');
+    trigger.setAttribute('aria-label', 'More Insert Items');
     trigger.innerHTML = `${icons.plus} <span class="vellora-tb-chevron-sm">${icons.chevronDown}</span>`;
 
     const menu = document.createElement('div');

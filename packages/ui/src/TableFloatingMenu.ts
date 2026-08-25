@@ -57,7 +57,7 @@ export class TableFloatingMenu {
       b.type = 'button';
       b.classList.add('vellora-table-btn');
       if (isDanger) b.classList.add('vellora-table-btn--danger');
-      b.setAttribute('title', tooltip);
+      b.setAttribute('data-vellora-tooltip', tooltip);
       b.setAttribute('aria-label', tooltip);
       b.innerHTML = icons[iconKey] || iconKey;
       b.addEventListener('mousedown', (e) => {
@@ -99,7 +99,8 @@ export class TableFloatingMenu {
     const colorBtn = document.createElement('button');
     colorBtn.type = 'button';
     colorBtn.classList.add('vellora-table-btn');
-    colorBtn.setAttribute('title', 'Cell Background Color');
+    colorBtn.setAttribute('data-vellora-tooltip', 'Cell Background Color');
+    colorBtn.setAttribute('aria-label', 'Cell Background Color');
     colorBtn.innerHTML = icons.highlightColor;
     colorBtn.addEventListener('mousedown', (e) => {
       e.preventDefault();

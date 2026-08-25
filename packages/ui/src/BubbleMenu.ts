@@ -57,7 +57,7 @@ export class BubbleMenu {
       const b = document.createElement('button');
       b.type = 'button';
       b.classList.add('vellora-bubble-btn');
-      b.setAttribute('title', tooltip);
+      b.setAttribute('data-vellora-tooltip', tooltip);
       b.setAttribute('aria-label', tooltip);
       b.innerHTML = icons[iconKey] || iconKey;
       b.addEventListener('mousedown', (e) => {
@@ -143,7 +143,8 @@ export class BubbleMenu {
     const colorBtn = document.createElement('button');
     colorBtn.type = 'button';
     colorBtn.classList.add('vellora-bubble-btn');
-    colorBtn.setAttribute('title', 'Text & Highlight Color');
+    colorBtn.setAttribute('data-vellora-tooltip', 'Text & Highlight Color');
+    colorBtn.setAttribute('aria-label', 'Text & Highlight Color');
     colorBtn.innerHTML = `${icons.textColor}`;
     colorBtn.addEventListener('mousedown', (e) => {
       e.preventDefault();
