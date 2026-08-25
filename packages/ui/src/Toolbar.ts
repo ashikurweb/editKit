@@ -403,26 +403,14 @@ export class VelloraToolbar {
     trigger.type = 'button';
     trigger.classList.add('vellora-tb-btn', 'vellora-tb-btn--color');
     trigger.setAttribute('title', 'Text & Highlight Color');
-
     trigger.innerHTML = `${icons.textColor} <span class="vellora-tb-color-indicator"></span>`;
 
-    let popover: ColorPickerPopover | null = null;
+    const popover = new ColorPickerPopover(this.editor, undefined, () => this._closeDropdown());
+    wrap.appendChild(popover.element);
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();
-      e.stopPropagation();
-
-      if (wrap.classList.contains('vellora-tb-dropdown-wrap--open')) {
-        this._closeDropdown();
-      } else {
-        this._closeDropdown();
-        if (!popover) {
-          popover = new ColorPickerPopover(this.editor, undefined, () => this._closeDropdown());
-          wrap.appendChild(popover.element);
-        }
-        wrap.classList.add('vellora-tb-dropdown-wrap--open');
-        this.openDropdown = wrap;
-      }
+      this._toggleDropdown(wrap);
     });
 
     wrap.appendChild(trigger);
