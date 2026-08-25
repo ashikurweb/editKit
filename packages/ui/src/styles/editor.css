@@ -19,6 +19,8 @@
   --vellora-surface-hover: #22242c;
   --vellora-surface-active: #323543;
   --vellora-surface-elevated: #1e2027;
+  --vellora-popup-bg: #15161e;
+  --vellora-popup-border: #262936;
 
   /* Text & Labels */
   --vellora-text: #e6e8ee;
@@ -60,36 +62,44 @@
 }
 
 [data-vellora-theme="light"] {
-  --vellora-bg: #f8fafc;
+  /* Premium Warm Ivory Surfaces */
+  --vellora-bg: #f5f3ef;
   --vellora-card-bg: #ffffff;
-  --vellora-toolbar-bg: #ffffff;
-  --vellora-surface-hover: #f1f5f9;
-  --vellora-surface-active: #e2e8f0;
-  --vellora-surface-elevated: #ffffff;
+  --vellora-toolbar-bg: #faf9f7;
+  --vellora-surface-hover: #f0eee9;
+  --vellora-surface-active: #e8e5df;
+  --vellora-surface-elevated: #faf9f7;
+  --vellora-popup-bg: #ffffff;
+  --vellora-popup-border: #e4e0d9;
 
-  --vellora-text: #1e293b;
-  --vellora-text-muted: #64748b;
-  --vellora-text-dim: #94a3b8;
-  --vellora-placeholder: #cbd5e1;
+  /* Rich Warm Text */
+  --vellora-text: #1a1714;
+  --vellora-text-muted: #6b6560;
+  --vellora-text-dim: #9e9891;
+  --vellora-placeholder: #c4bfb8;
 
-  --vellora-border: #e2e8f0;
-  --vellora-border-hover: #cbd5e1;
+  /* Warm Stone Borders */
+  --vellora-border: #e4e0d9;
+  --vellora-border-hover: #d4cfc7;
   --vellora-border-focus: #6366f1;
-  --vellora-divider: #e2e8f0;
+  --vellora-divider: #eae7e2;
 
+  /* Refined Indigo Accent */
   --vellora-primary: #6366f1;
   --vellora-primary-hover: #4f46e5;
-  --vellora-primary-light: rgba(99, 102, 241, 0.1);
+  --vellora-primary-light: rgba(99, 102, 241, 0.08);
   --vellora-ai-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
-  --vellora-selection: rgba(99, 102, 241, 0.15);
+  --vellora-selection: rgba(99, 102, 241, 0.12);
 
-  --vellora-table-header-bg: #f1f5f9;
-  --vellora-table-header-text: #334155;
-  --vellora-table-border: #e2e8f0;
-  --vellora-table-cell-hover: rgba(99, 102, 241, 0.05);
+  /* Warm Table Tones */
+  --vellora-table-header-bg: #f0ede8;
+  --vellora-table-header-text: #2d2924;
+  --vellora-table-border: #e4e0d9;
+  --vellora-table-cell-hover: rgba(99, 102, 241, 0.04);
 
-  --vellora-shadow-popup: 0 10px 30px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.05);
-  --vellora-shadow-floating: 0 6px 20px rgba(0, 0, 0, 0.08);
+  /* Premium Depth Shadows */
+  --vellora-shadow-popup: 0 12px 40px rgba(26, 23, 20, 0.10), 0 2px 8px rgba(26, 23, 20, 0.05);
+  --vellora-shadow-floating: 0 8px 24px rgba(26, 23, 20, 0.08);
 }
 
 /* ==========================================================================
@@ -369,8 +379,8 @@
   top: calc(100% + 6px);
   left: 0;
   min-width: 170px;
-  background: var(--vellora-surface-elevated);
-  border: 1px solid var(--vellora-border);
+  background: var(--vellora-popup-bg);
+  border: 1px solid var(--vellora-popup-border);
   border-radius: 10px;
   box-shadow: var(--vellora-shadow-popup);
   padding: 4px;
@@ -594,8 +604,8 @@
   top: calc(100% + 6px);
   left: 0;
   width: 340px;
-  background: var(--vellora-surface-elevated);
-  border: 1px solid var(--vellora-border);
+  background: var(--vellora-popup-bg);
+  border: 1px solid var(--vellora-popup-border);
   border-radius: 12px;
   box-shadow: var(--vellora-shadow-popup);
   padding: 12px;
@@ -814,8 +824,8 @@
   top: calc(100% + 6px);
   left: 0;
   width: 360px;
-  background: var(--vellora-surface-elevated);
-  border: 1px solid var(--vellora-border);
+  background: var(--vellora-popup-bg);
+  border: 1px solid var(--vellora-popup-border);
   border-radius: 12px;
   box-shadow: var(--vellora-shadow-popup);
   padding: 12px;
@@ -1154,8 +1164,8 @@
   top: calc(100% + 6px);
   left: 0;
   width: 252px;
-  background: var(--vellora-surface-elevated);
-  border: 1px solid var(--vellora-border);
+  background: var(--vellora-popup-bg);
+  border: 1px solid var(--vellora-popup-border);
   border-radius: 12px;
   box-shadow: var(--vellora-shadow-popup);
   padding: 12px;
@@ -1400,8 +1410,8 @@
   align-items: center;
   gap: 2px;
   padding: 4px 6px;
-  background: var(--vellora-surface-elevated);
-  border: 1px solid var(--vellora-border);
+  background: var(--vellora-popup-bg);
+  border: 1px solid var(--vellora-popup-border);
   border-radius: 10px;
   box-shadow: var(--vellora-shadow-floating);
   backdrop-filter: blur(12px);
@@ -1494,8 +1504,8 @@
   align-items: center;
   gap: 2px;
   padding: 4px 6px;
-  background: var(--vellora-surface-elevated);
-  border: 1px solid var(--vellora-border);
+  background: var(--vellora-popup-bg);
+  border: 1px solid var(--vellora-popup-border);
   border-radius: 8px;
   box-shadow: var(--vellora-shadow-floating);
   z-index: 95;
@@ -1563,8 +1573,8 @@
   align-items: center;
   gap: 6px;
   padding: 4px 6px;
-  background: #0c0d12;
-  border: 1px solid #232530;
+  background: var(--vellora-popup-bg);
+  border: 1px solid var(--vellora-popup-border);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
   z-index: 120;
@@ -1746,8 +1756,8 @@
 }
 
 .vellora-modal {
-  background: #15161e;
-  border: 1px solid #262936;
+  background: var(--vellora-popup-bg);
+  border: 1px solid var(--vellora-popup-border);
   border-radius: 14px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 4px 12px rgba(0, 0, 0, 0.5);
   position: relative;

@@ -1,6 +1,7 @@
 // ============================================================
 // Vellora — Custom Global Floating Tooltip System
-// Pixel-perfect dark glassmorphic tooltips with shortcut badges
+// Pixel-perfect glassmorphic tooltips with shortcut badges
+// Spring bubble animation, theme-aware (dark & light)
 // ============================================================
 
 export class TooltipManager {
@@ -10,6 +11,7 @@ export class TooltipManager {
   private shortcutEl!: HTMLElement;
   private activeTarget: HTMLElement | null = null;
   private showTimeout: number | null = null;
+  private hideTimeout: number | null = null;
 
   private constructor() {
     this._createDOM();
@@ -42,49 +44,79 @@ export class TooltipManager {
   }
 
   private _bindEvents(): void {
+    // Use mouseenter/mouseleave via delegation on capture phase
     document.addEventListener('mouseover', (e) => {
-      const target = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-vellora-tooltip], [data-tooltip]');
+      const target = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-vellora-tooltip]');
       if (target) {
+        this._cancelHide();
         this._scheduleShow(target);
       }
     }, true);
 
     document.addEventListener('mouseout', (e) => {
-      const related = (e.relatedTarget as HTMLElement | null);
-      if (this.activeTarget && !this.activeTarget.contains(related)) {
-        this._hide();
+      const target = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-vellora-tooltip]');
+      if (target && this.activeTarget === target) {
+        const related = e.relatedTarget as HTMLElement | null;
+        // Only hide if we truly left the tooltip target
+        if (!target.contains(related)) {
+          this._scheduleHide();
+        }
       }
     }, true);
 
     document.addEventListener('mousedown', () => {
-      this._hide(true);
+      this._hide();
     }, true);
 
     window.addEventListener('scroll', () => {
-      if (this.activeTarget) this._hide(true);
+      if (this.activeTarget) this._hide();
     }, true);
+
+    window.addEventListener('resize', () => {
+      if (this.activeTarget) this._hide();
+    });
   }
 
   private _scheduleShow(target: HTMLElement): void {
     if (this.activeTarget === target) return;
-    this._clearTimers();
+    this._clearShowTimer();
 
     this.showTimeout = window.setTimeout(() => {
       this._show(target);
-    }, 120);
+    }, 350);
+  }
+
+  private _scheduleHide(): void {
+    this._clearShowTimer();
+    this.hideTimeout = window.setTimeout(() => {
+      this._hide();
+    }, 80);
+  }
+
+  private _cancelHide(): void {
+    if (this.hideTimeout !== null) {
+      clearTimeout(this.hideTimeout);
+      this.hideTimeout = null;
+    }
   }
 
   private _show(target: HTMLElement): void {
-    const text = target.getAttribute('data-vellora-tooltip') || target.getAttribute('data-tooltip');
+    const text = target.getAttribute('data-vellora-tooltip');
     if (!text) return;
+
+    // Don't show tooltip if target is inside an open dropdown
+    const inOpenDropdown = target.closest('.vellora-tb-dropdown-wrap--open');
+    if (inOpenDropdown && !target.classList.contains('vellora-tb-btn')) return;
 
     this.activeTarget = target;
     this.textEl.textContent = text;
 
+    // Sync theme
     const themeHost = target.closest('[data-vellora-theme]') || document.querySelector('[data-vellora-theme]') || document.documentElement;
-    const theme = themeHost.getAttribute('data-vellora-theme') || (themeHost.classList.contains('light') ? 'light' : 'dark');
+    const theme = themeHost.getAttribute('data-vellora-theme') || 'dark';
     this.tooltipEl.setAttribute('data-vellora-theme', theme);
 
+    // Shortcut badge
     const shortcut = target.getAttribute('data-tooltip-shortcut');
     if (shortcut) {
       this.shortcutEl.textContent = shortcut;
@@ -93,45 +125,56 @@ export class TooltipManager {
       this.shortcutEl.style.display = 'none';
     }
 
-    this.tooltipEl.classList.add('vellora-tooltip--visible');
+    // Position BEFORE making visible (measure at full size but invisible)
+    this.tooltipEl.style.opacity = '0';
+    this.tooltipEl.style.visibility = 'visible';
+    this.tooltipEl.style.pointerEvents = 'none';
+    this.tooltipEl.style.display = 'inline-flex';
+
+    // Force reflow to get accurate dimensions
+    void this.tooltipEl.offsetHeight;
 
     this._position(target);
+
+    // Now reveal with animation
+    this.tooltipEl.style.removeProperty('opacity');
+    this.tooltipEl.style.removeProperty('visibility');
+    this.tooltipEl.style.removeProperty('display');
+    this.tooltipEl.classList.add('vellora-tooltip--visible');
   }
 
   private _position(target: HTMLElement): void {
     const targetRect = target.getBoundingClientRect();
-    const tooltipRect = this.tooltipEl.getBoundingClientRect();
+    const tooltipW = this.tooltipEl.offsetWidth;
+    const tooltipH = this.tooltipEl.offsetHeight;
 
-    let top = targetRect.bottom + 6;
-    let left = targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2);
+    let top = targetRect.bottom + 7;
+    let left = targetRect.left + (targetRect.width / 2) - (tooltipW / 2);
 
     // If overflows bottom of viewport, position above target
-    if (top + tooltipRect.height > window.innerHeight - 8) {
-      top = targetRect.top - tooltipRect.height - 6;
+    if (top + tooltipH > window.innerHeight - 8) {
+      top = targetRect.top - tooltipH - 7;
     }
 
     // Keep within horizontal bounds
     if (left < 8) {
       left = 8;
-    } else if (left + tooltipRect.width > window.innerWidth - 8) {
-      left = window.innerWidth - tooltipRect.width - 8;
+    } else if (left + tooltipW > window.innerWidth - 8) {
+      left = window.innerWidth - tooltipW - 8;
     }
 
     this.tooltipEl.style.top = `${top}px`;
     this.tooltipEl.style.left = `${left}px`;
   }
 
-  private _hide(immediate: boolean = false): void {
-    this._clearTimers();
+  private _hide(): void {
+    this._clearShowTimer();
+    this._cancelHide();
     this.activeTarget = null;
-    if (immediate) {
-      this.tooltipEl.classList.remove('vellora-tooltip--visible');
-    } else {
-      this.tooltipEl.classList.remove('vellora-tooltip--visible');
-    }
+    this.tooltipEl.classList.remove('vellora-tooltip--visible');
   }
 
-  private _clearTimers(): void {
+  private _clearShowTimer(): void {
     if (this.showTimeout !== null) {
       clearTimeout(this.showTimeout);
       this.showTimeout = null;
