@@ -236,17 +236,19 @@ export class LinkPopover {
     this._mountAndPosition(anchor.getBoundingClientRect());
   }
 
-  showEdit(anchor?: HTMLAnchorElement): void {
+  showEdit(anchor?: HTMLAnchorElement, targetRect?: DOMRect): void {
     if (this.hideTimeout) clearTimeout(this.hideTimeout);
     if (anchor) this.targetAnchor = anchor;
     this.mode = 'edit';
     this._render();
 
-    let rect: DOMRect | null = null;
-    if (this.targetAnchor) {
-      rect = this.targetAnchor.getBoundingClientRect();
-    } else if (this.savedRange) {
-      rect = this.savedRange.getBoundingClientRect();
+    let rect: DOMRect | null = targetRect || null;
+    if (!rect) {
+      if (this.targetAnchor) {
+        rect = this.targetAnchor.getBoundingClientRect();
+      } else if (this.savedRange) {
+        rect = this.savedRange.getBoundingClientRect();
+      }
     }
 
     if (!rect || (rect.width === 0 && rect.height === 0)) {
@@ -261,7 +263,7 @@ export class LinkPopover {
     }, 40);
   }
 
-  show(): void {
+  show(targetRect?: DOMRect): void {
     const sel = window.getSelection();
     let hasSelectedText = false;
     let anchor: HTMLAnchorElement | null = null;
@@ -286,7 +288,7 @@ export class LinkPopover {
     }
 
     this.targetAnchor = anchor;
-    this.showEdit();
+    this.showEdit(anchor ?? undefined, targetRect);
   }
 
   hide(): void {

@@ -44,6 +44,7 @@ export class VelloraToolbar {
   private boldBtn!: HTMLElement;
   private italicBtn!: HTMLElement;
   private alignTrigger!: HTMLElement;
+  private clearAllBtn!: HTMLButtonElement;
 
   constructor(editor: VelloraEditor, config: ToolbarConfig = {}) {
     this.editor = editor;
@@ -142,9 +143,16 @@ export class VelloraToolbar {
     leftGroup.appendChild(this._createBtn('pin', 'Bookmark / Pin', () => this._insertBookmarkMock()));
     leftGroup.appendChild(this._createDivider());
 
-    // 10. Secondary Tools: Typography, Clear Formatting, Comment, History, More
-    leftGroup.appendChild(this._createTypographyDropdown());
-    leftGroup.appendChild(this._createBtn('clearFormat', 'Clear Formatting', () => this.editor.commands.clearFormatting()));
+    // 10. Secondary Tools: Select All, Clear All, Comment, History, More
+    leftGroup.appendChild(this._createBtn('typography', 'Select All', () => this.editor.commands.selectAll(), undefined, '⌘A'));
+    this.clearAllBtn = this._createBtn('clearFormat', 'Clear All Content', () => {
+      if (!this.clearAllBtn.disabled) {
+        this.editor.commands.clearAll();
+      }
+    });
+    this.clearAllBtn.disabled = true;
+    this.clearAllBtn.classList.add('vellora-tb-btn--disabled');
+    leftGroup.appendChild(this.clearAllBtn);
     leftGroup.appendChild(this._createBtn('comment', 'Add Comment', () => this._addCommentMock()));
     leftGroup.appendChild(this._createBtn('clock', 'Version History', () => alert('Version History: Snapshot saved.')));
     leftGroup.appendChild(this._createMoreDropdown());
@@ -153,7 +161,7 @@ export class VelloraToolbar {
   }
 
   // ── Helper: Basic Button ──
-  private _createBtn(iconKey: string, tooltip: string, action: () => void, activeKey?: string, shortcut?: string): HTMLElement {
+  private _createBtn(iconKey: string, tooltip: string, action: () => void, activeKey?: string, shortcut?: string): HTMLButtonElement {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.classList.add('vellora-tb-btn');
@@ -165,6 +173,7 @@ export class VelloraToolbar {
 
     btn.addEventListener('mousedown', (e) => {
       e.preventDefault();
+      if (btn.disabled || btn.classList.contains('vellora-tb-btn--disabled')) return;
       action();
       this._syncStates();
     });
@@ -836,50 +845,6 @@ export class VelloraToolbar {
     return wrap;
   }
 
-  // ── Typography Tool: T. ──
-  private _createTypographyDropdown(): HTMLElement {
-    const wrap = document.createElement('div');
-    wrap.classList.add('vellora-tb-dropdown-wrap');
-
-    const trigger = document.createElement('button');
-    trigger.type = 'button';
-    trigger.classList.add('vellora-tb-btn');
-    trigger.setAttribute('data-vellora-tooltip', 'Typography & Transform');
-    trigger.setAttribute('aria-label', 'Typography & Transform');
-    trigger.innerHTML = icons.typography;
-
-    const menu = document.createElement('div');
-    menu.classList.add('vellora-tb-dropdown-menu');
-
-    const items = [
-      { label: 'Subscript (X₂)', action: () => this.editor.commands.subscript() },
-      { label: 'Superscript (X²)', action: () => this.editor.commands.superscript() },
-      { label: 'Horizontal Divider', action: () => this.editor.commands.horizontalRule() },
-    ];
-
-    for (const it of items) {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.classList.add('vellora-tb-menu-item');
-      b.textContent = it.label;
-      b.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        it.action();
-        this._closeDropdown();
-      });
-      menu.appendChild(b);
-    }
-
-    trigger.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      this._toggleDropdown(wrap);
-    });
-
-    wrap.appendChild(trigger);
-    wrap.appendChild(menu);
-    return wrap;
-  }
-
   // ── More Add: + ˅ ──
   private _createMoreDropdown(): HTMLElement {
     const wrap = document.createElement('div');
@@ -896,6 +861,10 @@ export class VelloraToolbar {
     menu.classList.add('vellora-tb-dropdown-menu');
 
     const items = [
+      { label: 'Subscript (X₂)', action: () => this.editor.commands.subscript() },
+      { label: 'Superscript (X²)', action: () => this.editor.commands.superscript() },
+      { label: 'Horizontal Divider', action: () => this.editor.commands.horizontalRule() },
+      { label: 'Clear Formatting', action: () => this.editor.commands.clearFormatting() },
       { label: 'Callout Box', action: () => this.editor.commands.blockquote() },
       { label: 'Table of Contents', action: () => alert('Inserted Table of Contents') },
       { label: 'Insert Date / Time', action: () => document.execCommand('insertText', false, new Date().toLocaleDateString()) },
@@ -1040,6 +1009,73 @@ export class VelloraToolbar {
     if (this.fontLabel) {
       this.fontLabel.textContent = this.editor.commands.getFontFamily();
     }
+
+    // 4. Sync Clear All Content button (enabled ONLY when all content is selected)
+    if (this.clearAllBtn) {
+      const isAll = this._isAllContentSelected();
+      this.clearAllBtn.disabled = !isAll;
+      this.clearAllBtn.classList.toggle('vellora-tb-btn--disabled', !isAll);
+    }
+  }
+
+  private _isAllContentSelected(): boolean {
+    const contentEl = this.editor.contentEl;
+    if (!contentEl) return false;
+
+    // If editor has no content or is empty, cannot be all selected
+    const rawText = contentEl.textContent || '';
+    const text = rawText.replace(/\s+/g, ' ').trim();
+    const hasMedia = contentEl.querySelector('img, table, hr, iframe, video, math, svg') !== null;
+    if (!text && !hasMedia) return false;
+
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return false;
+
+    // Selection must be within editor content
+    if (!contentEl.contains(sel.anchorNode) || !contentEl.contains(sel.focusNode)) return false;
+
+    // Check 1: Boundary comparison with full content range (e.g. from selectAll / Ctrl+A)
+    try {
+      const range = sel.getRangeAt(0);
+      const fullRange = document.createRange();
+      fullRange.selectNodeContents(contentEl);
+
+      const startSame = range.compareBoundaryPoints(Range.START_TO_START, fullRange) <= 0;
+      const endSame = range.compareBoundaryPoints(Range.END_TO_END, fullRange) >= 0;
+      if (startSame && endSame) {
+        return true;
+      }
+    } catch {}
+
+    // Check 2: Selected text equals full text
+    const selectedText = sel.toString().replace(/\s+/g, ' ').trim();
+    if (text.length > 0 && selectedText.length >= text.length && selectedText === text) {
+      if (hasMedia) {
+        const mediaEls = contentEl.querySelectorAll('img, table, hr, iframe, video');
+        for (let i = 0; i < mediaEls.length; i++) {
+          if (!sel.containsNode(mediaEls[i], true)) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    // Check 3: Check if all meaningful child nodes of contentEl are intersected by selection
+    const meaningfulChildren = Array.from(contentEl.childNodes).filter(node => {
+      if (node.nodeType === Node.TEXT_NODE) return (node.textContent || '').trim().length > 0;
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        const el = node as HTMLElement;
+        return el.textContent?.trim().length || el.querySelector('img, table, hr, iframe, video');
+      }
+      return false;
+    });
+
+    if (meaningfulChildren.length > 0 && meaningfulChildren.every(child => sel.containsNode(child, true))) {
+      return true;
+    }
+
+    return false;
   }
 }
 

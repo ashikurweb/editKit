@@ -189,6 +189,19 @@
   transform: scale(0.95);
 }
 
+.vellora-tb-btn:disabled,
+.vellora-tb-btn--disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.vellora-tb-btn:disabled:hover,
+.vellora-tb-btn--disabled:hover {
+  background: transparent;
+  color: var(--vellora-text-muted);
+  transform: none;
+}
+
 .vellora-tb-btn--active {
   background: var(--vellora-surface-active);
   color: var(--vellora-text);
@@ -2479,12 +2492,28 @@
   background: var(--vellora-selection);
 }
 
+@keyframes velloraTyping {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
 .vellora-content--empty::before {
   content: attr(data-placeholder);
   color: var(--vellora-placeholder);
   pointer-events: none;
   position: absolute;
-  font-style: italic;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  opacity: 0.85;
+  user-select: none;
+  white-space: nowrap;
+  clip-path: inset(0 100% 0 0);
+  animation: velloraTyping 1.1s steps(38, end) forwards;
 }
 
 /* Headings Typography */

@@ -13,8 +13,8 @@ export class MathModal extends Modal {
 
   private textareaEl!: HTMLTextAreaElement;
   private previewEl!: HTMLElement;
-  private submitBtn!: HTMLElement;
-  private deleteBtn!: HTMLElement;
+  private submitBtn!: HTMLButtonElement;
+  private deleteBtn!: HTMLButtonElement;
 
   constructor(editor: VelloraEditor) {
     super(editor, {

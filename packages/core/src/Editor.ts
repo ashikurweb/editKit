@@ -111,7 +111,7 @@ function getNodePath(root: Node, target: Node): number[] {
   const path: number[] = [];
   let current: Node | null = target;
   while (current && current !== root) {
-    const parent = current.parentNode;
+    const parent: Node | null = current.parentNode;
     if (!parent) break;
     const children = Array.from(parent.childNodes);
     const idx = children.indexOf(current as ChildNode);
@@ -240,6 +240,7 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
       this.contentEl.innerHTML = this._config.content;
     } else {
       this.contentEl.innerHTML = '<p><br></p>';
+      this.contentEl.classList.add('vellora-content--empty');
     }
 
     this.root.appendChild(this.contentEl);
@@ -324,7 +325,18 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
 
   /** Clear all content */
   clearContent(emitUpdate: boolean = true): void {
-    this.setContent('<p><br></p>', emitUpdate);
+    this.contentEl.classList.remove('vellora-content--empty');
+    this.contentEl.innerHTML = '<p><br></p>';
+    this._saveHistory();
+    // Force DOM reflow to restart CSS reveal animation
+    void this.contentEl.offsetWidth;
+    this.contentEl.classList.add('vellora-content--empty');
+    this.focus('start');
+    if (emitUpdate) {
+      this.emit('update', { editor: this });
+      this.extensionManager.emitUpdate();
+      this._config.onUpdate?.(this);
+    }
   }
 
   /** Check if editor content is empty */
@@ -457,7 +469,13 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
     undo: () => this._undo(),
     redo: () => this._redo(),
 
-    // ── Clear ──
+    // ── Document & Selection ──
+    selectAll: () => {
+      this.focus('all');
+      this.emit('selectionUpdate', { editor: this });
+    },
+    clearContent: () => this.clearContent(),
+    clearAll: () => this.clearContent(),
     clearFormatting: () => this._clearFormatting(),
   };
 
@@ -1908,10 +1926,16 @@ export class VelloraEditor extends EventEmitter<VelloraEvents> {
   // ═══════════════════════════════════════════
 
   private _emitUpdate(): void {
+    const wasEmpty = this.contentEl.classList.contains('vellora-content--empty');
     if (this.isEmpty) {
-      this.contentEl.classList.add('vellora-content--empty');
+      if (!wasEmpty) {
+        void this.contentEl.offsetWidth;
+        this.contentEl.classList.add('vellora-content--empty');
+      }
     } else {
-      this.contentEl.classList.remove('vellora-content--empty');
+      if (wasEmpty) {
+        this.contentEl.classList.remove('vellora-content--empty');
+      }
     }
 
     this.emit('update', { editor: this });

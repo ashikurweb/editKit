@@ -3,7 +3,7 @@
 // Framework-Agnostic & Fully Extensible
 // ============================================================
 
-import type { VelloraEditor } from '../Editor';
+import type { VelloraEditor } from './Editor';
 
 export interface ExtensionOptions {
   [key: string]: any;

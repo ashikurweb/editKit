@@ -21,7 +21,7 @@ export class Modal {
   readonly modalEl: HTMLElement;
   readonly headerEl: HTMLElement;
   readonly titleEl: HTMLElement;
-  readonly closeBtn: HTMLElement;
+  readonly closeBtn: HTMLButtonElement;
   readonly bodyEl: HTMLElement;
 
   protected editor: VelloraEditor;

@@ -120,4 +120,5 @@ export interface VelloraEvents {
   blur: { editor: any; event: FocusEvent };
   destroy: { editor: any };
   tableSelect: { cellInfo: TableCellInfo | null };
+  openLinkPopover: { editor: any };
 }
