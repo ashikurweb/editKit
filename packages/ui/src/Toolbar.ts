@@ -15,6 +15,7 @@ import { DividerModal } from './DividerModal';
 import { DecorativeDividerModal } from './DecorativeDividerModal';
 import { DecorativeDividerMenu } from './DecorativeDividerMenu';
 import { SectionHeadingMenu } from './SectionHeadingMenu';
+import { PullQuoteMenu } from './PullQuoteMenu';
 import { SignatureModal } from './SignatureModal';
 import { TooltipManager } from './Tooltip';
 
@@ -75,6 +76,7 @@ export class EditKitToolbar {
   private decDividerModal: DecorativeDividerModal;
   private decDividerMenu: DecorativeDividerMenu;
   private secHeadingMenu: SectionHeadingMenu;
+  private pullQuoteMenu: PullQuoteMenu;
   private openDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
@@ -104,6 +106,8 @@ export class EditKitToolbar {
     this.decDividerMenu.mount(editor.root as HTMLElement);
     this.secHeadingMenu = new SectionHeadingMenu(editor);
     this.secHeadingMenu.mount(editor.root as HTMLElement);
+    this.pullQuoteMenu = new PullQuoteMenu(editor);
+    this.pullQuoteMenu.mount(editor.root as HTMLElement);
 
     TooltipManager.init();
 
@@ -1434,8 +1438,67 @@ export class EditKitToolbar {
   }
 
   private _insertPullQuote(): void {
-    const html = `<blockquote class="editkit-pull-quote"><p>“Simplicity is prerequisite for reliability.”</p><cite>— Edsger W. Dijkstra</cite></blockquote><p><br></p>`;
-    document.execCommand('insertHTML', false, html);
+    const quoteWrap = document.createElement('figure');
+    quoteWrap.classList.add('editkit-pull-quote');
+    quoteWrap.setAttribute('data-rule-mode', 'full');
+    quoteWrap.setAttribute('contenteditable', 'false');
+
+    const topLine = document.createElement('div');
+    topLine.classList.add('editkit-pq-line', 'editkit-pq-line--top');
+
+    const quoteBlock = document.createElement('blockquote');
+    quoteBlock.classList.add('editkit-pq-quote');
+    quoteBlock.setAttribute('contenteditable', 'true');
+    quoteBlock.setAttribute('spellcheck', 'false');
+    quoteBlock.textContent = 'Pull quote';
+
+    const attrFig = document.createElement('figcaption');
+    attrFig.classList.add('editkit-pq-attribution');
+    attrFig.setAttribute('contenteditable', 'true');
+    attrFig.setAttribute('spellcheck', 'false');
+    attrFig.textContent = 'ATTRIBUTION';
+
+    const bottomLine = document.createElement('div');
+    bottomLine.classList.add('editkit-pq-line', 'editkit-pq-line--bottom');
+
+    quoteWrap.appendChild(topLine);
+    quoteWrap.appendChild(quoteBlock);
+    quoteWrap.appendChild(attrFig);
+    quoteWrap.appendChild(bottomLine);
+
+    const p = document.createElement('p');
+    p.innerHTML = '<br>';
+
+    const block = this.editor.commands.getActiveBlock?.() || null;
+    const contentEl = this.editor.contentEl;
+
+    const frag = document.createDocumentFragment();
+    frag.appendChild(quoteWrap);
+    frag.appendChild(p);
+
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && contentEl.contains(sel.anchorNode)) {
+      const range = sel.getRangeAt(0);
+      range.collapse(false);
+      range.insertNode(frag);
+    } else if (block && block !== contentEl && block.parentNode) {
+      block.parentNode.insertBefore(frag, block.nextSibling);
+    } else {
+      contentEl.appendChild(frag);
+    }
+
+    this.editor.emit('update', { editor: this.editor });
+    this.pullQuoteMenu.selectQuote(quoteWrap);
+
+    // Focus inside quote text
+    setTimeout(() => {
+      const r = document.createRange();
+      r.selectNodeContents(quoteBlock);
+      r.collapse(false);
+      const s = window.getSelection();
+      s?.removeAllRanges();
+      s?.addRange(r);
+    }, 20);
   }
 
   private _insertButtonBlock(): void {
