@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <img src="./assets/editkit-preview.png" alt="EditKit Rich Text Editor Preview" width="100%" style="border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.4);" />
+  <img src="https://raw.githubusercontent.com/ashikurweb/editKit/master/assets/editkit-preview.png" alt="EditKit Rich Text Editor Preview" width="100%" style="border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.4);" />
 </p>
 
 ---
@@ -338,4 +338,4 @@ pnpm playground
 
 ## 📄 License
 
-MIT © [Ashikur](https://github.com/ashikurweb)
+MIT © [Ashikur Rahman](https://github.com/ashikurweb/editKit)

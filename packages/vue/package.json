@@ -1,7 +1,7 @@
 {
   "name": "@editkit/vue",
-  "version": "1.0.2",
-  "description": "Official Vue 3 integration & composables for EditKit Rich Text Editor",
+  "version": "1.0.3",
+  "description": "Official Vue 3 Rich Text Editor Component & Composables with First-Class Tables, 2D Color Picker & Zero Dependencies. Fast alternative to TipTap & Quill for Nuxt 3, Vite & Laravel Inertia Vue.",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -16,16 +16,37 @@
   "publishConfig": {
     "access": "public"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ashikurweb/editKit.git",
+    "directory": "packages/vue"
+  },
+  "homepage": "https://github.com/ashikurweb/editKit#readme",
+  "bugs": {
+    "url": "https://github.com/ashikurweb/editKit/issues"
+  },
   "keywords": [
     "editkit",
+    "editkit-vue",
+    "@editkit/vue",
     "vue",
     "vue3",
     "vue-editor",
+    "vue-rich-text-editor",
+    "rich-text-editor",
     "wysiwyg",
-    "nuxt"
+    "wysiwyg-editor",
+    "nuxt",
+    "nuxt3",
+    "tiptap-vue",
+    "quill-vue",
+    "notion-style-editor",
+    "table-editor",
+    "contenteditable",
+    "zero-dependencies"
   ],
   "license": "MIT",
-  "author": "Ashikur",
+  "author": "Ashikur Rahman",
   "peerDependencies": {
     "vue": "^3.0.0"
   },

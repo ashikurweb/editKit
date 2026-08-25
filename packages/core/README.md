@@ -1,10 +1,20 @@
 # @editkit/core ✨
 
-EditKit Core Engine — A zero-dependency, framework-agnostic rich text editor.
+<p align="center">
+  <strong>EditKit Core Engine — A Zero-Dependency, High-Performance, Framework-Agnostic Rich Text Editor</strong>
+</p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ashikurweb/vellora-editor/master/assets/editkit-preview.png" alt="EditKit Editor Preview" width="100%" />
+  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript Ready" />
+  <img src="https://img.shields.io/badge/Dependencies-0%20External-8b5cf6" alt="Zero Dependencies" />
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
 </p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ashikurweb/editKit/master/assets/editkit-preview.png" alt="EditKit Core Editor Preview" width="100%" />
+</p>
+
+---
 
 ## 📦 Installation
 
@@ -13,6 +23,8 @@ npm install @editkit/core @editkit/ui
 # or
 pnpm add @editkit/core @editkit/ui
 ```
+
+---
 
 ## 🚀 Quick Start
 
@@ -38,6 +50,20 @@ new ImageFloatingMenu(editor).mount(editor.root);
 editor.mount(document.getElementById('editor')!);
 ```
 
+---
+
+## 📖 Commands API Reference
+
+- `editor.commands.bold()` / `italic()` / `underline()` / `strikethrough()` / `code()`
+- `editor.commands.heading(1)` through `heading(6)`
+- `editor.commands.bulletList()` / `orderedList()` / `taskList()`
+- `editor.commands.alignLeft()` / `alignCenter()` / `alignRight()` / `alignJustify()`
+- `editor.commands.insertTable({ rows: 3, cols: 3, withHeaderRow: true })`
+- `editor.commands.setTextColor('#ff0000')` / `setHighlight('#ffff00')`
+- `editor.getHTML()` / `getJSON()` / `getText()` / `setContent(html)`
+
+---
+
 ## 📄 License
 
-MIT © [Ashikur](https://github.com/ashikurweb)
+MIT © [Ashikur Rahman](https://github.com/ashikurweb)

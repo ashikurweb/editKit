@@ -1,7 +1,7 @@
 {
   "name": "@editkit/core",
-  "version": "1.0.2",
-  "description": "EditKit core editor engine — zero dependencies, framework agnostic",
+  "version": "1.0.3",
+  "description": "EditKit Core Engine — Zero-dependency, framework-agnostic rich text editor in pure TypeScript. Fast, extensible alternative to ProseMirror, Quill, Lexical & Slate.",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -16,16 +16,31 @@
   "publishConfig": {
     "access": "public"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ashikurweb/editKit.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/ashikurweb/editKit#readme",
+  "bugs": {
+    "url": "https://github.com/ashikurweb/editKit/issues"
+  },
   "keywords": [
     "editkit",
+    "editkit-core",
+    "@editkit/core",
     "editor",
     "rich-text",
+    "rich-text-editor",
     "wysiwyg",
+    "wysiwyg-editor",
     "contenteditable",
-    "framework-agnostic"
+    "framework-agnostic",
+    "zero-dependencies",
+    "headless-editor"
   ],
   "license": "MIT",
-  "author": "Ashikur",
+  "author": "Ashikur Rahman",
   "devDependencies": {
     "typescript": "^5.8.3"
   }

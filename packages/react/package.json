@@ -1,7 +1,7 @@
 {
   "name": "@editkit/react",
-  "version": "1.0.2",
-  "description": "Official React wrapper & hooks for EditKit Rich Text Editor",
+  "version": "1.0.3",
+  "description": "Premium React Rich Text Editor SDK with First-Class Tables, 2D Color Picker, Bubble Menu & Zero Dependencies. Fast alternative to TipTap, Quill, Lexical & Slate for Next.js, React 18/19 & Laravel Inertia.",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -16,16 +16,40 @@
   "publishConfig": {
     "access": "public"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ashikurweb/vellora-editor.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/ashikurweb/vellora-editor#readme",
+  "bugs": {
+    "url": "https://github.com/ashikurweb/vellora-editor/issues"
+  },
   "keywords": [
     "editkit",
-    "react",
+    "editkit-react",
+    "@editkit/react",
     "react-editor",
+    "react-rich-text-editor",
+    "rich-text-editor",
     "wysiwyg",
-    "rich-text",
-    "nextjs"
+    "wysiwyg-editor",
+    "tiptap-alternative",
+    "quill-alternative",
+    "lexical-alternative",
+    "slate-alternative",
+    "notion-style-editor",
+    "table-editor",
+    "nextjs-editor",
+    "react-19",
+    "contenteditable",
+    "zero-dependencies",
+    "headless-editor",
+    "markdown-editor",
+    "document-editor"
   ],
   "license": "MIT",
-  "author": "Ashikur",
+  "author": "Ashikur Rahman",
   "peerDependencies": {
     "react": ">=16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-dom": ">=16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
