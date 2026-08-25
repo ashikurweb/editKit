@@ -10,6 +10,7 @@
    01. DESIGN TOKENS & CSS VARIABLES
    ========================================================================== */
 
+:root,
 [data-editkit],
 [data-editkit-theme="dark"] {
   /* Surfaces & Backgrounds */
@@ -150,8 +151,9 @@
   border-top-right-radius: var(--editkit-radius-card);
   user-select: none;
   overflow: visible;
-  position: relative;
-  z-index: 30;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .editkit-toolbar-group {
@@ -1881,6 +1883,8 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1896,10 +1900,10 @@
 }
 
 .editkit-modal {
-  background: var(--editkit-popup-bg);
-  border: 1px solid var(--editkit-popup-border);
+  background: var(--editkit-popup-bg, #15161e);
+  border: 1px solid var(--editkit-popup-border, #262936);
   border-radius: 14px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 4px 12px rgba(0, 0, 0, 0.5);
   position: relative;
   padding: 24px;
   max-width: 620px;
@@ -1907,6 +1911,10 @@
   animation: editkitModalIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
   font-family: var(--editkit-font, 'DM Sans', sans-serif);
+}
+
+.editkit-image-modal {
+  background: var(--editkit-popup-bg, #15161e);
 }
 
 .editkit-modal-header {
@@ -3401,9 +3409,9 @@
 
 .editkit-image-overlay-layer {
   position: absolute;
-  inset: 0;
   pointer-events: none;
-  z-index: 90;
+  z-index: 20;
+  overflow: hidden;
   display: none;
 }
 
@@ -3414,7 +3422,7 @@
 .editkit-image-resizer-box {
   position: absolute;
   border: 2px solid #a78bfa;
-  pointer-events: auto;
+  pointer-events: none;
   box-sizing: border-box;
   transition: border-color 0.15s ease;
 }
@@ -3429,6 +3437,7 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
   z-index: 2;
   transform: translate(-50%, -50%);
+  pointer-events: auto;
 }
 
 .editkit-img-handle--tl { top: 0; left: 0; }
@@ -3456,6 +3465,12 @@
   z-index: 10;
   white-space: nowrap;
   animation: editkitFadeIn 0.15s ease;
+  pointer-events: auto;
+}
+
+.editkit-image-floating-toolbar--bottom {
+  bottom: auto;
+  top: calc(100% + 10px);
 }
 
 .editkit-img-tb-btn {

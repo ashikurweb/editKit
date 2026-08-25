@@ -78,12 +78,24 @@ export class ImageFloatingMenu {
       }
     };
 
+    const onScroll = () => this._updatePosition();
+    this.editor.contentEl.addEventListener('scroll', onScroll, { passive: true });
+
+    const onWheel = (e: WheelEvent) => {
+      this.editor.contentEl.scrollTop += e.deltaY;
+      this.editor.contentEl.scrollLeft += e.deltaX;
+      this._updatePosition();
+    };
+    this.element.addEventListener('wheel', onWheel, { passive: true });
+
     document.addEventListener('mousedown', onDocClick);
     document.addEventListener('keydown', onKeydown);
     window.addEventListener('resize', () => this._updatePosition());
     window.addEventListener('scroll', () => this._updatePosition(), true);
 
     this._unsubscribers.push(
+      () => this.editor.contentEl.removeEventListener('scroll', onScroll),
+      () => this.element.removeEventListener('wheel', onWheel),
       () => document.removeEventListener('mousedown', onDocClick),
       () => document.removeEventListener('keydown', onKeydown),
       () => window.removeEventListener('resize', () => this._updatePosition()),
@@ -120,15 +132,45 @@ export class ImageFloatingMenu {
     const imgRect = this.activeImg.getBoundingClientRect();
     if (imgRect.width === 0 && imgRect.height === 0) return;
 
+    const contentRect = this.editor.contentEl.getBoundingClientRect();
     const rootRect = this.editor.root.getBoundingClientRect();
 
-    const top = imgRect.top - rootRect.top;
-    const left = imgRect.left - rootRect.left;
+    // Match overlay layer exactly to editor.contentEl to strictly contain the frame
+    const layerTop = contentRect.top - rootRect.top;
+    const layerLeft = contentRect.left - rootRect.left;
+    this.element.style.top = `${layerTop}px`;
+    this.element.style.left = `${layerLeft}px`;
+    this.element.style.width = `${contentRect.width}px`;
+    this.element.style.height = `${contentRect.height}px`;
+    this.element.style.overflow = 'hidden';
+
+    // If the image is completely scrolled past the visible content area, hide overlay
+    if (imgRect.bottom <= contentRect.top + 5 || imgRect.top >= contentRect.bottom - 5) {
+      this.resizerBox.style.display = 'none';
+      return;
+    } else {
+      this.resizerBox.style.display = 'block';
+    }
+
+    // Position resizerBox relative to the content area layer
+    const top = imgRect.top - contentRect.top;
+    const left = imgRect.left - contentRect.left;
 
     this.resizerBox.style.top = `${top}px`;
     this.resizerBox.style.left = `${left}px`;
     this.resizerBox.style.width = `${imgRect.width}px`;
     this.resizerBox.style.height = `${imgRect.height}px`;
+
+    // Position toolbar: clamp inside the visible area of the image when scrolled near top
+    if (top < 42) {
+      const maxTop = Math.max(0, imgRect.height - 38);
+      const pinnedTop = Math.min(maxTop, -top + 10);
+      this.toolbar.style.bottom = 'auto';
+      this.toolbar.style.top = `${pinnedTop}px`;
+    } else {
+      this.toolbar.style.top = 'auto';
+      this.toolbar.style.bottom = 'calc(100% + 10px)';
+    }
   }
 
   // ── Build 8 Resize Handles ──

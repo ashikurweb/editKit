@@ -1166,7 +1166,7 @@ export class EditKitToolbar {
     `;
     uploadBtn.addEventListener('mousedown', (e) => {
       e.preventDefault();
-      this._triggerFileUpload();
+      this.imageModal.show('dropzone');
       this._closeDropdown();
     });
     menu.appendChild(uploadBtn);
