@@ -806,6 +806,346 @@
   -webkit-user-drag: none;
 }
 
+/* ════════════════════════════════════════════
+   Rich Special Characters / Symbol Picker Popover (100% Eddyter Match)
+   ════════════════════════════════════════════ */
+
+.vellora-symbol-picker {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 360px;
+  background: var(--vellora-surface-elevated);
+  border: 1px solid var(--vellora-border);
+  border-radius: 12px;
+  box-shadow: var(--vellora-shadow-popup);
+  padding: 12px;
+  z-index: 120;
+  user-select: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--vellora-font);
+}
+
+.vellora-tb-dropdown-wrap--open .vellora-symbol-picker {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Search Header with / Shortcut Badge */
+.vellora-sym-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #0f1015;
+  border: 1px solid #282a36;
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin-bottom: 8px;
+}
+
+.vellora-sym-search-icon {
+  color: #8e94a6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.vellora-sym-search-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.vellora-sym-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 12.5px;
+  outline: none;
+}
+
+.vellora-sym-search-input::placeholder {
+  color: #64697d;
+}
+
+.vellora-sym-search-badge {
+  background: #1e2029;
+  border: 1px solid #333646;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 11px;
+  color: #8e94a6;
+  font-family: monospace;
+  line-height: 1.2;
+}
+
+/* Horizontal Scrollable Tabs Row with Inline Arrows */
+.vellora-sym-nav-outer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #232530;
+  margin-bottom: 8px;
+}
+
+.vellora-sym-nav-scroll-wrap {
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+.vellora-sym-nav-scroll-wrap::-webkit-scrollbar {
+  display: none;
+}
+
+.vellora-sym-nav-arrow {
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: #181922;
+  color: #8e94a6;
+  border-radius: 4px;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  transition: all 0.15s ease;
+  z-index: 2;
+}
+
+.vellora-sym-nav-arrow:hover {
+  background: #252838;
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+.vellora-sym-nav-arrow--visible {
+  display: inline-flex;
+}
+
+.vellora-sym-nav-arrow--left {
+  margin-right: 2px;
+}
+
+.vellora-sym-nav-arrow--right {
+  margin-left: 2px;
+}
+
+.vellora-sym-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0 6px;
+  min-width: 100%;
+}
+
+.vellora-sym-nav-tab {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #8e94a6;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.vellora-sym-nav-tab:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.vellora-sym-nav-tab--active {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.vellora-sym-nav-tab--active::after {
+  content: '';
+  position: absolute;
+  bottom: -7px;
+  left: 6px;
+  right: 6px;
+  height: 2px;
+  background: #ffffff;
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+.vellora-sym-tab-count {
+  background: #20222d;
+  border-radius: 10px;
+  padding: 1px 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #8e94a6;
+}
+
+.vellora-sym-nav-tab--active .vellora-sym-tab-count {
+  background: #2b2e3c;
+  color: #ffffff;
+}
+
+/* Scrollable Content */
+.vellora-sym-content {
+  height: 230px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.vellora-sym-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.vellora-sym-content::-webkit-scrollbar-thumb {
+  background: #2d3040;
+  border-radius: 4px;
+}
+
+.vellora-sym-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  color: #8e94a6;
+  letter-spacing: 0.4px;
+  margin: 6px 0 6px;
+}
+
+.vellora-sym-header-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.vellora-sym-section-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64697d;
+}
+
+/* Recently Used Card Well (Screenshot 100% Match) */
+.vellora-sym-recent-well {
+  background: #12131a;
+  border: 1px solid #232532;
+  border-radius: 10px;
+  padding: 6px 8px;
+  margin-bottom: 10px;
+}
+
+/* Grid of Symbols */
+.vellora-sym-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+  margin-bottom: 6px;
+}
+
+.vellora-sym-grid--recent {
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
+  margin-bottom: 0;
+}
+
+.vellora-sym-item-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: #f1f5f9;
+  font-size: 17px;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  padding: 0;
+}
+
+.vellora-sym-item-btn:hover {
+  background: var(--vellora-surface-hover);
+  color: #ffffff;
+  transform: scale(1.18);
+  z-index: 2;
+}
+
+.vellora-sym-empty {
+  font-size: 12.5px;
+  color: #64697d;
+  text-align: center;
+  padding: 30px 0;
+}
+
+/* Bottom Preview / Details Footer */
+.vellora-sym-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 4px 2px;
+  border-top: 1px solid #232530;
+  margin-top: 4px;
+}
+
+.vellora-sym-footer-box {
+  width: 34px;
+  height: 34px;
+  background: #12131a;
+  border: 1px solid #282a36;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  color: #ffffff;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.vellora-sym-footer-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.vellora-sym-footer-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vellora-sym-footer-sub {
+  font-size: 11px;
+  color: #787e92;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* ==========================================================================
    05. COLOR PICKER POPOVER (100% EDDYTER MATCH)
    ========================================================================== */

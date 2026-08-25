@@ -7,6 +7,7 @@ import type { VelloraEditor, BulletListStyle, NumberedListStyle } from '@vellora
 import { icons } from './icons';
 import { ColorPickerPopover } from './ColorPicker';
 import { EmojiPicker } from './EmojiPicker';
+import { SymbolPicker } from './SymbolPicker';
 import { ImageModal } from './ImageModal';
 import { LinkPopover } from './LinkPopover';
 import { MathModal } from './MathModal';
@@ -815,7 +816,7 @@ export class VelloraToolbar {
     return wrap;
   }
 
-  // ── Symbol / Omega Dropdown ──
+  // ── Symbol / Omega Dropdown (Rich Special Characters Picker) ──
   private _createSymbolDropdown(): HTMLElement {
     const wrap = document.createElement('div');
     wrap.classList.add('vellora-tb-dropdown-wrap');
@@ -823,33 +824,24 @@ export class VelloraToolbar {
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.classList.add('vellora-tb-btn');
-    trigger.setAttribute('title', 'Special Symbols');
+    trigger.setAttribute('title', 'Special Characters');
     trigger.innerHTML = icons.omega;
 
-    const menu = document.createElement('div');
-    menu.classList.add('vellora-tb-dropdown-menu', 'vellora-tb-emoji-grid');
-
-    const symbols = ['©', '®', '™', '°', '±', '≠', '≤', '≥', '∞', 'π', 'Ω', 'μ', '←', '→', '↑', '↓'];
-    for (const sym of symbols) {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.classList.add('vellora-tb-emoji-btn');
-      b.textContent = sym;
-      b.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        document.execCommand('insertText', false, sym);
-        this._closeDropdown();
-      });
-      menu.appendChild(b);
-    }
+    const symbolPicker = new SymbolPicker(this.editor, () => {
+      this._closeDropdown();
+    });
 
     trigger.addEventListener('mousedown', (e) => {
       e.preventDefault();
+      const willOpen = !wrap.classList.contains('vellora-tb-dropdown-wrap--open');
       this._toggleDropdown(wrap);
+      if (willOpen) {
+        symbolPicker.focusSearch();
+      }
     });
 
     wrap.appendChild(trigger);
-    wrap.appendChild(menu);
+    wrap.appendChild(symbolPicker.element);
     return wrap;
   }
 
