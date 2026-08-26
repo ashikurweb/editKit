@@ -42,10 +42,10 @@
   --editkit-ai-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
   --editkit-selection: rgba(124, 58, 237, 0.25);
 
-  /* Table Specific (Screenshot 2 exact slate tint) */
-  --editkit-table-header-bg: #2d3342;
-  --editkit-table-header-text: #e2e8f0;
-  --editkit-table-border: #2a2d39;
+  /* Table Specific (Screenshot exact slate tint) */
+  --editkit-table-header-bg: #5d687c;
+  --editkit-table-header-text: #f8fafc;
+  --editkit-table-border: #475569;
   --editkit-table-cell-hover: rgba(124, 58, 237, 0.08);
 
   /* Typography */
@@ -1638,71 +1638,719 @@
    07. TABLE FLOATING CONTEXTUAL CONTROLS
    ========================================================================== */
 
-.editkit-table-floating-menu {
+/* ==========================================================================
+   07. TABLE INTERACTIVE OVERLAY, CONTROLS & RESIZER (Exact Match for Screenshots 1-5)
+   ========================================================================== */
+
+.editkit-table-overlay {
   position: absolute;
   top: 0;
   left: 0;
+  pointer-events: none;
+  z-index: 85;
   display: none;
-  align-items: center;
-  gap: 2px;
-  padding: 4px 6px;
-  background: var(--editkit-popup-bg);
-  border: 1px solid var(--editkit-popup-border);
-  border-radius: 8px;
-  box-shadow: var(--editkit-shadow-floating);
-  z-index: 95;
-  transition: transform 0.1s ease;
 }
 
-.editkit-table-floating-menu--visible {
-  display: flex;
+.editkit-table-overlay--visible {
+  display: block;
   animation: editkitFadeIn 0.15s ease;
 }
 
-.editkit-table-menu-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+.editkit-table-overlay * {
+  box-sizing: border-box;
+}
+
+/* ── Top, Left, Bottom Control Wrappers ── */
+.editkit-table-top-controls {
+  position: absolute;
+  height: 24px;
+  pointer-events: none;
+}
+
+.editkit-table-left-controls {
+  position: absolute;
+  width: 24px;
+  pointer-events: none;
+}
+
+.editkit-table-bottom-controls {
+  position: absolute;
+  height: 24px;
+  pointer-events: none;
+}
+
+/* ── Pill Buttons (+ Above, + Below) ── */
+.editkit-table-pill-btn {
+  position: absolute;
+  transform: translateX(-50%);
+  background: #141518;
+  color: #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
   font-size: 11px;
-  font-weight: 600;
-  color: var(--editkit-text-muted);
-  padding: 0 4px;
-}
-
-.editkit-table-menu-label svg {
-  width: 12px;
-  height: 12px;
-}
-
-.editkit-table-btn {
+  font-weight: 500;
+  padding: 3px 10px;
+  cursor: pointer;
+  pointer-events: auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  border: none;
-  border-radius: 4px;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 90;
+}
+
+.editkit-table-pill-btn:hover {
+  background: #232630;
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateX(-50%) scale(1.05);
+  color: #ffffff;
+}
+
+/* ── Circular Bullets (o -> + on hover) ── */
+.editkit-table-col-bullet,
+.editkit-table-row-bullet {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
   background: transparent;
-  color: var(--editkit-text-muted);
-  cursor: pointer;
+  border: none;
   padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.15s ease;
+  z-index: 88;
 }
 
-.editkit-table-btn:hover {
-  background: var(--editkit-surface-hover);
-  color: var(--editkit-text);
+.editkit-bullet-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid #94a3b8;
+  background: transparent;
+  transition: all 0.15s ease;
 }
 
-.editkit-table-btn--danger:hover {
-  background: rgba(239, 68, 68, 0.15);
+.editkit-bullet-plus {
+  display: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.editkit-table-col-bullet:hover,
+.editkit-table-row-bullet:hover {
+  background: #1e2129;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.editkit-table-col-bullet:hover .editkit-bullet-dot,
+.editkit-table-row-bullet:hover .editkit-bullet-dot {
+  display: none;
+}
+
+.editkit-table-col-bullet:hover .editkit-bullet-plus,
+.editkit-table-row-bullet:hover .editkit-bullet-plus {
+  display: block;
+}
+
+/* ── Top-Left Corner Grip (:::) ── */
+.editkit-table-corner-grip {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background: #1a1c23;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  transition: all 0.15s ease;
+  z-index: 92;
+}
+
+.editkit-table-corner-grip:hover {
+  background: #2a2e3a;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+}
+
+/* ── Header Caret Dropdown Button (v) ── */
+.editkit-table-header-caret {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #181a20;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cbd5e1;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  transition: all 0.15s ease;
+  z-index: 93;
+}
+
+.editkit-table-header-caret:hover {
+  background: #282b36;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+/* ── Dropdown Menu (Image 2 exact match) ── */
+.editkit-table-dropdown-menu {
+  position: absolute;
+  width: 236px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: #111215;
+  border: 1px solid #242731;
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: auto;
+  animation: editkitFadeIn 0.15s ease;
+}
+
+.editkit-table-dropdown-menu::-webkit-scrollbar {
+  width: 5px;
+}
+
+.editkit-table-dropdown-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.editkit-table-dropdown-menu::-webkit-scrollbar-thumb {
+  background: #2a2d39;
+  border-radius: 4px;
+}
+
+.editkit-table-dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: #3e4354;
+}
+
+.editkit-table-dropdown-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #e2e8f0;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.editkit-table-dropdown-item:hover {
+  background: #1e212b;
+  color: #ffffff;
+}
+
+.editkit-table-dropdown-item--danger {
   color: #ef4444;
 }
 
-.editkit-table-btn-divider {
+.editkit-table-dropdown-item--danger:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+/* ── Column Resize Handles & Guides ── */
+.editkit-content th,
+.editkit-content td {
+  position: relative;
+}
+
+.editkit-table-col-resizer {
+  position: absolute;
+  top: 0;
+  right: -7px;
+  width: 14px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 35;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  pointer-events: auto;
+}
+
+.editkit-table-col-resizer--left {
+  right: auto;
+  left: -7px;
+}
+
+.editkit-table-col-resizer-bar {
+  display: block;
   width: 1px;
+  height: 65%;
+  background: rgba(255, 255, 255, 0.28);
+  border-radius: 1px;
+  transition: background 0.15s ease;
+  pointer-events: none;
+}
+
+.editkit-table-col-resizer:hover .editkit-table-col-resizer-bar {
+  background: #60a5fa;
+}
+
+.editkit-table-col-resizer-tab {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 5px;
+  border-radius: 3px 3px 0 0;
+  background: #505c6e;
+  opacity: 0.8;
+  transition: opacity 0.15s ease, background 0.15s ease;
+  pointer-events: none;
+}
+
+.editkit-table-col-resizer:hover .editkit-table-col-resizer-tab {
+  opacity: 1;
+  background: #3b82f6;
+}
+
+.editkit-table-resize-guide {
+  position: absolute;
+  width: 2px;
+  background: #3b82f6;
+  z-index: 140;
+  pointer-events: none;
+  display: none;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+}
+
+.editkit-table-resize-guide--h {
+  position: absolute;
+  height: 2px;
+  background: #3b82f6;
+  z-index: 140;
+  pointer-events: none;
+  display: none;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+}
+
+/* ── Row Resize Handles ── */
+.editkit-table-row-resizer {
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  cursor: row-resize;
+  z-index: 30;
+  user-select: none;
+  pointer-events: auto;
+}
+
+.editkit-table-row-resizer-line {
+  display: block;
+  width: 100%;
+  height: 2px;
+  margin: 5px 0 0 0;
+  background: transparent;
+  transition: background 0.15s ease;
+  pointer-events: none;
+}
+
+.editkit-table-row-resizer:hover .editkit-table-row-resizer-line {
+  background: #3b82f6;
+}
+
+/* ── Bottom-Right Corner Resizer (Square Shape & Proportional Resizing) ── */
+.editkit-table-corner-resizer {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #1e2129;
+  border: 1.5px solid #3b82f6;
+  border-radius: 3px;
+  cursor: nwse-resize;
+  z-index: 96;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.editkit-table-corner-resizer:hover {
+  background: #3b82f6;
+  color: #ffffff;
+  transform: scale(1.2);
+}
+
+body.editkit-table-resizing,
+body.editkit-table-resizing * {
+  cursor: nwse-resize !important;
+  user-select: none !important;
+}
+
+body.editkit-col-resizing,
+body.editkit-col-resizing * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+body.editkit-row-resizing,
+body.editkit-row-resizing * {
+  cursor: row-resize !important;
+  user-select: none !important;
+}
+
+/* ── Table Modals (Images 3, 4, 5 exact match) ── */
+/* ── Table Modals (Images 3, 4, 5 exact match) ── */
+.editkit-table-modal .editkit-modal {
+  background: #141519;
+  border: 1px solid #232630;
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+  padding: 20px;
+  width: 100%;
+  max-width: 440px;
+}
+
+.editkit-table-modal .editkit-modal-header {
+  margin-bottom: 16px;
+  padding-bottom: 0;
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.editkit-table-modal .editkit-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.editkit-tm-section {
+  margin-bottom: 18px;
+}
+
+.editkit-tm-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+/* Border Size Segmented Grid (Image 4) */
+.editkit-tm-size-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.editkit-tm-size-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 6px;
+  border-radius: 8px;
+  border: 1px solid #272a36;
+  background: #1a1c23;
+  color: #94a3b8;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.editkit-tm-size-btn:hover {
+  border-color: #3b4052;
+  color: #ffffff;
+}
+
+.editkit-tm-size-btn--active {
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+  font-weight: 600;
+}
+
+.editkit-tm-size-btn--active:hover {
+  background: #ffffff;
+  color: #000000;
+}
+
+.editkit-tm-size-line {
+  display: block;
+  width: 28px;
+}
+
+.editkit-tm-line--none {
+  border-bottom: 2px dashed currentColor;
+}
+
+.editkit-tm-line--thin {
+  border-bottom: 1.5px solid currentColor;
+}
+
+.editkit-tm-line--medium {
+  border-bottom: 3px solid currentColor;
+}
+
+.editkit-tm-line--thick {
+  border-bottom: 5px solid currentColor;
+}
+
+/* Hex Row + Live Preview (Image 3 exact match) */
+.editkit-tm-hex-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.editkit-tm-hex-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.editkit-tm-hex-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.editkit-tm-hex-input {
+  width: 110px;
+  height: 36px;
+  background: #181a20;
+  border: 1px solid #282b36;
+  border-radius: 6px;
+  padding: 0 10px;
+  color: #ffffff;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.editkit-tm-hex-input:focus {
+  border-color: #3b82f6;
+}
+
+.editkit-tm-preview-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Swatches Row (15 color buttons) */
+.editkit-tm-swatches-row {
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.editkit-tm-swatch {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.12s ease;
+}
+
+.editkit-tm-swatch:hover {
+  transform: scale(1.18);
+  z-index: 5;
+}
+
+.editkit-tm-swatch--active {
+  outline: 2px solid #ffffff;
+  outline-offset: 1px;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+}
+
+/* 2D Sat/Val Canvas (Image 3 exact match) */
+.editkit-tm-satval-wrap,
+.editkit-tm-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  cursor: crosshair;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.editkit-tm-satval-canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.editkit-tm-satval-white {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
+}
+
+.editkit-tm-satval-black {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, #000000, rgba(0, 0, 0, 0));
+}
+
+.editkit-tm-satval-thumb {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Hue Slider Bar (Image 3 exact match) */
+.editkit-tm-hue-wrap {
+  position: relative;
+  width: 100%;
+  height: 12px;
+  border-radius: 9999px;
+  margin-bottom: 18px;
+  cursor: pointer;
+}
+
+.editkit-tm-hue-slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+}
+
+.editkit-tm-hue-thumb {
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Full Width Apply Button (Image 3 exact match) */
+.editkit-tm-apply-btn {
+  width: 100%;
+  height: 40px;
+  background: #ffffff;
+  color: #111827;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editkit-tm-apply-btn:hover {
+  background: #f1f5f9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.2);
+}
+
+/* Table Alignment Cards Grid (Image 5) */
+.editkit-tm-align-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.editkit-tm-align-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 10px;
+  border-radius: 8px;
+  border: 1px solid #272a36;
+  background: #1a1c23;
+  color: #cbd5e1;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.editkit-tm-align-card:hover {
+  border-color: #3e4354;
+  background: #222530;
+  color: #ffffff;
+}
+
+.editkit-tm-align-card--active {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+.editkit-tm-align-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.editkit-tm-align-icon svg {
+  width: 16px;
   height: 16px;
-  background: var(--editkit-border);
-  margin: 0 3px;
 }
 
 /* ==========================================================================
@@ -2675,40 +3323,81 @@
   opacity: 0.9;
 }
 
-/* Table in Content (Screenshot 2 exact match) */
+/* Table in Content (Screenshot exact match) */
 .editkit-content table,
 .editkit-table {
-  width: 100%;
-  border-collapse: collapse;
+  width: auto;
+  min-width: 360px;
+  max-width: 100%;
+  border-collapse: collapse !important;
   margin: 1.2em 0;
-  border: 1px solid var(--editkit-table-border);
-  border-radius: 8px;
-  overflow: hidden;
+  border: 1px solid var(--editkit-table-border, #475569);
+  background: transparent;
+  box-sizing: border-box;
 }
 
-.editkit-content th {
-  background: var(--editkit-table-header-bg);
-  color: var(--editkit-table-header-text);
+.editkit-content table[data-align="left"],
+.editkit-table[data-align="left"] {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+.editkit-content table[data-align="center"],
+.editkit-table[data-align="center"] {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.editkit-content table[data-align="right"],
+.editkit-table[data-align="right"] {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+}
+
+.editkit-content th,
+.editkit-table th {
+  background: var(--editkit-table-header-bg, #5d687c);
+  color: var(--editkit-table-header-text, #f8fafc);
   font-weight: 600;
   padding: 10px 14px;
+  min-width: 40px;
+  height: 42px;
   text-align: left;
-  border: 1px solid var(--editkit-table-border);
+  border: 1px solid var(--editkit-table-border, #475569);
   position: relative;
+  box-sizing: border-box;
 }
 
-.editkit-content td {
+.editkit-content td,
+.editkit-table td {
   padding: 10px 14px;
-  border: 1px solid var(--editkit-table-border);
+  min-width: 40px;
+  height: 40px;
+  border: 1px solid var(--editkit-table-border, #475569);
   vertical-align: top;
+  background: transparent;
   transition: background 0.1s ease;
+  box-sizing: border-box;
 }
 
 .editkit-content td:hover {
   background: var(--editkit-table-cell-hover);
 }
 
-.editkit-table--striped tbody tr:nth-child(even) td {
-  background: rgba(255, 255, 255, 0.02);
+.editkit-table--striped tbody tr:nth-child(even) td,
+.editkit-table--striped tbody tr:nth-child(even) th {
+  background: var(--editkit-stripe-color, rgba(255, 255, 255, 0.04));
+}
+
+.editkit-table--fullwidth,
+.editkit-content table.editkit-table--fullwidth {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  table-layout: fixed;
+  box-sizing: border-box;
 }
 
 /* Lists & Task Lists */

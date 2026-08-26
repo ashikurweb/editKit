@@ -9,40 +9,30 @@ import './style.css';
 
 // ── Sample Rich Content with First-Class Table & Image ──
 const SAMPLE_CONTENT = `
-<h1>Build modern docs with EditKit ✨</h1>
-<p>A premium, framework-agnostic rich text editor built <strong>100% from scratch</strong> — zero external dependencies, full table support, customizable via CSS variables, and native image manipulation.</p>
-
 <table class="editkit-table">
   <thead>
     <tr>
-      <th>Feature</th>
-      <th>EditKit</th>
-      <th>Traditional Editors</th>
+      <th><br></th>
+      <th><br></th>
+      <th><br></th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><strong>Custom Tables</strong></td>
-      <td>First-class (Add/Del rows, cols, cell colors)</td>
-      <td>Basic HTML wrapper</td>
+      <td><br></td>
+      <td><br></td>
+      <td><br></td>
     </tr>
     <tr>
-      <td><strong>Dependencies</strong></td>
-      <td>0 Dependencies (Pure TypeScript)</td>
-      <td>Heavy bundle overhead</td>
-    </tr>
-    <tr>
-      <td><strong>Theming</strong></td>
-      <td>Pure CSS Variables (Dark &amp; Light)</td>
-      <td>Complex CSS overrides</td>
-    </tr>
-    <tr>
-      <td><strong>Frameworks</strong></td>
-      <td>React, Vue, Svelte, Vanilla JS</td>
-      <td>Locked into single framework</td>
+      <td><br></td>
+      <td><br></td>
+      <td><br></td>
     </tr>
   </tbody>
 </table>
+
+<h1>Build modern docs with EditKit ✨</h1>
+<p>A premium, framework-agnostic rich text editor built <strong>100% from scratch</strong> — zero external dependencies, full table support, customizable via CSS variables, and native image manipulation.</p>
 
 <h3>Interactive Task List</h3>
 <ul class="editkit-task-list">

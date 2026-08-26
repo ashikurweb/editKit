@@ -16,6 +16,16 @@ export interface DividerOptions {
 }
 
 /** Table Insertion and Styling Options */
+export type TableBorderSize = 'none' | 'thin' | 'medium' | 'thick';
+
+export interface TableBorderOptions {
+  size?: TableBorderSize;
+  color?: string;
+}
+
+export type TableHorizontalAlign = 'left' | 'center' | 'right';
+export type TableVerticalAlign = 'top' | 'middle' | 'bottom';
+
 export interface TableOptions {
   rows?: number;
   cols?: number;
@@ -24,6 +34,7 @@ export interface TableOptions {
   striped?: boolean;
   borderColor?: string;
   headerBackground?: string;
+  fullWidth?: boolean;
 }
 
 export interface TableCellInfo {

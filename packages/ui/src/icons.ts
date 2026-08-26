@@ -88,6 +88,10 @@ export const icons: Record<string, string> = {
   check: svg('<polyline points="20 6 9 17 4 12"></polyline>'),
   close: svg('<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>'),
   more: svg('<circle cx="12" cy="12" r="1.5" fill="currentColor"></circle><circle cx="19" cy="12" r="1.5" fill="currentColor"></circle><circle cx="5" cy="12" r="1.5" fill="currentColor"></circle>'),
+  grip: svg('<circle cx="8" cy="6" r="1.5" fill="currentColor"></circle><circle cx="16" cy="6" r="1.5" fill="currentColor"></circle><circle cx="8" cy="12" r="1.5" fill="currentColor"></circle><circle cx="16" cy="12" r="1.5" fill="currentColor"></circle><circle cx="8" cy="18" r="1.5" fill="currentColor"></circle><circle cx="16" cy="18" r="1.5" fill="currentColor"></circle>'),
+  alignTop: svg('<line x1="4" y1="4" x2="20" y2="4"></line><line x1="12" y1="20" x2="12" y2="8"></line><polyline points="8 12 12 8 16 12"></polyline>'),
+  alignMiddle: svg('<line x1="4" y1="12" x2="20" y2="12"></line><polyline points="8 8 12 4 16 8"></polyline><polyline points="8 16 12 20 16 16"></polyline>'),
+  alignBottom: svg('<line x1="4" y1="20" x2="20" y2="20"></line><line x1="12" y1="4" x2="12" y2="16"></line><polyline points="8 12 12 16 16 12"></polyline>'),
 
   // ── Image Manipulation & Upload ──
   upload: svg('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line>'),

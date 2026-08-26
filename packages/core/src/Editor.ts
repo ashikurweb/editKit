@@ -197,6 +197,9 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
   private _isMounted: boolean = false;
   private _historyDebounce: ReturnType<typeof setTimeout> | null = null;
   private _selectionChangeHandler: (() => void) | null = null;
+  private _lastActiveTableCell: TableCellInfo | null = null;
+  private _lastActiveTable: HTMLTableElement | null = null;
+  private _lastActiveCell: HTMLTableCellElement | null = null;
   private _currentFontSize: number = 14;
   private _currentFontFamily: string = 'DM Sans';
   private _currentLineHeight: string = '1.5';
@@ -450,16 +453,26 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
 
     // ── Tables (First-Class Feature) ──
     insertTable: (options?: TableOptions) => this._insertTable(options),
-    deleteTable: () => this._deleteTable(),
-    addRowAbove: () => this._tableAddRow('above'),
-    addRowBelow: () => this._tableAddRow('below'),
-    deleteRow: () => this._tableDeleteRow(),
-    addColumnLeft: () => this._tableAddColumn('left'),
-    addColumnRight: () => this._tableAddColumn('right'),
-    deleteColumn: () => this._tableDeleteColumn(),
-    toggleHeaderRow: () => this._tableToggleHeaderRow(),
-    setCellBackground: (color: string) => this._tableSetCellBackground(color),
-    setTableBorderColor: (color: string) => this._tableSetBorderColor(color),
+    deleteTable: (table?: HTMLTableElement) => this._deleteTable(table),
+    addRowAbove: (table?: HTMLTableElement, cell?: HTMLTableCellElement) => this._tableAddRow('above', table, cell),
+    addRowBelow: (table?: HTMLTableElement, cell?: HTMLTableCellElement) => this._tableAddRow('below', table, cell),
+    deleteRow: (table?: HTMLTableElement, cell?: HTMLTableCellElement) => this._tableDeleteRow(table, cell),
+    addColumnLeft: (table?: HTMLTableElement, cell?: HTMLTableCellElement) => this._tableAddColumn('left', table, cell),
+    addColumnRight: (table?: HTMLTableElement, cell?: HTMLTableCellElement) => this._tableAddColumn('right', table, cell),
+    deleteColumn: (table?: HTMLTableElement, cell?: HTMLTableCellElement) => this._tableDeleteColumn(table, cell),
+    toggleHeaderRow: (table?: HTMLTableElement) => this._tableToggleHeaderRow(table),
+    toggleHeaderColumn: (table?: HTMLTableElement) => this._tableToggleHeaderColumn(table),
+    setCellBackground: (color: string, cell?: HTMLTableCellElement) => this._tableSetCellBackground(color, cell),
+    setTableBorderColor: (color: string, table?: HTMLTableElement) => this._tableSetBorderColor(color, table),
+    setTableBorder: (options: TableBorderOptions, table?: HTMLTableElement) => this._tableSetBorder(options, table),
+    toggleTableFullWidth: (table?: HTMLTableElement) => this._tableToggleFullWidth(table),
+    setTableFullWidth: (fullWidth: boolean, table?: HTMLTableElement) => this._tableSetFullWidth(fullWidth, table),
+    setTableAlignment: (horizontal: TableHorizontalAlign, table?: HTMLTableElement) => this._tableSetAlignment(horizontal, table),
+    setCellAlignment: (horizontal?: TableHorizontalAlign, vertical?: TableVerticalAlign, cell?: HTMLTableCellElement, table?: HTMLTableElement) => this._tableSetCellAlignment(horizontal, vertical, cell, table),
+    setOddRowStriping: (color?: string | boolean, table?: HTMLTableElement) => this._tableSetOddRowStriping(color, table),
+    insertParagraphAboveTable: (table?: HTMLTableElement) => this._tableInsertParagraphAbove(table),
+    insertParagraphBelowTable: (table?: HTMLTableElement) => this._tableInsertParagraphBelow(table),
+    setColumnWidth: (colIndex: number, width: number | string, table?: HTMLTableElement) => this._tableSetColumnWidth(colIndex, width, table),
 
     // ── Media & Links ──
     insertImage: (opts: { src: string; alt?: string; title?: string; width?: string; height?: string }) => this._insertImage(opts),
@@ -595,7 +608,7 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     const cells = Array.from(row.cells);
     const colIndex = cells.indexOf(cell);
 
-    return {
+    const info: TableCellInfo = {
       cell,
       row,
       table,
@@ -605,6 +618,12 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
       totalCols: row.cells.length,
       isHeader: cell.tagName === 'TH',
     };
+
+    this._lastActiveTableCell = info;
+    this._lastActiveTable = table;
+    this._lastActiveCell = cell;
+
+    return info;
   }
 
   /** Check available commands */
@@ -1350,8 +1369,57 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     this._emitUpdate();
   }
 
-  private _tableAddRow(position: 'above' | 'below'): void {
-    const info = this.getActiveTableCell();
+  private _resolveTableInfo(targetTable?: HTMLTableElement, targetCell?: HTMLTableCellElement): TableCellInfo | { table: HTMLTableElement; cell: HTMLTableCellElement; row: HTMLTableRowElement; colIndex: number; rowIndex: number; totalRows: number; totalCols: number; isHeader: boolean } | null {
+    if (targetTable && targetTable.isConnected) {
+      const rows = Array.from(targetTable.rows);
+      const row = (targetCell ? (targetCell.closest('tr') as HTMLTableRowElement | null) : null) || rows[0] || null;
+      const cell = targetCell || (row ? (row.cells[0] as HTMLTableCellElement | null) : null) || (targetTable.querySelector('td, th') as HTMLTableCellElement | null);
+      if (!cell || !row) return null;
+      const rowIndex = rows.indexOf(row);
+      const colIndex = Array.from(row.cells).indexOf(cell);
+      return {
+        table: targetTable,
+        cell,
+        row,
+        rowIndex: Math.max(0, rowIndex),
+        colIndex: Math.max(0, colIndex),
+        totalRows: rows.length,
+        totalCols: row.cells.length,
+        isHeader: cell.tagName === 'TH',
+      };
+    }
+
+    const current = this.getActiveTableCell();
+    if (current && current.table && current.table.isConnected) {
+      return current;
+    }
+
+    if (this._lastActiveTableCell && this._lastActiveTableCell.table && this._lastActiveTableCell.table.isConnected) {
+      return this._lastActiveTableCell;
+    }
+
+    if (this._lastActiveTable && this._lastActiveTable.isConnected) {
+      const rows = Array.from(this._lastActiveTable.rows);
+      const row = rows[0] || null;
+      const cell = (this._lastActiveCell && this._lastActiveCell.isConnected) ? this._lastActiveCell : (this._lastActiveTable.querySelector('td, th') as HTMLTableCellElement | null);
+      if (!cell || !row) return null;
+      return {
+        table: this._lastActiveTable,
+        cell,
+        row,
+        rowIndex: 0,
+        colIndex: 0,
+        totalRows: rows.length,
+        totalCols: row.cells.length,
+        isHeader: cell.tagName === 'TH',
+      };
+    }
+
+    return null;
+  }
+
+  private _tableAddRow(position: 'above' | 'below', targetTable?: HTMLTableElement, targetCell?: HTMLTableCellElement): void {
+    const info = this._resolveTableInfo(targetTable, targetCell);
     if (!info) return;
 
     const { table, row, totalCols } = info;
@@ -1373,13 +1441,13 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     this._emitUpdate();
   }
 
-  private _tableDeleteRow(): void {
-    const info = this.getActiveTableCell();
+  private _tableDeleteRow(targetTable?: HTMLTableElement, targetCell?: HTMLTableCellElement): void {
+    const info = this._resolveTableInfo(targetTable, targetCell);
     if (!info) return;
 
     const { table, row, totalRows } = info;
     if (totalRows <= 1) {
-      this._deleteTable();
+      this._deleteTable(table);
       return;
     }
 
@@ -1394,8 +1462,8 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     this._emitUpdate();
   }
 
-  private _tableAddColumn(position: 'left' | 'right'): void {
-    const info = this.getActiveTableCell();
+  private _tableAddColumn(position: 'left' | 'right', targetTable?: HTMLTableElement, targetCell?: HTMLTableCellElement): void {
+    const info = this._resolveTableInfo(targetTable, targetCell);
     if (!info) return;
 
     const { table, colIndex } = info;
@@ -1413,17 +1481,30 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
       }
     }
 
+    if (table.classList.contains('editkit-table--fullwidth') || table.style.width === '100%') {
+      const rows = Array.from(table.rows);
+      const totalCols = rows[0]?.cells.length || 1;
+      const colPercent = `${(100 / totalCols).toFixed(2)}%`;
+      for (const row of rows) {
+        for (let i = 0; i < row.cells.length; i++) {
+          const cell = row.cells[i] as HTMLElement;
+          cell.style.width = colPercent;
+          cell.style.minWidth = '40px';
+        }
+      }
+    }
+
     this._saveHistory();
     this._emitUpdate();
   }
 
-  private _tableDeleteColumn(): void {
-    const info = this.getActiveTableCell();
+  private _tableDeleteColumn(targetTable?: HTMLTableElement, targetCell?: HTMLTableCellElement): void {
+    const info = this._resolveTableInfo(targetTable, targetCell);
     if (!info) return;
 
     const { table, colIndex, totalCols } = info;
     if (totalCols <= 1) {
-      this._deleteTable();
+      this._deleteTable(table);
       return;
     }
 
@@ -1433,12 +1514,25 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
       }
     }
 
+    if (table.classList.contains('editkit-table--fullwidth') || table.style.width === '100%') {
+      const rows = Array.from(table.rows);
+      const remainingCols = rows[0]?.cells.length || 1;
+      const colPercent = `${(100 / remainingCols).toFixed(2)}%`;
+      for (const row of rows) {
+        for (let i = 0; i < row.cells.length; i++) {
+          const cell = row.cells[i] as HTMLElement;
+          cell.style.width = colPercent;
+          cell.style.minWidth = '40px';
+        }
+      }
+    }
+
     this._saveHistory();
     this._emitUpdate();
   }
 
-  private _tableToggleHeaderRow(): void {
-    const info = this.getActiveTableCell();
+  private _tableToggleHeaderRow(targetTable?: HTMLTableElement): void {
+    const info = this._resolveTableInfo(targetTable);
     if (!info) return;
 
     const { table } = info;
@@ -1479,16 +1573,16 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     this._emitUpdate();
   }
 
-  private _tableSetCellBackground(color: string): void {
-    const info = this.getActiveTableCell();
-    if (!info) return;
-    info.cell.style.backgroundColor = color;
+  private _tableSetCellBackground(color: string, targetCell?: HTMLTableCellElement): void {
+    const cell = targetCell || this._resolveTableInfo()?.cell;
+    if (!cell) return;
+    cell.style.backgroundColor = color;
     this._saveHistory();
     this._emitUpdate();
   }
 
-  private _tableSetBorderColor(color: string): void {
-    const info = this.getActiveTableCell();
+  private _tableSetBorderColor(color: string, targetTable?: HTMLTableElement): void {
+    const info = this._resolveTableInfo(targetTable);
     if (!info) return;
     info.table.style.borderColor = color;
     for (const cell of Array.from(info.table.querySelectorAll('td, th'))) {
@@ -1498,8 +1592,248 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     this._emitUpdate();
   }
 
-  private _deleteTable(): void {
-    const info = this.getActiveTableCell();
+  private _tableSetBorder(options: TableBorderOptions, targetTable?: HTMLTableElement): void {
+    const info = this._resolveTableInfo(targetTable);
+    if (!info) return;
+    const table = info.table;
+    const size = options.size ?? 'thin';
+    const color = options.color || '#bbbbbb';
+
+    table.setAttribute('data-border-size', size);
+    table.setAttribute('data-border-color', color);
+
+    if (size === 'none') {
+      table.style.setProperty('border', 'none', 'important');
+      for (const cell of Array.from(table.querySelectorAll('td, th'))) {
+        (cell as HTMLElement).style.setProperty('border', 'none', 'important');
+      }
+    } else {
+      const widthMap: Record<string, string> = {
+        thin: '1px',
+        medium: '2px',
+        thick: '4px',
+      };
+      const width = widthMap[size] || '1px';
+      const borderVal = `${width} solid ${color}`;
+      table.style.setProperty('border', borderVal, 'important');
+      for (const cell of Array.from(table.querySelectorAll('td, th'))) {
+        (cell as HTMLElement).style.setProperty('border', borderVal, 'important');
+      }
+    }
+
+    this._saveHistory();
+    this._emitUpdate();
+  }
+
+  private _tableToggleFullWidth(targetTable?: HTMLTableElement): void {
+    const info = this._resolveTableInfo(targetTable);
+    if (!info) return;
+    const table = info.table;
+    const isCurrentlyFull = table.classList.contains('editkit-table--fullwidth') || table.style.width === '100%';
+    this._tableSetFullWidth(!isCurrentlyFull, table);
+  }
+
+  private _tableSetFullWidth(fullWidth: boolean, targetTable?: HTMLTableElement): void {
+    const info = this._resolveTableInfo(targetTable);
+    if (!info) return;
+    const table = info.table;
+
+    if (fullWidth) {
+      table.classList.add('editkit-table--fullwidth');
+      table.style.width = '100%';
+      table.style.maxWidth = '100%';
+      table.style.minWidth = '100%';
+      table.style.marginLeft = '0';
+      table.style.marginRight = '0';
+      table.style.tableLayout = 'fixed';
+
+      // Distribute columns evenly across 100% width
+      const rows = Array.from(table.rows);
+      const firstRow = rows[0];
+      if (firstRow && firstRow.cells.length > 0) {
+        const totalCols = firstRow.cells.length;
+        const colPercent = `${(100 / totalCols).toFixed(2)}%`;
+        for (const row of rows) {
+          for (let i = 0; i < row.cells.length; i++) {
+            const cell = row.cells[i] as HTMLElement;
+            cell.style.width = colPercent;
+            cell.style.minWidth = '40px';
+          }
+        }
+      }
+    } else {
+      table.classList.remove('editkit-table--fullwidth');
+      table.style.width = 'auto';
+      table.style.maxWidth = '100%';
+      table.style.minWidth = '360px';
+      table.style.tableLayout = 'auto';
+
+      const rows = Array.from(table.rows);
+      for (const row of rows) {
+        for (let i = 0; i < row.cells.length; i++) {
+          const cell = row.cells[i] as HTMLElement;
+          cell.style.width = '110px';
+          cell.style.minWidth = '110px';
+        }
+      }
+    }
+
+    this._saveHistory();
+    this._emitUpdate();
+  }
+
+  private _tableSetAlignment(horizontal: TableHorizontalAlign, targetTable?: HTMLTableElement): void {
+    const info = this._resolveTableInfo(targetTable);
+    if (!info) return;
+    const table = info.table;
+    table.setAttribute('data-align', horizontal);
+
+    // If table was fullwidth, center/right align needs auto width to be visually apparent
+    if (table.classList.contains('editkit-table--fullwidth')) {
+      table.classList.remove('editkit-table--fullwidth');
+      table.style.width = 'auto';
+      table.style.maxWidth = '100%';
+      table.style.minWidth = '360px';
+      table.style.tableLayout = 'auto';
+      const rows = Array.from(table.rows);
+      for (const row of rows) {
+        for (let i = 0; i < row.cells.length; i++) {
+          const cell = row.cells[i] as HTMLElement;
+          cell.style.width = '110px';
+          cell.style.minWidth = '110px';
+        }
+      }
+    }
+
+    if (horizontal === 'center') {
+      table.style.marginLeft = 'auto';
+      table.style.marginRight = 'auto';
+    } else if (horizontal === 'right') {
+      table.style.marginLeft = 'auto';
+      table.style.marginRight = '0';
+    } else {
+      table.style.marginLeft = '0';
+      table.style.marginRight = 'auto';
+    }
+    this._saveHistory();
+    this._emitUpdate();
+  }
+
+  private _tableSetCellAlignment(horizontal?: TableHorizontalAlign, vertical?: TableVerticalAlign, targetCell?: HTMLTableCellElement, targetTable?: HTMLTableElement): void {
+    const resolved = this._resolveTableInfo(targetTable, targetCell);
+    if (!resolved) return;
+
+    const targetCells = targetCell ? [targetCell] : (resolved.cell ? [resolved.cell] : Array.from(resolved.table.querySelectorAll('td, th')) as HTMLTableCellElement[]);
+
+    for (const cell of targetCells) {
+      if (horizontal) {
+        cell.style.textAlign = horizontal;
+      }
+      if (vertical) {
+        cell.style.verticalAlign = vertical;
+      }
+    }
+    this._saveHistory();
+    this._emitUpdate();
+  }
+
+  private _tableSetOddRowStriping(color?: string | boolean, targetTable?: HTMLTableElement): void {
+    const info = this._resolveTableInfo(targetTable);
+    if (!info) return;
+    const table = info.table;
+    if (color === false) {
+      table.classList.remove('editkit-table--striped');
+      table.style.removeProperty('--editkit-stripe-color');
+      table.removeAttribute('data-stripe-color');
+      for (const row of Array.from(table.querySelectorAll('tbody tr:nth-child(even) td, tbody tr:nth-child(even) th'))) {
+        (row as HTMLElement).style.removeProperty('background-color');
+      }
+    } else if (typeof color === 'string') {
+      table.classList.add('editkit-table--striped');
+      table.setAttribute('data-stripe-color', color);
+      table.style.setProperty('--editkit-stripe-color', color);
+      for (const row of Array.from(table.querySelectorAll('tbody tr:nth-child(even) td, tbody tr:nth-child(even) th'))) {
+        (row as HTMLElement).style.backgroundColor = color;
+      }
+    } else {
+      const isStriped = table.classList.toggle('editkit-table--striped');
+      if (!isStriped) {
+        table.style.removeProperty('--editkit-stripe-color');
+        table.removeAttribute('data-stripe-color');
+      }
+    }
+    this._saveHistory();
+    this._emitUpdate();
+  }
+
+  private _tableInsertParagraphAbove(targetTable?: HTMLTableElement): void {
+    const info = this._resolveTableInfo(targetTable);
+    if (!info) return;
+    const table = info.table;
+    const p = document.createElement('p');
+    p.innerHTML = '<br>';
+    table.parentNode!.insertBefore(p, table);
+    this._focusCell(p);
+    this._saveHistory();
+    this._emitUpdate();
+  }
+
+  private _tableInsertParagraphBelow(targetTable?: HTMLTableElement): void {
+    const info = this._resolveTableInfo(targetTable);
+    if (!info) return;
+    const table = info.table;
+    const p = document.createElement('p');
+    p.innerHTML = '<br>';
+    if (table.nextSibling) {
+      table.parentNode!.insertBefore(p, table.nextSibling);
+    } else {
+      table.parentNode!.appendChild(p);
+    }
+    this._focusCell(p);
+    this._saveHistory();
+    this._emitUpdate();
+  }
+
+  private _tableToggleHeaderColumn(targetTable?: HTMLTableElement): void {
+    const info = this._resolveTableInfo(targetTable);
+    if (!info) return;
+    const table = info.table;
+
+    for (const r of Array.from(table.rows)) {
+      if (r.parentElement?.tagName === 'THEAD') continue;
+      const cell = r.cells[0];
+      if (!cell) continue;
+
+      const newTag = cell.tagName === 'TH' ? 'td' : 'th';
+      const newCell = document.createElement(newTag);
+      newCell.innerHTML = cell.innerHTML;
+      if (cell.style.cssText) newCell.style.cssText = cell.style.cssText;
+      r.replaceChild(newCell, cell);
+    }
+
+    this._saveHistory();
+    this._emitUpdate();
+  }
+
+  private _tableSetColumnWidth(colIndex: number, width: number | string, targetTable?: HTMLTableElement): void {
+    const info = this._resolveTableInfo(targetTable);
+    if (!info) return;
+    const table = info.table;
+    const widthStr = typeof width === 'number' ? `${width}px` : width;
+
+    for (const r of Array.from(table.rows)) {
+      const cell = r.cells[colIndex];
+      if (cell) {
+        cell.style.width = widthStr;
+      }
+    }
+
+    this._saveHistory();
+    this._emitUpdate();
+  }
+
+  private _deleteTable(targetTable?: HTMLTableElement): void {
+    const info = this._resolveTableInfo(targetTable);
     if (!info) return;
 
     const table = info.table;
