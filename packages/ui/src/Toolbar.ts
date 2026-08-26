@@ -1067,42 +1067,42 @@ export class EditKitToolbar {
       subtitle: string;
       colorClass: string;
     }> = [
-      {
-        type: 'info',
-        icon: icons.panelInfo,
-        title: 'Info',
-        subtitle: 'Information panel',
-        colorClass: 'editkit-tb-panel-item--info',
-      },
-      {
-        type: 'warning',
-        icon: icons.panelWarning,
-        title: 'Warning',
-        subtitle: 'Warning panel',
-        colorClass: 'editkit-tb-panel-item--warning',
-      },
-      {
-        type: 'error',
-        icon: icons.panelError,
-        title: 'Error',
-        subtitle: 'Error panel',
-        colorClass: 'editkit-tb-panel-item--error',
-      },
-      {
-        type: 'success',
-        icon: icons.panelSuccess,
-        title: 'Success',
-        subtitle: 'Success panel',
-        colorClass: 'editkit-tb-panel-item--success',
-      },
-      {
-        type: 'note',
-        icon: icons.panelNote,
-        title: 'Note',
-        subtitle: 'General note panel',
-        colorClass: 'editkit-tb-panel-item--note',
-      },
-    ];
+        {
+          type: 'info',
+          icon: icons.panelInfo,
+          title: 'Info',
+          subtitle: 'Information panel',
+          colorClass: 'editkit-tb-panel-item--info',
+        },
+        {
+          type: 'warning',
+          icon: icons.panelWarning,
+          title: 'Warning',
+          subtitle: 'Warning panel',
+          colorClass: 'editkit-tb-panel-item--warning',
+        },
+        {
+          type: 'error',
+          icon: icons.panelError,
+          title: 'Error',
+          subtitle: 'Error panel',
+          colorClass: 'editkit-tb-panel-item--error',
+        },
+        {
+          type: 'success',
+          icon: icons.panelSuccess,
+          title: 'Success',
+          subtitle: 'Success panel',
+          colorClass: 'editkit-tb-panel-item--success',
+        },
+        {
+          type: 'note',
+          icon: icons.panelNote,
+          title: 'Note',
+          subtitle: 'General note panel',
+          colorClass: 'editkit-tb-panel-item--note',
+        },
+      ];
 
     for (const item of items) {
       const btn = document.createElement('button');
@@ -1315,7 +1315,7 @@ export class EditKitToolbar {
     const patternItems = [
       { label: 'Hero', icon: icons.hero, action: () => this._insertHeroBanner() },
       { label: 'Feature row', icon: icons.featureRow, action: () => this._insertFeatureRow() },
-      { label: 'Three-up', icon: icons.threeUp, action: () => this._insert3ColGrid() },
+      { label: 'Three-up', icon: icons.threeUp, action: () => this._insertThreeUp() },
       { label: 'CTA band', icon: icons.ctaBand, action: () => this._insertCTABand() },
     ];
     patternItems.forEach(it => {
@@ -1626,17 +1626,117 @@ export class EditKitToolbar {
     }
   }
 
+  private _insertThreeUp(): void {
+    const colBlock = this.columnBlockManager.createThreeUpElement();
+    this.editor.insertBlockNode(colBlock);
+
+    // Focus inside first column title for typing
+    const firstTitle = colBlock.querySelector('.editkit-feature-col-title') as HTMLElement;
+    if (firstTitle) {
+      setTimeout(() => {
+        const r = document.createRange();
+        r.selectNodeContents(firstTitle);
+        r.collapse(false);
+        const s = window.getSelection();
+        s?.removeAllRanges();
+        s?.addRange(r);
+      }, 20);
+    }
+  }
+
   private _insertCTABand(): void {
-    const el = document.createElement('div');
-    el.classList.add('editkit-cta-band');
-    el.innerHTML = `
-      <div class="editkit-cta-band-text">
-        <h3>Ready to get started?</h3>
-        <p>Join thousands of writers and developers creating clean, structured content.</p>
-      </div>
-      <a href="#" class="editkit-cta-btn" contenteditable="true">Get Started Free</a>
+    const card = document.createElement('div');
+    card.classList.add('editkit-cta-band-card');
+    card.setAttribute('data-editkit-block', 'cta-band');
+    card.setAttribute('contenteditable', 'false');
+
+    // Ambient Glow Effect
+    const glow = document.createElement('div');
+    glow.classList.add('editkit-cta-card-glow');
+    card.appendChild(glow);
+
+    // Left Content Area
+    const info = document.createElement('div');
+    info.classList.add('editkit-cta-card-info');
+    info.setAttribute('contenteditable', 'true');
+    info.setAttribute('spellcheck', 'false');
+
+    const badge = document.createElement('div');
+    badge.classList.add('editkit-cta-card-badge');
+    badge.innerHTML = `<span class="editkit-cta-badge-dot"></span> ⚡ NEXT-GEN PUBLISHING`;
+
+    const title = document.createElement('h2');
+    title.classList.add('editkit-cta-card-title');
+    title.textContent = 'Supercharge your workflow today.';
+
+    const desc = document.createElement('p');
+    desc.classList.add('editkit-cta-card-desc');
+    desc.textContent = 'Join over 10,000+ creators building lightning-fast, structured content with EditKit.';
+
+    const trust = document.createElement('div');
+    trust.classList.add('editkit-cta-card-trust');
+    trust.innerHTML = `
+      <span class="editkit-cta-trust-stars">★★★★★</span>
+      <span class="editkit-cta-trust-text">4.9/5 from 1,200+ teams • No credit card required</span>
     `;
-    this.editor.insertBlockNode(el);
+
+    info.appendChild(badge);
+    info.appendChild(title);
+    info.appendChild(desc);
+    info.appendChild(trust);
+
+    // Right Action Area with Button Block
+    const action = document.createElement('div');
+    action.classList.add('editkit-cta-card-action');
+    action.setAttribute('contenteditable', 'false');
+
+    const btnWrap = document.createElement('div');
+    btnWrap.classList.add('editkit-button-block');
+    btnWrap.setAttribute('data-variant', 'filled');
+    btnWrap.setAttribute('data-radius', 'rounded');
+    btnWrap.setAttribute('data-align', 'left');
+    btnWrap.setAttribute('data-color', '#f59e0b');
+    btnWrap.setAttribute('contenteditable', 'false');
+
+    const linkEl = document.createElement('a');
+    linkEl.classList.add('editkit-btn-element');
+    linkEl.setAttribute('href', 'https://');
+    linkEl.setAttribute('target', '_blank');
+    linkEl.setAttribute('contenteditable', 'true');
+    linkEl.setAttribute('spellcheck', 'false');
+    linkEl.textContent = 'Get Started Free →';
+
+    const editIcon = document.createElement('span');
+    editIcon.classList.add('editkit-btn-edit-icon');
+    editIcon.setAttribute('title', 'Edit link URL');
+    editIcon.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`;
+
+    btnWrap.appendChild(linkEl);
+    btnWrap.appendChild(editIcon);
+
+    const actionSub = document.createElement('div');
+    actionSub.classList.add('editkit-cta-card-action-sub');
+    actionSub.setAttribute('contenteditable', 'true');
+    actionSub.setAttribute('spellcheck', 'false');
+    actionSub.textContent = 'Instant setup • 14-day free trial';
+
+    action.appendChild(btnWrap);
+    action.appendChild(actionSub);
+
+    card.appendChild(info);
+    card.appendChild(action);
+
+    this.editor.insertBlockNode(card);
+
+    // Focus inside title
+    setTimeout(() => {
+      const r = document.createRange();
+      r.selectNodeContents(title);
+      r.collapse(false);
+      const s = window.getSelection();
+      s?.removeAllRanges();
+      s?.addRange(r);
+    }, 20);
   }
 
   private _addCommentMock(): void {
@@ -1798,7 +1898,7 @@ export class EditKitToolbar {
       if (startSame && endSame) {
         return true;
       }
-    } catch {}
+    } catch { }
 
     // Check 2: Selected text equals full text
     const selectedText = sel.toString().replace(/\s+/g, ' ').trim();

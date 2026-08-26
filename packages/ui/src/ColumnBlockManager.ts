@@ -270,6 +270,86 @@ export class ColumnBlockManager {
     return container;
   }
 
+  // ── 3. Create Three-up Pattern Element (Exact Match for User Screenshot) ──
+  createThreeUpElement(): HTMLElement {
+    const container = document.createElement('div');
+    container.classList.add('editkit-columns-container', 'editkit-three-up-container');
+    container.setAttribute('data-editkit-block', 'columns');
+    container.setAttribute('data-layout', '3-col');
+    container.setAttribute('contenteditable', 'false');
+
+    // Drag Gripper Handle
+    const handle = document.createElement('div');
+    handle.classList.add('editkit-columns-handle');
+    handle.title = 'Drag Columns';
+    handle.innerHTML = `<span></span><span></span><span></span><span></span><span></span><span></span>`;
+    container.appendChild(handle);
+
+    // Columns Row
+    const row = document.createElement('div');
+    row.classList.add('editkit-columns-row');
+
+    const colData = [
+      { col: 1, title: 'Fast', desc: 'Integrate in 10 minutes.' },
+      { col: 2, title: 'Native', desc: 'Built on Lexical.' },
+      { col: 3, title: 'AI-ready', desc: 'Per-block actions.' },
+    ];
+
+    colData.forEach((d) => {
+      const col = document.createElement('div');
+      col.classList.add('editkit-column-item');
+      col.setAttribute('data-col', String(d.col));
+
+      const header = document.createElement('div');
+      header.classList.add('editkit-column-header');
+      header.setAttribute('contenteditable', 'false');
+      const label = document.createElement('span');
+      label.classList.add('editkit-column-label');
+      label.textContent = `COL ${d.col}`;
+      const addBtn = document.createElement('button');
+      addBtn.type = 'button';
+      addBtn.classList.add('editkit-column-add-btn');
+      addBtn.textContent = '+ block';
+      header.appendChild(label);
+      header.appendChild(addBtn);
+
+      const body = document.createElement('div');
+      body.classList.add('editkit-column-body');
+      body.setAttribute('contenteditable', 'true');
+      body.setAttribute('spellcheck', 'false');
+
+      const h3 = document.createElement('h3');
+      h3.classList.add('editkit-feature-col-title');
+      h3.textContent = d.title;
+
+      const p = document.createElement('p');
+      p.classList.add('editkit-feature-col-desc');
+      p.textContent = d.desc;
+
+      body.appendChild(h3);
+      body.appendChild(p);
+
+      col.appendChild(header);
+      col.appendChild(body);
+
+      addBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this._toggleMenu(addBtn, body);
+      });
+
+      row.appendChild(col);
+    });
+
+    container.appendChild(row);
+
+    // Floating Controls
+    const controls = this._createControls(container, '3-col');
+    container.appendChild(controls);
+
+    return container;
+  }
+
   private _createControls(container: HTMLElement, layout: string): HTMLElement {
     const controls = document.createElement('div');
     controls.classList.add('editkit-columns-controls');

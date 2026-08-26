@@ -346,7 +346,7 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
 
   /** Check if editor content is empty */
   get isEmpty(): boolean {
-    if (this.contentEl.querySelector('table, img, hr, .editkit-columns-container, .editkit-faq-block, .editkit-button-block, .editkit-pull-quote, .editkit-section-heading-block, .editkit-hero-banner, .editkit-hero-pattern, .editkit-feature-row, .editkit-cta-band, .editkit-panel, .editkit-grid, .editkit-math-block, .editkit-signature-wrap, pre, blockquote, ul, ol, iframe, video, audio')) {
+    if (this.contentEl.querySelector('table, img, hr, .editkit-columns-container, .editkit-faq-block, .editkit-button-block, .editkit-pull-quote, .editkit-section-heading-block, .editkit-hero-banner, .editkit-hero-pattern, .editkit-feature-row, .editkit-cta-band, .editkit-cta-band-pattern, .editkit-cta-band-card, .editkit-panel, .editkit-grid, .editkit-math-block, .editkit-signature-wrap, pre, blockquote, ul, ol, iframe, video, audio')) {
       return false;
     }
     const text = (this.contentEl.textContent || this.contentEl.innerText || '').replace(/[\u200B\u00A0\s]/g, '').trim();
