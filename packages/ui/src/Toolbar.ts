@@ -1673,6 +1673,7 @@ export class EditKitToolbar {
 
   // ── Dropdown Toggle & Close ──
   private _toggleDropdown(wrap: HTMLElement): void {
+    TooltipManager.hide();
     if (wrap.classList.contains('editkit-tb-dropdown-wrap--open')) {
       this._closeDropdown();
     } else {

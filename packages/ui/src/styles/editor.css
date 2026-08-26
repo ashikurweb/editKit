@@ -2935,161 +2935,239 @@ body.editkit-row-resizing * {
   background: #585d73;
 }
 
-/* Math Modal Styles */
-.editkit-math-modal {
-  max-width: 540px;
+/* Math / Equation Modal Styles (Exact Match to Screenshots) */
+.editkit-equation-modal {
+  max-width: 460px;
+  background: #15171e;
+  border: 1px solid #272a38;
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
 }
 
-.editkit-math-chips {
+.editkit-eq-topbar {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.editkit-eq-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: #1a1c25;
+  border: 1px solid #282a38;
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.editkit-eq-mode-btn {
+  background: transparent;
+  border: none;
+  color: #8e94a6;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.editkit-eq-mode-btn--active {
+  background: #5046e5;
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(80, 70, 229, 0.4);
+}
+
+.editkit-eq-trash-btn {
+  background: transparent;
+  border: none;
+  color: #8e94a6;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.editkit-eq-trash-btn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.editkit-eq-trash-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.editkit-eq-quick-grid {
+  display: flex;
+  flex-direction: column;
   gap: 6px;
   margin-bottom: 14px;
 }
 
-.editkit-math-chip {
-  background: #1e202b;
-  border: 1px solid #2d3040;
-  color: #cbd5e1;
-  font-size: 11px;
-  font-weight: 600;
-  font-family: inherit;
-  padding: 4px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.15s ease;
+.editkit-eq-symbols-row {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
 }
 
-.editkit-math-chip:hover {
-  background: #2b2e3e;
+.editkit-eq-sym-btn {
+  background: #1b1d27;
+  border: 1px solid #282a3a;
+  border-radius: 8px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cbd5e1;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.editkit-eq-sym-btn:hover {
+  background: #242736;
+  border-color: #3e4358;
   color: #ffffff;
-  border-color: #7c3aed;
   transform: translateY(-1px);
 }
 
-.editkit-math-input-group {
+.editkit-eq-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #8e94a6;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.editkit-eq-input-section {
   display: flex;
   flex-direction: column;
-  gap: 6px;
   margin-bottom: 12px;
 }
 
-.editkit-math-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #8e94a6;
-}
-
-.editkit-math-textarea {
-  background: #0f1015;
-  border: 1px solid #282a36;
+.editkit-eq-textarea {
+  background: #111218;
+  border: 1.5px solid #6366f1;
   border-radius: 8px;
   padding: 10px 12px;
-  font-family: var(--editkit-font-mono, monospace);
+  font-family: var(--editkit-font-mono, ui-monospace, monospace);
   font-size: 13px;
   color: #ffffff;
   outline: none;
   resize: vertical;
-  min-height: 60px;
-  transition: border-color 0.15s ease;
+  min-height: 64px;
+  box-sizing: border-box;
+  width: 100%;
 }
 
-.editkit-math-textarea:focus {
-  border-color: #7c3aed;
+.editkit-eq-textarea::placeholder {
+  color: #52566b;
 }
 
-.editkit-math-preview-group {
+.editkit-eq-preview-section {
   display: flex;
   flex-direction: column;
-  gap: 6px;
   margin-bottom: 16px;
 }
 
-.editkit-math-preview {
+.editkit-eq-preview-box {
   background: #111218;
-  border: 1px solid #282a36;
+  border: 1px solid #232532;
   border-radius: 8px;
-  padding: 14px;
-  text-align: center;
-  min-height: 48px;
+  padding: 12px 14px;
+  min-height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 15px;
+  color: #ffffff;
+  box-sizing: border-box;
+  text-align: center;
 }
 
-.editkit-math-actions {
+.editkit-eq-placeholder {
+  color: #555a6e;
+  font-size: 12.5px;
+}
+
+.editkit-eq-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  margin-top: 4px;
 }
 
-.editkit-math-right-actions {
+.editkit-eq-shortcut-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.editkit-eq-kbd {
+  background: #181924;
+  border: 1px solid #282b3a;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
+  color: #8e94a6;
+}
+
+.editkit-eq-kbd-label {
+  font-size: 12px;
+  color: #8e94a6;
+}
+
+.editkit-eq-right-btns {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: auto;
 }
 
-.editkit-math-cancel-btn {
+.editkit-eq-cancel-btn {
   background: transparent;
-  border: 1px solid #333644;
-  color: #a0a5b8;
+  border: none;
+  color: #cbd5e1;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.editkit-eq-cancel-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.editkit-eq-save-btn {
+  background: #cbd5e1;
+  color: #0f172a;
   font-weight: 600;
-  font-size: 12.5px;
+  font-size: 13px;
   font-family: inherit;
   padding: 7px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.editkit-math-cancel-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #ffffff;
-}
-
-.editkit-math-submit-btn {
-  background: #7c3aed;
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 12.5px;
-  font-family: inherit;
-  padding: 7px 18px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.editkit-math-submit-btn:hover {
-  background: #6d28d9;
-}
-
-.editkit-math-del-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  color: #ef4444;
-  font-weight: 600;
-  font-size: 12px;
-  font-family: inherit;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.editkit-math-del-btn:hover {
-  background: rgba(239, 68, 68, 0.25);
-}
-
-.editkit-math-del-btn svg {
-  width: 13px;
-  height: 13px;
+.editkit-eq-save-btn:hover {
+  background: #f1f5f9;
 }
 
 /* ==========================================================================

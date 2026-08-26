@@ -1,6 +1,6 @@
 // ============================================================
-// EditKit — LaTeX / Math Equation Modal & Live Renderer
-// Extends global reusable Modal component
+// EditKit — Insert Equation Modal (LaTeX & MathML)
+// Exact Match for User Screenshot with Mode Switcher & Quick Bar
 // ============================================================
 
 import type { EditKitEditor } from '@editkit/core';
@@ -8,129 +8,253 @@ import { Modal } from './Modal';
 import { icons } from './icons';
 
 export class MathModal extends Modal {
+  private currentMode: 'latex' | 'mathml' = 'latex';
   private currentType: 'block' | 'inline' = 'block';
   private targetEl: HTMLElement | null = null;
 
+  // UI Elements
+  private modeToggleWrap!: HTMLElement;
+  private latexBtn!: HTMLButtonElement;
+  private mathmlBtn!: HTMLButtonElement;
+  private clearBtn!: HTMLButtonElement;
+  private quickGridWrap!: HTMLElement;
+  private inputLabelEl!: HTMLElement;
   private textareaEl!: HTMLTextAreaElement;
   private previewEl!: HTMLElement;
+  private cancelBtn!: HTMLButtonElement;
   private submitBtn!: HTMLButtonElement;
-  private deleteBtn!: HTMLButtonElement;
 
   constructor(editor: EditKitEditor) {
     super(editor, {
-      title: 'Insert Math Equation',
-      className: 'editkit-math-modal',
-      maxWidth: '540px',
+      title: '',
+      className: 'editkit-table-modal editkit-equation-modal',
+      maxWidth: '460px',
     });
 
-    this._buildMathUI();
-    this._setupMathListeners();
+    // Hide default header to use custom header bar
+    if (this.headerEl) {
+      this.headerEl.style.display = 'none';
+    }
+
+    this._buildEquationUI();
+    this._setupListeners();
   }
 
-  private _buildMathUI(): void {
-    // Quick formula chips
-    const chipsWrap = document.createElement('div');
-    chipsWrap.classList.add('editkit-math-chips');
+  private _buildEquationUI(): void {
+    this.bodyEl.innerHTML = '';
 
-    const presets = [
-      { label: 'E = mc²', latex: 'E = mc^2' },
-      { label: 'Fraction', latex: '\\frac{a}{b}' },
-      { label: 'Square Root', latex: '\\sqrt{x^2 + y^2}' },
-      { label: 'Quadratic', latex: 'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}' },
-      { label: 'Sum', latex: '\\sum_{i=1}^n x_i' },
-      { label: 'Integral', latex: '\\int_a^b f(x)dx' },
-      { label: 'Limit', latex: '\\lim_{x \\to \\infty} f(x)' },
-      { label: 'α + β = θ', latex: '\\alpha + \\beta = \\theta' },
+    // ── 1. Custom Top Bar: Mode Switcher (Left) & Trash Clear (Right) ──
+    const topBar = document.createElement('div');
+    topBar.className = 'editkit-eq-topbar';
+
+    this.modeToggleWrap = document.createElement('div');
+    this.modeToggleWrap.className = 'editkit-eq-mode-toggle';
+
+    this.latexBtn = document.createElement('button');
+    this.latexBtn.type = 'button';
+    this.latexBtn.className = 'editkit-eq-mode-btn editkit-eq-mode-btn--active';
+    this.latexBtn.textContent = 'LATEX';
+    this.latexBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      this._setMode('latex');
+    });
+
+    this.mathmlBtn = document.createElement('button');
+    this.mathmlBtn.type = 'button';
+    this.mathmlBtn.className = 'editkit-eq-mode-btn';
+    this.mathmlBtn.textContent = 'MATHML';
+    this.mathmlBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      this._setMode('mathml');
+    });
+
+    this.modeToggleWrap.appendChild(this.latexBtn);
+    this.modeToggleWrap.appendChild(this.mathmlBtn);
+
+    this.clearBtn = document.createElement('button');
+    this.clearBtn.type = 'button';
+    this.clearBtn.className = 'editkit-eq-trash-btn';
+    this.clearBtn.title = 'Clear input';
+    this.clearBtn.setAttribute('aria-label', 'Clear input');
+    this.clearBtn.innerHTML = icons.trash || `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>`;
+
+    this.clearBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.textareaEl.value = '';
+      this._updatePreview();
+      this.textareaEl.focus();
+    });
+
+    topBar.appendChild(this.modeToggleWrap);
+    topBar.appendChild(this.clearBtn);
+    this.bodyEl.appendChild(topBar);
+
+    // ── 2. Quick Symbol / Formula Grid (LaTeX Mode) ──
+    this.quickGridWrap = document.createElement('div');
+    this.quickGridWrap.className = 'editkit-eq-quick-grid';
+
+    const symbolsRow1 = [
+      { label: '½', insert: '\\frac{a}{b}' },
+      { label: '√', insert: '\\sqrt{x}' },
+      { label: 'x²', insert: 'x^2' },
+      { label: 'xₙ', insert: 'x_n' },
+      { label: 'Σ', insert: '\\sum' },
+      { label: '∫', insert: '\\int' },
+      { label: '∞', insert: '\\infty' },
+      { label: 'π', insert: '\\pi' },
     ];
 
-    presets.forEach(p => {
-      const chip = document.createElement('button');
-      chip.type = 'button';
-      chip.classList.add('editkit-math-chip');
-      chip.textContent = p.label;
-      chip.addEventListener('click', () => {
-        this.textareaEl.value = p.latex;
-        this._updatePreview();
+    const symbolsRow2 = [
+      { label: 'θ', insert: '\\theta' },
+      { label: 'α', insert: '\\alpha' },
+      { label: '±', insert: '\\pm' },
+      { label: '×', insert: '\\times' },
+      { label: '≤', insert: '\\le' },
+      { label: '≥', insert: '\\ge' },
+      { label: '≈', insert: '\\approx' },
+    ];
+
+    const row1El = document.createElement('div');
+    row1El.className = 'editkit-eq-symbols-row';
+    symbolsRow1.forEach(sym => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'editkit-eq-sym-btn';
+      btn.textContent = sym.label;
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this._insertSnippet(sym.insert);
       });
-      chipsWrap.appendChild(chip);
+      row1El.appendChild(btn);
     });
-    this.bodyEl.appendChild(chipsWrap);
 
-    // Textarea input
-    const inputGroup = document.createElement('div');
-    inputGroup.classList.add('editkit-math-input-group');
+    const row2El = document.createElement('div');
+    row2El.className = 'editkit-eq-symbols-row';
+    symbolsRow2.forEach(sym => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'editkit-eq-sym-btn';
+      btn.textContent = sym.label;
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this._insertSnippet(sym.insert);
+      });
+      row2El.appendChild(btn);
+    });
 
-    const inputLabel = document.createElement('label');
-    inputLabel.classList.add('editkit-math-label');
-    inputLabel.textContent = 'TeX / LaTeX Equation:';
+    this.quickGridWrap.appendChild(row1El);
+    this.quickGridWrap.appendChild(row2El);
+    this.bodyEl.appendChild(this.quickGridWrap);
+
+    // ── 3. Input Section (LATEX / MATHML) ──
+    const inputSection = document.createElement('div');
+    inputSection.className = 'editkit-eq-input-section';
+
+    this.inputLabelEl = document.createElement('div');
+    this.inputLabelEl.className = 'editkit-eq-label';
+    this.inputLabelEl.textContent = 'LATEX';
 
     this.textareaEl = document.createElement('textarea');
-    this.textareaEl.classList.add('editkit-math-textarea');
-    this.textareaEl.placeholder = 'e.g. \\frac{a}{b} + \\sqrt{x}';
+    this.textareaEl.className = 'editkit-eq-textarea';
+    this.textareaEl.placeholder = 'e.g. x^2 + y^2 = r^2';
     this.textareaEl.rows = 3;
+
     this.textareaEl.addEventListener('input', () => this._updatePreview());
+    this.textareaEl.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault();
+        this._applyEquation();
+      }
+    });
 
-    inputGroup.appendChild(inputLabel);
-    inputGroup.appendChild(this.textareaEl);
-    this.bodyEl.appendChild(inputGroup);
+    inputSection.appendChild(this.inputLabelEl);
+    inputSection.appendChild(this.textareaEl);
+    this.bodyEl.appendChild(inputSection);
 
-    // Live Preview
-    const previewGroup = document.createElement('div');
-    previewGroup.classList.add('editkit-math-preview-group');
+    // ── 4. Live Preview Section ──
+    const previewSection = document.createElement('div');
+    previewSection.className = 'editkit-eq-preview-section';
 
     const previewLabel = document.createElement('div');
-    previewLabel.classList.add('editkit-math-label');
-    previewLabel.textContent = 'Live Render Preview:';
+    previewLabel.className = 'editkit-eq-label';
+    previewLabel.textContent = 'PREVIEW';
 
     this.previewEl = document.createElement('div');
-    this.previewEl.classList.add('editkit-math-preview');
+    this.previewEl.className = 'editkit-eq-preview-box';
+    this.previewEl.innerHTML = '<span class="editkit-eq-placeholder">Your equation will render here</span>';
 
-    previewGroup.appendChild(previewLabel);
-    previewGroup.appendChild(this.previewEl);
-    this.bodyEl.appendChild(previewGroup);
+    previewSection.appendChild(previewLabel);
+    previewSection.appendChild(this.previewEl);
+    this.bodyEl.appendChild(previewSection);
 
-    // Actions (Submit / Delete / Cancel)
-    const actions = document.createElement('div');
-    actions.classList.add('editkit-math-actions');
+    // ── 5. Action Footer ──
+    const footer = document.createElement('div');
+    footer.className = 'editkit-eq-footer';
 
-    this.deleteBtn = document.createElement('button');
-    this.deleteBtn.type = 'button';
-    this.deleteBtn.classList.add('editkit-math-del-btn');
-    this.deleteBtn.innerHTML = `${icons.trash} <span>Delete</span>`;
-    this.deleteBtn.style.display = 'none';
-    this.deleteBtn.addEventListener('click', () => {
-      if (this.targetEl) {
-        this.targetEl.remove();
-        this.editor.emit('update', { editor: this.editor });
-      }
+    const shortcutHint = document.createElement('div');
+    shortcutHint.className = 'editkit-eq-shortcut-hint';
+    shortcutHint.innerHTML = `<span class="editkit-eq-kbd">⌘/Ctrl + ↵</span> <span class="editkit-eq-kbd-label">to save</span>`;
+
+    const rightBtns = document.createElement('div');
+    rightBtns.className = 'editkit-eq-right-btns';
+
+    this.cancelBtn = document.createElement('button');
+    this.cancelBtn.type = 'button';
+    this.cancelBtn.className = 'editkit-eq-cancel-btn';
+    this.cancelBtn.textContent = 'Cancel';
+    this.cancelBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       this.hide();
     });
 
-    const rightActions = document.createElement('div');
-    rightActions.classList.add('editkit-math-right-actions');
-
-    const cancelBtn = document.createElement('button');
-    cancelBtn.type = 'button';
-    cancelBtn.classList.add('editkit-math-cancel-btn');
-    cancelBtn.textContent = 'Cancel';
-    cancelBtn.addEventListener('click', () => this.hide());
-
     this.submitBtn = document.createElement('button');
     this.submitBtn.type = 'button';
-    this.submitBtn.classList.add('editkit-math-submit-btn');
-    this.submitBtn.textContent = 'Insert Equation';
-    this.submitBtn.addEventListener('click', () => this._applyEquation());
+    this.submitBtn.className = 'editkit-eq-save-btn';
+    this.submitBtn.textContent = 'Save equation';
+    this.submitBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      this._applyEquation();
+    });
 
-    rightActions.appendChild(cancelBtn);
-    rightActions.appendChild(this.submitBtn);
+    rightBtns.appendChild(this.cancelBtn);
+    rightBtns.appendChild(this.submitBtn);
 
-    actions.appendChild(this.deleteBtn);
-    actions.appendChild(rightActions);
-    this.bodyEl.appendChild(actions);
+    footer.appendChild(shortcutHint);
+    footer.appendChild(rightBtns);
+    this.bodyEl.appendChild(footer);
   }
 
-  private _setupMathListeners(): void {
-    // Click on math equations in editor to edit
+  private _setMode(mode: 'latex' | 'mathml'): void {
+    this.currentMode = mode;
+    if (mode === 'latex') {
+      this.latexBtn.classList.add('editkit-eq-mode-btn--active');
+      this.mathmlBtn.classList.remove('editkit-eq-mode-btn--active');
+      this.quickGridWrap.style.display = 'flex';
+      this.inputLabelEl.textContent = 'LATEX';
+      this.textareaEl.placeholder = 'e.g. x^2 + y^2 = r^2';
+    } else {
+      this.mathmlBtn.classList.add('editkit-eq-mode-btn--active');
+      this.latexBtn.classList.remove('editkit-eq-mode-btn--active');
+      this.quickGridWrap.style.display = 'none';
+      this.inputLabelEl.textContent = 'MATHML';
+      this.textareaEl.placeholder = 'e.g. <msup><mi>x</mi><mn>2</mn></msup>';
+    }
+    this._updatePreview();
+  }
+
+  private _insertSnippet(snippet: string): void {
+    const el = this.textareaEl;
+    const start = el.selectionStart || 0;
+    const end = el.selectionEnd || 0;
+    const text = el.value;
+
+    el.value = text.substring(0, start) + snippet + text.substring(end);
+    el.selectionStart = el.selectionEnd = start + snippet.length;
+    el.focus();
+    this._updatePreview();
+  }
+
+  private _setupListeners(): void {
     this.editor.contentEl.addEventListener('click', (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const mathEl = target.closest('.editkit-math-block, .editkit-math-inline') as HTMLElement | null;
@@ -145,12 +269,11 @@ export class MathModal extends Modal {
   showMath(type: 'block' | 'inline' = 'block'): void {
     this.currentType = type;
     this.targetEl = null;
-    this.setTitle(type === 'block' ? 'Insert Block Equation' : 'Insert Inline Equation');
-    this.submitBtn.textContent = 'Insert Equation';
-    this.deleteBtn.style.display = 'none';
+    this.submitBtn.textContent = 'Save equation';
+    this._setMode('latex');
 
     if (!this.textareaEl.value.trim()) {
-      this.textareaEl.value = type === 'block' ? 'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}' : 'E = mc^2';
+      this.textareaEl.value = '';
     }
 
     this._updatePreview();
@@ -158,11 +281,9 @@ export class MathModal extends Modal {
 
     setTimeout(() => {
       this.textareaEl.focus();
-      this.textareaEl.select();
     }, 50);
   }
 
-  // Alias for backward compatibility
   show(type: 'block' | 'inline' = 'block'): void {
     this.showMath(type);
   }
@@ -170,11 +291,13 @@ export class MathModal extends Modal {
   edit(el: HTMLElement): void {
     this.targetEl = el;
     this.currentType = el.classList.contains('editkit-math-block') ? 'block' : 'inline';
-    this.setTitle(this.currentType === 'block' ? 'Edit Block Equation' : 'Edit Inline Equation');
-    this.submitBtn.textContent = 'Update Equation';
-    this.deleteBtn.style.display = 'inline-flex';
+    this.submitBtn.textContent = 'Save equation';
 
-    this.textareaEl.value = el.getAttribute('data-math') || '';
+    const storedFormat = el.getAttribute('data-math-format') as 'latex' | 'mathml' || 'latex';
+    this._setMode(storedFormat);
+
+    const mathRaw = el.getAttribute('data-math') || el.textContent || '';
+    this.textareaEl.value = mathRaw;
     this._updatePreview();
     super.show();
 
@@ -185,19 +308,51 @@ export class MathModal extends Modal {
   }
 
   private _updatePreview(): void {
-    const raw = this.textareaEl.value.trim() || 'E = mc^2';
-    this.previewEl.innerHTML = formatMathFormula(raw);
+    const raw = this.textareaEl.value.trim();
+    if (!raw) {
+      this.previewEl.innerHTML = '<span class="editkit-eq-placeholder">Your equation will render here</span>';
+      return;
+    }
+
+    if (this.currentMode === 'mathml') {
+      let mathmlHtml = raw;
+      if (!mathmlHtml.includes('<math')) {
+        mathmlHtml = `<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">${mathmlHtml}</math>`;
+      }
+      this.previewEl.innerHTML = mathmlHtml;
+    } else {
+      this.previewEl.innerHTML = formatMathFormula(raw);
+    }
   }
 
   private _applyEquation(): void {
-    const raw = this.textareaEl.value.trim() || 'E = mc^2';
+    const raw = this.textareaEl.value.trim();
+    if (!raw) {
+      this.hide();
+      return;
+    }
+
+    const rendered = this.currentMode === 'mathml'
+      ? (raw.includes('<math') ? raw : `<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">${raw}</math>`)
+      : formatMathFormula(raw);
 
     if (this.targetEl && this.targetEl.isConnected) {
       this.targetEl.setAttribute('data-math', raw);
-      this.targetEl.innerHTML = formatMathFormula(raw);
+      this.targetEl.setAttribute('data-math-format', this.currentMode);
+      this.targetEl.innerHTML = rendered;
       this.editor.emit('update', { editor: this.editor });
     } else {
-      this.editor.commands.insertMath({ latex: raw, type: this.currentType });
+      this.editor.commands.insertMath({
+        latex: raw,
+        type: this.currentType,
+      });
+
+      // Update data attribute for format
+      const inserted = this.editor.contentEl.querySelector(`[data-math="${CSS.escape(raw)}"]`);
+      if (inserted) {
+        inserted.setAttribute('data-math-format', this.currentMode);
+        inserted.innerHTML = rendered;
+      }
     }
 
     this.hide();
@@ -248,9 +403,9 @@ export function formatMathFormula(latex: string): string {
   html = html.replace(/\\times/g, '×');
   html = html.replace(/\\div/g, '÷');
   html = html.replace(/\\cdot/g, '·');
-  html = html.replace(/\\leq/g, '≤');
-  html = html.replace(/\\geq/g, '≥');
-  html = html.replace(/\\neq/g, '≠');
+  html = html.replace(/\\leq|\\le/g, '≤');
+  html = html.replace(/\\geq|\\ge/g, '≥');
+  html = html.replace(/\\neq|\\ne/g, '≠');
   html = html.replace(/\\approx/g, '≈');
   html = html.replace(/\\to/g, '→');
   html = html.replace(/\\in/g, '∈');

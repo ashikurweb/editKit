@@ -43,6 +43,12 @@ export class TooltipManager {
     document.body.appendChild(this.tooltipEl);
   }
 
+  public static hide(): void {
+    if (TooltipManager.instance) {
+      TooltipManager.instance._hide();
+    }
+  }
+
   private _bindEvents(): void {
     // Use mouseenter/mouseleave via delegation on capture phase
     document.addEventListener('mouseover', (e) => {
@@ -68,6 +74,10 @@ export class TooltipManager {
       this._hide();
     }, true);
 
+    document.addEventListener('click', () => {
+      this._hide();
+    }, true);
+
     window.addEventListener('scroll', () => {
       if (this.activeTarget) this._hide();
     }, true);
@@ -78,6 +88,14 @@ export class TooltipManager {
   }
 
   private _scheduleShow(target: HTMLElement): void {
+    // Never show tooltip if any dropdown, menu, popover, or modal is currently open
+    if (document.querySelector('.editkit-tb-dropdown-wrap--open, .editkit-table-dropdown-menu, .editkit-popup--visible, .editkit-modal-overlay.editkit-modal-overlay--visible, .editkit-link-popover:not([style*="display: none"])')) {
+      return;
+    }
+    if (target.closest('.editkit-tb-dropdown-wrap--open, .editkit-table-dropdown-menu, .editkit-popup--visible, .editkit-modal, .editkit-link-popover')) {
+      return;
+    }
+
     if (this.activeTarget === target) return;
     this._clearShowTimer();
 
@@ -101,12 +119,18 @@ export class TooltipManager {
   }
 
   private _show(target: HTMLElement): void {
+    // Re-check dropdown state right before showing
+    if (document.querySelector('.editkit-tb-dropdown-wrap--open, .editkit-table-dropdown-menu, .editkit-popup--visible, .editkit-modal-overlay.editkit-modal-overlay--visible, .editkit-link-popover:not([style*="display: none"])')) {
+      this._hide();
+      return;
+    }
+    if (target.closest('.editkit-tb-dropdown-wrap--open, .editkit-table-dropdown-menu, .editkit-popup--visible, .editkit-modal, .editkit-link-popover')) {
+      this._hide();
+      return;
+    }
+
     const text = target.getAttribute('data-editkit-tooltip');
     if (!text) return;
-
-    // Don't show tooltip if target is inside an open dropdown
-    const inOpenDropdown = target.closest('.editkit-tb-dropdown-wrap--open');
-    if (inOpenDropdown && !target.classList.contains('editkit-tb-btn')) return;
 
     this.activeTarget = target;
     this.textEl.textContent = text;
