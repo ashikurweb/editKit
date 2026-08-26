@@ -58,7 +58,219 @@ export class ColumnBlockManager {
     }
     container.appendChild(row);
 
-    // Floating Layout & Delete Control Bar (Bottom Center)
+    // Floating Controls
+    const controls = this._createControls(container, layout);
+    container.appendChild(controls);
+
+    return container;
+  }
+
+  // ── 2. Create Feature Row Element (Exact Match for User Screenshot) ──
+  createFeatureRowElement(imageModal?: any): HTMLElement {
+    const container = document.createElement('div');
+    container.classList.add('editkit-columns-container', 'editkit-feature-row-container');
+    container.setAttribute('data-editkit-block', 'columns');
+    container.setAttribute('data-layout', '50-50');
+    container.setAttribute('contenteditable', 'false');
+
+    // Drag Gripper Handle
+    const handle = document.createElement('div');
+    handle.classList.add('editkit-columns-handle');
+    handle.title = 'Drag Columns';
+    handle.innerHTML = `<span></span><span></span><span></span><span></span><span></span><span></span>`;
+    container.appendChild(handle);
+
+    // Columns Row
+    const row = document.createElement('div');
+    row.classList.add('editkit-columns-row');
+
+    // ── COL 1 ──
+    const col1 = document.createElement('div');
+    col1.classList.add('editkit-column-item');
+    col1.setAttribute('data-col', '1');
+
+    const header1 = document.createElement('div');
+    header1.classList.add('editkit-column-header');
+    header1.setAttribute('contenteditable', 'false');
+    const label1 = document.createElement('span');
+    label1.classList.add('editkit-column-label');
+    label1.textContent = 'COL 1';
+    const addBtn1 = document.createElement('button');
+    addBtn1.type = 'button';
+    addBtn1.classList.add('editkit-column-add-btn');
+    addBtn1.textContent = '+ block';
+    header1.appendChild(label1);
+    header1.appendChild(addBtn1);
+
+    const body1 = document.createElement('div');
+    body1.classList.add('editkit-column-body');
+    body1.setAttribute('contenteditable', 'true');
+    body1.setAttribute('spellcheck', 'false');
+
+    const h3_1 = document.createElement('h3');
+    h3_1.classList.add('editkit-feature-col-title');
+    h3_1.textContent = 'Feature name.';
+
+    const p1 = document.createElement('p');
+    p1.classList.add('editkit-feature-col-desc');
+    p1.textContent = 'A short description of what it does and why it matters.';
+
+    body1.appendChild(h3_1);
+    body1.appendChild(p1);
+
+    col1.appendChild(header1);
+    col1.appendChild(body1);
+
+    addBtn1.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this._toggleMenu(addBtn1, body1);
+    });
+
+    // ── COL 2 ──
+    const col2 = document.createElement('div');
+    col2.classList.add('editkit-column-item');
+    col2.setAttribute('data-col', '2');
+
+    const header2 = document.createElement('div');
+    header2.classList.add('editkit-column-header');
+    header2.setAttribute('contenteditable', 'false');
+    const label2 = document.createElement('span');
+    label2.classList.add('editkit-column-label');
+    label2.textContent = 'COL 2';
+    const addBtn2 = document.createElement('button');
+    addBtn2.type = 'button';
+    addBtn2.classList.add('editkit-column-add-btn');
+    addBtn2.textContent = '+ block';
+    header2.appendChild(label2);
+    header2.appendChild(addBtn2);
+
+    const body2 = document.createElement('div');
+    body2.classList.add('editkit-column-body');
+    body2.setAttribute('contenteditable', 'true');
+    body2.setAttribute('spellcheck', 'false');
+
+    const h3_2 = document.createElement('h3');
+    h3_2.classList.add('editkit-feature-col-title');
+    h3_2.textContent = 'Product preview.';
+
+    const p2 = document.createElement('p');
+    p2.classList.add('editkit-feature-col-desc');
+    p2.textContent = 'Add a supporting image below.';
+
+    // Image Upload Placeholder Box
+    const placeholder = document.createElement('div');
+    placeholder.classList.add('editkit-feature-img-placeholder');
+    placeholder.setAttribute('contenteditable', 'false');
+    placeholder.setAttribute('role', 'button');
+    placeholder.setAttribute('tabindex', '0');
+    placeholder.setAttribute('title', 'Click to upload image');
+
+    const iconBox = document.createElement('div');
+    iconBox.classList.add('editkit-fip-icon');
+    iconBox.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/><line x1="16" y1="5" x2="16" y2="11"/><line x1="13" y1="8" x2="19" y2="8"/></svg>`;
+
+    const titleEl = document.createElement('div');
+    titleEl.classList.add('editkit-fip-title');
+    titleEl.textContent = 'Add image';
+
+    const subEl = document.createElement('div');
+    subEl.classList.add('editkit-fip-sub');
+    subEl.textContent = 'Click to upload';
+
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.classList.add('editkit-fip-file-input');
+    fileInput.style.display = 'none';
+
+    placeholder.appendChild(iconBox);
+    placeholder.appendChild(titleEl);
+    placeholder.appendChild(subEl);
+    placeholder.appendChild(fileInput);
+
+    // Image upload handler
+    const handleFile = (file: File) => {
+      if (!file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const src = ev.target?.result as string;
+        if (src) {
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = file.name || 'Product preview';
+          img.classList.add('editkit-feature-img');
+          placeholder.replaceWith(img);
+          this.editor.emit('update', { editor: this.editor });
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+
+    placeholder.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (imageModal) {
+        imageModal.show('dropzone', (data: { src: string; alt?: string }) => {
+          const img = document.createElement('img');
+          img.src = data.src;
+          img.alt = data.alt || 'Product preview';
+          img.classList.add('editkit-feature-img');
+          placeholder.replaceWith(img);
+          this.editor.emit('update', { editor: this.editor });
+        });
+      } else {
+        fileInput.click();
+      }
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files && fileInput.files[0]) {
+        handleFile(fileInput.files[0]);
+      }
+    });
+
+    // Drag and Drop support
+    placeholder.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      placeholder.classList.add('editkit-fip--dragover');
+    });
+    placeholder.addEventListener('dragleave', () => {
+      placeholder.classList.remove('editkit-fip--dragover');
+    });
+    placeholder.addEventListener('drop', (e) => {
+      e.preventDefault();
+      placeholder.classList.remove('editkit-fip--dragover');
+      if (e.dataTransfer?.files && e.dataTransfer.files[0]) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    body2.appendChild(h3_2);
+    body2.appendChild(p2);
+    body2.appendChild(placeholder);
+
+    col2.appendChild(header2);
+    col2.appendChild(body2);
+
+    addBtn2.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      this._toggleMenu(addBtn2, body2);
+    });
+
+    row.appendChild(col1);
+    row.appendChild(col2);
+    container.appendChild(row);
+
+    // Floating Controls
+    const controls = this._createControls(container, '50-50');
+    container.appendChild(controls);
+
+    return container;
+  }
+
+  private _createControls(container: HTMLElement, layout: string): HTMLElement {
     const controls = document.createElement('div');
     controls.classList.add('editkit-columns-controls');
     controls.setAttribute('contenteditable', 'false');
@@ -131,9 +343,7 @@ export class ColumnBlockManager {
     });
 
     controls.appendChild(deleteBtn);
-    container.appendChild(controls);
-
-    return container;
+    return controls;
   }
 
   private _createColumnItem(index: number): HTMLElement {
@@ -450,6 +660,34 @@ export class ColumnBlockManager {
           const hr = document.createElement('hr');
           hr.classList.add('editkit-divider');
           body.appendChild(hr);
+        },
+      },
+      {
+        id: 'image',
+        label: 'Image',
+        category: 'BLOCKS',
+        icon: icons.image || `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`,
+        badge: 'Img',
+        action: (body) => {
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.accept = 'image/*';
+          input.onchange = () => {
+            if (input.files && input.files[0]) {
+              const file = input.files[0];
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                const img = document.createElement('img');
+                img.src = e.target?.result as string;
+                img.alt = file.name;
+                img.classList.add('editkit-feature-img');
+                body.appendChild(img);
+                this.editor.emit('update', { editor: this.editor });
+              };
+              reader.readAsDataURL(file);
+            }
+          };
+          input.click();
         },
       },
     ];

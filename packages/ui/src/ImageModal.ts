@@ -15,10 +15,13 @@ interface StagedImage {
   alt: string;
 }
 
+export type ImageInsertCallback = (data: { src: string; alt?: string }) => void;
+
 export class ImageModal extends Modal {
   private currentView: 'dropzone' | 'url' = 'dropzone';
   private stagedImages: StagedImage[] = [];
   private isUploading: boolean = false;
+  private onInsertCallback: ImageInsertCallback | null = null;
 
   constructor(editor: EditKitEditor) {
     super(editor, {
@@ -29,8 +32,9 @@ export class ImageModal extends Modal {
     this._setupImageListeners();
   }
 
-  show(initialView: 'dropzone' | 'url' = 'dropzone'): void {
+  show(initialView: 'dropzone' | 'url' = 'dropzone', onInsert?: ImageInsertCallback): void {
     this.currentView = initialView;
+    this.onInsertCallback = onInsert || null;
     this._renderView();
     super.show();
   }
@@ -40,6 +44,7 @@ export class ImageModal extends Modal {
     super.hide();
     this.currentView = 'dropzone';
     this.stagedImages = [];
+    this.onInsertCallback = null;
   }
 
   private _setupImageListeners(): void {
@@ -72,11 +77,19 @@ export class ImageModal extends Modal {
 
         if (isImageUrl) {
           e.preventDefault();
-          this.editor.commands.insertImage({ src: text, alt: 'Inserted image' });
+          this._handleInsertImage(text, 'Inserted image');
           this.hide();
         }
       }
     });
+  }
+
+  private _handleInsertImage(src: string, alt: string = 'Inserted image'): void {
+    if (this.onInsertCallback) {
+      this.onInsertCallback({ src, alt });
+    } else {
+      this.editor.commands.insertImage({ src, alt });
+    }
   }
 
   private _renderView(): void {
@@ -291,10 +304,7 @@ export class ImageModal extends Modal {
         clearInterval(interval);
         setTimeout(() => {
           for (const item of this.stagedImages) {
-            this.editor.commands.insertImage({
-              src: item.dataUrl,
-              alt: item.alt || item.name,
-            });
+            this._handleInsertImage(item.dataUrl, item.alt || item.name);
           }
           this.isUploading = false;
           this.stagedImages = [];
@@ -381,7 +391,7 @@ export class ImageModal extends Modal {
       const src = urlInput.value.trim();
       const alt = altInput.value.trim() || 'Inserted image';
       if (src) {
-        this.editor.commands.insertImage({ src, alt });
+        this._handleInsertImage(src, alt);
         this.hide();
       } else {
         urlInput.focus();

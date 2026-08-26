@@ -1609,16 +1609,21 @@ export class EditKitToolbar {
   }
 
   private _insertFeatureRow(): void {
-    const el = document.createElement('div');
-    el.classList.add('editkit-feature-row');
-    el.innerHTML = `
-      <div class="editkit-feature-badge">⚡</div>
-      <div class="editkit-feature-content">
-        <h3>Lightning Fast Performance</h3>
-        <p>Engineered with zero external dependencies for instant startup and seamless publishing.</p>
-      </div>
-    `;
-    this.editor.insertBlockNode(el);
+    const colBlock = this.columnBlockManager.createFeatureRowElement(this.imageModal);
+    this.editor.insertBlockNode(colBlock);
+
+    // Focus inside first column title for typing
+    const firstTitle = colBlock.querySelector('.editkit-feature-col-title') as HTMLElement;
+    if (firstTitle) {
+      setTimeout(() => {
+        const r = document.createRange();
+        r.selectNodeContents(firstTitle);
+        r.collapse(false);
+        const s = window.getSelection();
+        s?.removeAllRanges();
+        s?.addRange(r);
+      }, 20);
+    }
   }
 
   private _insertCTABand(): void {
