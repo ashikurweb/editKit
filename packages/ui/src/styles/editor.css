@@ -7146,3 +7146,35 @@ body.editkit-row-resizing * {
   color: rgba(255, 255, 255, 0.4);
 }
 
+/* ==========================================================================
+   28. HERO PATTERN COMPONENT (Exact Match for Image 1 & 2)
+   ========================================================================== */
+
+.editkit-hero-pattern {
+  margin: 1.4em 0;
+}
+
+.editkit-hero-pattern .editkit-hero-headline,
+.editkit-hero-headline {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--editkit-text, #f8fafc);
+  margin: 0 0 8px 0;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  font-family: inherit;
+}
+
+.editkit-hero-pattern .editkit-hero-subheadline,
+.editkit-hero-subheadline {
+  font-size: 15px;
+  color: var(--editkit-text-muted, #94a3b8);
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+  font-family: inherit;
+}
+
+.editkit-hero-pattern .editkit-button-block {
+  margin: 4px 0 0 0;
+}
+

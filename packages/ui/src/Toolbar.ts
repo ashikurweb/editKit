@@ -1412,28 +1412,7 @@ export class EditKitToolbar {
     headingWrap.appendChild(badgeSpan);
     headingWrap.appendChild(titleH2);
 
-    const p = document.createElement('p');
-    p.innerHTML = '<br>';
-
-    const block = this.editor.commands.getActiveBlock?.() || null;
-    const contentEl = this.editor.contentEl;
-
-    const frag = document.createDocumentFragment();
-    frag.appendChild(headingWrap);
-    frag.appendChild(p);
-
-    const sel = window.getSelection();
-    if (sel && sel.rangeCount > 0 && contentEl.contains(sel.anchorNode)) {
-      const range = sel.getRangeAt(0);
-      range.collapse(false);
-      range.insertNode(frag);
-    } else if (block && block !== contentEl && block.parentNode) {
-      block.parentNode.insertBefore(frag, block.nextSibling);
-    } else {
-      contentEl.appendChild(frag);
-    }
-
-    this.editor.emit('update', { editor: this.editor });
+    this.editor.insertBlockNode(headingWrap);
     this.secHeadingMenu.selectHeading(headingWrap);
 
     // Focus inside title
@@ -1476,28 +1455,7 @@ export class EditKitToolbar {
     quoteWrap.appendChild(attrFig);
     quoteWrap.appendChild(bottomLine);
 
-    const p = document.createElement('p');
-    p.innerHTML = '<br>';
-
-    const block = this.editor.commands.getActiveBlock?.() || null;
-    const contentEl = this.editor.contentEl;
-
-    const frag = document.createDocumentFragment();
-    frag.appendChild(quoteWrap);
-    frag.appendChild(p);
-
-    const sel = window.getSelection();
-    if (sel && sel.rangeCount > 0 && contentEl.contains(sel.anchorNode)) {
-      const range = sel.getRangeAt(0);
-      range.collapse(false);
-      range.insertNode(frag);
-    } else if (block && block !== contentEl && block.parentNode) {
-      block.parentNode.insertBefore(frag, block.nextSibling);
-    } else {
-      contentEl.appendChild(frag);
-    }
-
-    this.editor.emit('update', { editor: this.editor });
+    this.editor.insertBlockNode(quoteWrap);
     this.pullQuoteMenu.selectQuote(quoteWrap);
 
     // Focus inside quote text
@@ -1536,28 +1494,7 @@ export class EditKitToolbar {
     btnWrap.appendChild(linkEl);
     btnWrap.appendChild(editIcon);
 
-    const p = document.createElement('p');
-    p.innerHTML = '<br>';
-
-    const block = this.editor.commands.getActiveBlock?.() || null;
-    const contentEl = this.editor.contentEl;
-
-    const frag = document.createDocumentFragment();
-    frag.appendChild(btnWrap);
-    frag.appendChild(p);
-
-    const sel = window.getSelection();
-    if (sel && sel.rangeCount > 0 && contentEl.contains(sel.anchorNode)) {
-      const range = sel.getRangeAt(0);
-      range.collapse(false);
-      range.insertNode(frag);
-    } else if (block && block !== contentEl && block.parentNode) {
-      block.parentNode.insertBefore(frag, block.nextSibling);
-    } else {
-      contentEl.appendChild(frag);
-    }
-
-    this.editor.emit('update', { editor: this.editor });
+    this.editor.insertBlockNode(btnWrap);
     this.buttonBlockMenu.selectButton(btnWrap);
 
     // Focus inside button text
@@ -1574,28 +1511,7 @@ export class EditKitToolbar {
   private _insertFAQBlock(): void {
     const faqBlock = this.faqManager.createFAQBlockElement();
 
-    const p = document.createElement('p');
-    p.innerHTML = '<br>';
-
-    const block = this.editor.commands.getActiveBlock?.() || null;
-    const contentEl = this.editor.contentEl;
-
-    const frag = document.createDocumentFragment();
-    frag.appendChild(faqBlock);
-    frag.appendChild(p);
-
-    const sel = window.getSelection();
-    if (sel && sel.rangeCount > 0 && contentEl.contains(sel.anchorNode)) {
-      const range = sel.getRangeAt(0);
-      range.collapse(false);
-      range.insertNode(frag);
-    } else if (block && block !== contentEl && block.parentNode) {
-      block.parentNode.insertBefore(frag, block.nextSibling);
-    } else {
-      contentEl.appendChild(frag);
-    }
-
-    this.editor.emit('update', { editor: this.editor });
+    this.editor.insertBlockNode(faqBlock);
     this.faqManager.selectBlock(faqBlock);
 
     // Focus inside first question
@@ -1623,28 +1539,7 @@ export class EditKitToolbar {
   private _insertColumnBlock(layout: '50-50' | '3-col' | '1-col' | '70-30' | '30-70' = '50-50'): void {
     const colBlock = this.columnBlockManager.createColumnBlockElement(layout);
 
-    const p = document.createElement('p');
-    p.innerHTML = '<br>';
-
-    const block = this.editor.commands.getActiveBlock?.() || null;
-    const contentEl = this.editor.contentEl;
-
-    const frag = document.createDocumentFragment();
-    frag.appendChild(colBlock);
-    frag.appendChild(p);
-
-    const sel = window.getSelection();
-    if (sel && sel.rangeCount > 0 && contentEl.contains(sel.anchorNode)) {
-      const range = sel.getRangeAt(0);
-      range.collapse(false);
-      range.insertNode(frag);
-    } else if (block && block !== contentEl && block.parentNode) {
-      block.parentNode.insertBefore(frag, block.nextSibling);
-    } else {
-      contentEl.appendChild(frag);
-    }
-
-    this.editor.emit('update', { editor: this.editor });
+    this.editor.insertBlockNode(colBlock);
 
     // Focus inside first column body
     const firstBody = colBlock.querySelector('.editkit-column-body') as HTMLElement;
@@ -1661,37 +1556,82 @@ export class EditKitToolbar {
   }
 
   private _insertHeroBanner(): void {
-    const html = `
-      <div class="editkit-hero-banner">
-        <h2>✨ Spotlight Header</h2>
-        <p>A prominent hero banner to introduce key sections or documentation highlights.</p>
-        <div class="editkit-btn-container" contenteditable="false"><a href="#" class="editkit-cta-btn" contenteditable="true">Explore Features &rarr;</a></div>
-      </div><p><br></p>`;
-    document.execCommand('insertHTML', false, html);
+    const wrap = document.createElement('div');
+    wrap.classList.add('editkit-hero-pattern');
+
+    const h1 = document.createElement('h1');
+    h1.classList.add('editkit-hero-headline');
+    h1.textContent = 'A headline that sells the page';
+
+    const p = document.createElement('p');
+    p.classList.add('editkit-hero-subheadline');
+    p.textContent = 'One supporting sentence that explains the value in plain terms.';
+
+    const btnWrap = document.createElement('div');
+    btnWrap.classList.add('editkit-button-block');
+    btnWrap.setAttribute('data-variant', 'filled');
+    btnWrap.setAttribute('data-radius', 'rounded');
+    btnWrap.setAttribute('data-align', 'left');
+    btnWrap.setAttribute('data-color', '#f59e0b');
+    btnWrap.setAttribute('contenteditable', 'false');
+
+    const linkEl = document.createElement('a');
+    linkEl.classList.add('editkit-btn-element');
+    linkEl.setAttribute('href', 'https://');
+    linkEl.setAttribute('target', '_blank');
+    linkEl.setAttribute('contenteditable', 'true');
+    linkEl.setAttribute('spellcheck', 'false');
+    linkEl.textContent = 'Get started';
+
+    const editIcon = document.createElement('span');
+    editIcon.classList.add('editkit-btn-edit-icon');
+    editIcon.setAttribute('title', 'Edit link URL');
+    editIcon.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`;
+
+    btnWrap.appendChild(linkEl);
+    btnWrap.appendChild(editIcon);
+
+    wrap.appendChild(h1);
+    wrap.appendChild(p);
+    wrap.appendChild(btnWrap);
+
+    this.editor.insertBlockNode(wrap);
+
+    // Focus inside headline for immediate typing
+    setTimeout(() => {
+      const r = document.createRange();
+      r.selectNodeContents(h1);
+      r.collapse(false);
+      const s = window.getSelection();
+      s?.removeAllRanges();
+      s?.addRange(r);
+    }, 20);
   }
 
   private _insertFeatureRow(): void {
-    const html = `
-      <div class="editkit-feature-row">
-        <div class="editkit-feature-badge">⚡</div>
-        <div class="editkit-feature-content">
-          <h3>Lightning Fast Performance</h3>
-          <p>Engineered with zero external dependencies for instant startup and seamless publishing.</p>
-        </div>
-      </div><p><br></p>`;
-    document.execCommand('insertHTML', false, html);
+    const el = document.createElement('div');
+    el.classList.add('editkit-feature-row');
+    el.innerHTML = `
+      <div class="editkit-feature-badge">⚡</div>
+      <div class="editkit-feature-content">
+        <h3>Lightning Fast Performance</h3>
+        <p>Engineered with zero external dependencies for instant startup and seamless publishing.</p>
+      </div>
+    `;
+    this.editor.insertBlockNode(el);
   }
 
   private _insertCTABand(): void {
-    const html = `
-      <div class="editkit-cta-band">
-        <div class="editkit-cta-band-text">
-          <h3>Ready to get started?</h3>
-          <p>Join thousands of writers and developers creating clean, structured content.</p>
-        </div>
-        <a href="#" class="editkit-cta-btn" contenteditable="true">Get Started Free</a>
-      </div><p><br></p>`;
-    document.execCommand('insertHTML', false, html);
+    const el = document.createElement('div');
+    el.classList.add('editkit-cta-band');
+    el.innerHTML = `
+      <div class="editkit-cta-band-text">
+        <h3>Ready to get started?</h3>
+        <p>Join thousands of writers and developers creating clean, structured content.</p>
+      </div>
+      <a href="#" class="editkit-cta-btn" contenteditable="true">Get Started Free</a>
+    `;
+    this.editor.insertBlockNode(el);
   }
 
   private _addCommentMock(): void {

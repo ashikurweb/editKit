@@ -449,8 +449,11 @@ export class ButtonBlockMenu {
     const rootRect = (this.editor.root as HTMLElement).getBoundingClientRect();
 
     if (this.editPopoverEl) {
-      const top = btnRect.bottom - rootRect.top + 4;
-      const left = btnRect.left - rootRect.left + 4;
+      let top = btnRect.top - rootRect.top - 42;
+      if (top < 10) {
+        top = btnRect.bottom - rootRect.top + 6;
+      }
+      const left = Math.max(8, btnRect.left - rootRect.left);
       this.editPopoverEl.style.top = `${Math.max(4, top)}px`;
       this.editPopoverEl.style.left = `${Math.max(4, left)}px`;
 
@@ -459,10 +462,13 @@ export class ButtonBlockMenu {
       this.element.style.top = `${Math.max(4, tbTop)}px`;
       this.element.style.left = `${Math.max(4, left)}px`;
     } else {
-      const top = btnRect.bottom - rootRect.top + 4;
-      const left = btnRect.left - rootRect.left + 4;
-      this.element.style.top = `${Math.max(4, top)}px`;
-      this.element.style.left = `${Math.max(4, left)}px`;
+      let top = btnRect.top - rootRect.top - 36;
+      if (top < 10) {
+        top = btnRect.bottom - rootRect.top + 6;
+      }
+      const left = Math.max(8, btnRect.left - rootRect.left);
+      this.element.style.top = `${top}px`;
+      this.element.style.left = `${left}px`;
     }
   }
 

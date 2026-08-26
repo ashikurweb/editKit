@@ -346,8 +346,51 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
 
   /** Check if editor content is empty */
   get isEmpty(): boolean {
-    const text = this.contentEl.innerText?.trim();
+    if (this.contentEl.querySelector('table, img, hr, .editkit-columns-container, .editkit-faq-block, .editkit-button-block, .editkit-pull-quote, .editkit-section-heading-block, .editkit-hero-banner, .editkit-hero-pattern, .editkit-feature-row, .editkit-cta-band, .editkit-panel, .editkit-grid, .editkit-math-block, .editkit-signature-wrap, pre, blockquote, ul, ol, iframe, video, audio')) {
+      return false;
+    }
+    const text = (this.contentEl.textContent || this.contentEl.innerText || '').replace(/[\u200B\u00A0\s]/g, '').trim();
     return !text || text === '';
+  }
+
+  /** Insert a custom block element at the current selection or replace empty editor */
+  insertBlockNode(node: HTMLElement): void {
+    const contentEl = this.contentEl;
+    contentEl.classList.remove('editkit-content--empty');
+
+    const p = document.createElement('p');
+    p.innerHTML = '<br>';
+
+    const frag = document.createDocumentFragment();
+    frag.appendChild(node);
+    frag.appendChild(p);
+
+    if (this.isEmpty) {
+      contentEl.innerHTML = '';
+      contentEl.appendChild(frag);
+    } else {
+      const block = this.commands.getActiveBlock?.() || null;
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount > 0 && contentEl.contains(sel.anchorNode)) {
+        const range = sel.getRangeAt(0);
+        // If current block is just an empty paragraph, replace it
+        const anchorEl = sel.anchorNode instanceof HTMLElement ? sel.anchorNode : sel.anchorNode?.parentElement;
+        const currentP = anchorEl?.closest('p');
+        if (currentP && currentP.parentNode && (!currentP.textContent || currentP.textContent.trim() === '')) {
+          currentP.parentNode.insertBefore(frag, currentP);
+          currentP.remove();
+        } else {
+          range.collapse(false);
+          range.insertNode(frag);
+        }
+      } else if (block && block !== contentEl && block.parentNode) {
+        block.parentNode.insertBefore(frag, block.nextSibling);
+      } else {
+        contentEl.appendChild(frag);
+      }
+    }
+
+    this._emitUpdate();
   }
 
   // ═══════════════════════════════════════════
@@ -1342,11 +1385,23 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     }
     table.appendChild(tbody);
 
-    const block = this._getActiveBlock();
-    if (block && block !== this.contentEl) {
-      block.parentNode!.insertBefore(table, block.nextSibling);
-    } else {
+    this.contentEl.classList.remove('editkit-content--empty');
+
+    if (this.isEmpty) {
+      this.contentEl.innerHTML = '';
       this.contentEl.appendChild(table);
+    } else {
+      const block = this._getActiveBlock();
+      if (block && block !== this.contentEl) {
+        if (!block.textContent || block.textContent.trim() === '') {
+          block.parentNode!.insertBefore(table, block);
+          block.remove();
+        } else {
+          block.parentNode!.insertBefore(table, block.nextSibling);
+        }
+      } else {
+        this.contentEl.appendChild(table);
+      }
     }
 
     // Add trailing paragraph after table for easy escape
