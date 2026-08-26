@@ -101,6 +101,7 @@ export class ColorPickerPopover {
 
     this.element = document.createElement('div');
     this.element.classList.add('editkit-color-picker');
+    this.element.addEventListener('mousedown', (e) => e.stopPropagation());
 
     this._render();
   }

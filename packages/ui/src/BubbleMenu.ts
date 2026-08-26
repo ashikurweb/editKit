@@ -1,19 +1,21 @@
 // ============================================================
-// EditKit — Floating Selection Bubble Menu
-// Exact match for the EditKit Bubble Toolbar
+// EditKit — Floating Selection Bubble Menu (Exact Match for Image 2)
+// Stepper + Align Dropdown + Marks (B, I, U, S, Code) + Link + Color Picker
 // ============================================================
 
 import type { EditKitEditor } from '@editkit/core';
 import { icons } from './icons';
 import { ColorPickerPopover } from './ColorPicker';
 import { LinkPopover } from './LinkPopover';
+import { TooltipManager } from './Tooltip';
 
 export class BubbleMenu {
   readonly element: HTMLElement;
   private editor: EditKitEditor;
   private linkPopover: LinkPopover;
   private isVisible: boolean = false;
-  private colorPickerEl: HTMLElement | null = null;
+  private sizeDisplay!: HTMLElement;
+  private activeDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
   constructor(editor: EditKitEditor) {
@@ -39,6 +41,13 @@ export class BubbleMenu {
       }, 150);
     });
     this._unsubscribers.push(unsubBlur);
+
+    // Close open dropdowns when clicking outside bubble menu
+    document.addEventListener('mousedown', (e) => {
+      if (!this.element.contains(e.target as Node)) {
+        this._closeAllDropdowns();
+      }
+    });
   }
 
   mount(container: HTMLElement): void {
@@ -75,23 +84,7 @@ export class BubbleMenu {
       return d;
     };
 
-    // 1. ✦ AI pill button
-    const aiBtn = document.createElement('button');
-    aiBtn.type = 'button';
-    aiBtn.classList.add('editkit-bubble-btn', 'editkit-bubble-btn--ai');
-    aiBtn.innerHTML = `${icons.sparkles} <span>AI</span> <span class="editkit-bubble-chevron">${icons.chevronDown}</span>`;
-    aiBtn.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      // AI prompt mock
-      const selText = window.getSelection()?.toString() || '';
-      if (selText) {
-        this.editor.commands.bold(); // example AI polish action
-      }
-    });
-    this.element.appendChild(aiBtn);
-    this.element.appendChild(divider());
-
-    // 2. Font Size stepper: - 14 +
+    // ── 1. Font Size Stepper: [ -  16  + ] ──
     const sizeWrap = document.createElement('div');
     sizeWrap.classList.add('editkit-bubble-stepper');
 
@@ -99,84 +92,162 @@ export class BubbleMenu {
     minusBtn.type = 'button';
     minusBtn.classList.add('editkit-bubble-btn', 'editkit-bubble-btn--stepper');
     minusBtn.innerHTML = icons.minus;
+    minusBtn.setAttribute('title', 'Decrease font size');
     minusBtn.addEventListener('mousedown', (e) => {
       e.preventDefault();
       this.editor.commands.decreaseFontSize();
-      sizeDisplay.textContent = String(this.editor.commands.getFontSize());
+      this.sizeDisplay.textContent = String(this.editor.commands.getFontSize());
     });
 
-    const sizeDisplay = document.createElement('span');
-    sizeDisplay.classList.add('editkit-bubble-stepper-value');
-    sizeDisplay.textContent = '14';
+    this.sizeDisplay = document.createElement('span');
+    this.sizeDisplay.classList.add('editkit-bubble-stepper-value');
+    this.sizeDisplay.textContent = String(this.editor.commands.getFontSize() || 16);
 
     const plusBtn = document.createElement('button');
     plusBtn.type = 'button';
     plusBtn.classList.add('editkit-bubble-btn', 'editkit-bubble-btn--stepper');
     plusBtn.innerHTML = icons.plus;
+    plusBtn.setAttribute('title', 'Increase font size');
     plusBtn.addEventListener('mousedown', (e) => {
       e.preventDefault();
       this.editor.commands.increaseFontSize();
-      sizeDisplay.textContent = String(this.editor.commands.getFontSize());
+      this.sizeDisplay.textContent = String(this.editor.commands.getFontSize());
     });
 
     sizeWrap.appendChild(minusBtn);
-    sizeWrap.appendChild(sizeDisplay);
+    sizeWrap.appendChild(this.sizeDisplay);
     sizeWrap.appendChild(plusBtn);
     this.element.appendChild(sizeWrap);
+
     this.element.appendChild(divider());
 
-    // 3. Formatting buttons: B, I, U, S, Code
+    // ── 2. Alignment Dropdown: [ ≡ ˅ ] ──
+    this.element.appendChild(this._createAlignDropdown());
+
+    this.element.appendChild(divider());
+
+    // ── 3. Marks: Bold, Italic, Underline, Strikethrough, Code ──
     this.element.appendChild(btn('bold', 'Bold (Ctrl+B)', () => this.editor.commands.bold(), 'bold'));
     this.element.appendChild(btn('italic', 'Italic (Ctrl+I)', () => this.editor.commands.italic(), 'italic'));
     this.element.appendChild(btn('underline', 'Underline (Ctrl+U)', () => this.editor.commands.underline(), 'underline'));
     this.element.appendChild(btn('strikethrough', 'Strikethrough', () => this.editor.commands.strikethrough(), 'strikethrough'));
     this.element.appendChild(btn('code', 'Inline Code', () => this.editor.commands.code(), 'code'));
+
     this.element.appendChild(divider());
 
-    // 4. Link button
+    // ── 4. Link Button ──
     const linkBtn = btn('link', 'Add Link (Ctrl+K)', () => {
       this.linkPopover.show(linkBtn.getBoundingClientRect());
     });
     this.element.appendChild(linkBtn);
 
-    // 5. Color picker button
-    const colorBtn = document.createElement('button');
-    colorBtn.type = 'button';
-    colorBtn.classList.add('editkit-bubble-btn');
-    colorBtn.setAttribute('data-editkit-tooltip', 'Text & Highlight Color');
-    colorBtn.setAttribute('aria-label', 'Text & Highlight Color');
-    colorBtn.innerHTML = `${icons.textColor}`;
-    colorBtn.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      this._toggleColorPicker();
-    });
-    this.element.appendChild(colorBtn);
+    // ── 5. Color Picker: A ──
+    this.element.appendChild(this._createColorDropdown());
   }
 
-  private _toggleColorPicker(): void {
-    if (this.colorPickerEl) {
-      this.colorPickerEl.remove();
-      this.colorPickerEl = null;
-      return;
-    }
+  private _createAlignDropdown(): HTMLElement {
+    const wrap = document.createElement('div');
+    wrap.className = 'editkit-bubble-dropdown-wrap';
 
-    const picker = new ColorPickerPopover(
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'editkit-bubble-btn editkit-bubble-btn--chevron';
+    trigger.setAttribute('data-editkit-tooltip', 'Alignment');
+    trigger.setAttribute('aria-label', 'Alignment');
+    trigger.innerHTML = `${icons.alignLeft} <span class="editkit-bubble-chevron">${icons.chevronDown}</span>`;
+
+    const menu = document.createElement('div');
+    menu.className = 'editkit-bubble-dropdown-menu';
+
+    const items = [
+      { id: 'left', icon: icons.alignLeft, label: 'Align Left', action: () => this.editor.commands.setTextAlign('left') },
+      { id: 'center', icon: icons.alignCenter, label: 'Align Center', action: () => this.editor.commands.setTextAlign('center') },
+      { id: 'right', icon: icons.alignRight, label: 'Align Right', action: () => this.editor.commands.setTextAlign('right') },
+      { id: 'justify', icon: icons.alignJustify, label: 'Align Justify', action: () => this.editor.commands.setTextAlign('justify') },
+    ];
+
+    items.forEach(it => {
+      const itBtn = document.createElement('button');
+      itBtn.type = 'button';
+      itBtn.className = 'editkit-bubble-menu-item';
+      itBtn.innerHTML = `<span class="editkit-bubble-menu-icon">${it.icon}</span> <span>${it.label}</span>`;
+      itBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        it.action();
+        wrap.classList.remove('editkit-bubble-dropdown-wrap--open');
+        this.activeDropdown = null;
+        trigger.innerHTML = `${it.icon} <span class="editkit-bubble-chevron">${icons.chevronDown}</span>`;
+      });
+      menu.appendChild(itBtn);
+    });
+
+    trigger.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      TooltipManager.hide();
+      const isOpen = wrap.classList.contains('editkit-bubble-dropdown-wrap--open');
+      this._closeAllDropdowns();
+      if (!isOpen) {
+        wrap.classList.add('editkit-bubble-dropdown-wrap--open');
+        this.activeDropdown = wrap;
+      }
+    });
+
+    wrap.appendChild(trigger);
+    wrap.appendChild(menu);
+    return wrap;
+  }
+
+  private _createColorDropdown(): HTMLElement {
+    const wrap = document.createElement('div');
+    wrap.className = 'editkit-bubble-dropdown-wrap';
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'editkit-bubble-btn editkit-bubble-btn--color';
+    trigger.setAttribute('data-editkit-tooltip', 'Text & Highlight Color');
+    trigger.setAttribute('aria-label', 'Text & Highlight Color');
+    trigger.innerHTML = `<span class="editkit-bubble-color-label">A</span><span class="editkit-bubble-color-bar"></span>`;
+
+    const popover = new ColorPickerPopover(
       this.editor,
-      undefined,
+      (color, mode) => {
+        if (mode === 'text') {
+          this.editor.commands.setTextColor(color);
+          const bar = trigger.querySelector('.editkit-bubble-color-bar') as HTMLElement | null;
+          if (bar) bar.style.backgroundColor = color;
+        } else {
+          this.editor.commands.setHighlight(color);
+        }
+      },
       () => {
-        this.colorPickerEl?.remove();
-        this.colorPickerEl = null;
+        wrap.classList.remove('editkit-bubble-dropdown-wrap--open');
+        this.activeDropdown = null;
       }
     );
 
-    this.colorPickerEl = picker.element;
-    this.colorPickerEl.style.position = 'absolute';
-    this.colorPickerEl.style.top = 'calc(100% + 8px)';
-    this.colorPickerEl.style.left = '50%';
-    this.colorPickerEl.style.transform = 'translateX(-50%)';
-    this.colorPickerEl.style.zIndex = '110';
-    this.element.appendChild(this.colorPickerEl);
+    trigger.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      TooltipManager.hide();
+      const isOpen = wrap.classList.contains('editkit-bubble-dropdown-wrap--open');
+      this._closeAllDropdowns();
+      if (!isOpen) {
+        wrap.classList.add('editkit-bubble-dropdown-wrap--open');
+        this.activeDropdown = wrap;
+      }
+    });
+
+    wrap.appendChild(trigger);
+    wrap.appendChild(popover.element);
+    return wrap;
+  }
+
+  private _closeAllDropdowns(): void {
+    if (this.activeDropdown) {
+      this.activeDropdown.classList.remove('editkit-bubble-dropdown-wrap--open');
+      this.activeDropdown = null;
+    }
   }
 
   private _checkSelection(): void {
@@ -195,6 +266,12 @@ export class BubbleMenu {
     // Do not show bubble menu if cursor is inside table (table menu takes priority)
     if (this.editor.getActiveTableCell()) {
       this.hide();
+      return;
+    }
+
+    // If a dropdown is currently open, don't recalculate position to prevent jumping
+    if (this.activeDropdown) {
+      this._updateActiveStates();
       return;
     }
 
@@ -229,6 +306,23 @@ export class BubbleMenu {
         b.classList.remove('editkit-bubble-btn--active');
       }
     });
+
+    if (this.sizeDisplay) {
+      this.sizeDisplay.textContent = String(this.editor.commands.getFontSize() || 16);
+    }
+
+    const alignTrigger = this.element.querySelector('.editkit-bubble-btn--chevron');
+    if (alignTrigger) {
+      if (this.editor.isActive('textAlign', { align: 'center' })) {
+        alignTrigger.innerHTML = `${icons.alignCenter} <span class="editkit-bubble-chevron">${icons.chevronDown}</span>`;
+      } else if (this.editor.isActive('textAlign', { align: 'right' })) {
+        alignTrigger.innerHTML = `${icons.alignRight} <span class="editkit-bubble-chevron">${icons.chevronDown}</span>`;
+      } else if (this.editor.isActive('textAlign', { align: 'justify' })) {
+        alignTrigger.innerHTML = `${icons.alignJustify} <span class="editkit-bubble-chevron">${icons.chevronDown}</span>`;
+      } else {
+        alignTrigger.innerHTML = `${icons.alignLeft} <span class="editkit-bubble-chevron">${icons.chevronDown}</span>`;
+      }
+    }
   }
 
   show(): void {
@@ -240,11 +334,8 @@ export class BubbleMenu {
 
   hide(): void {
     if (this.isVisible) {
+      this._closeAllDropdowns();
       this.element.classList.remove('editkit-bubble-menu--visible');
-      if (this.colorPickerEl) {
-        this.colorPickerEl.remove();
-        this.colorPickerEl = null;
-      }
       this.isVisible = false;
     }
   }

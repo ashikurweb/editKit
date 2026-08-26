@@ -1317,10 +1317,11 @@
   visibility: hidden;
   pointer-events: none;
   transform: translateY(-4px);
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.18s ease;
 }
 
 .editkit-tb-dropdown-wrap--open .editkit-color-picker,
+.editkit-bubble-dropdown-wrap--open .editkit-color-picker,
 .editkit-color-picker--bubble {
   opacity: 1;
   visibility: visible;
@@ -1558,7 +1559,6 @@
   box-shadow: var(--editkit-shadow-floating);
   backdrop-filter: blur(12px);
   z-index: 100;
-  transition: transform 0.1s ease;
 }
 
 .editkit-bubble-menu--visible {
@@ -1629,9 +1629,119 @@
 
 .editkit-bubble-stepper-value {
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--editkit-text);
-  padding: 0 2px;
+  padding: 0 3px;
+  min-width: 14px;
+  text-align: center;
+}
+
+.editkit-bubble-dropdown-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.editkit-bubble-btn--chevron {
+  width: auto;
+  padding: 0 4px;
+  gap: 2px;
+}
+
+.editkit-bubble-btn--color {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 26px;
+  height: 26px;
+}
+
+.editkit-bubble-color-label {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.editkit-bubble-color-bar {
+  width: 14px;
+  height: 2.5px;
+  border-radius: 1px;
+  background-color: var(--editkit-primary, #eab308);
+  margin-top: 1.5px;
+}
+
+.editkit-bubble-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: var(--editkit-popup-bg);
+  border: 1px solid var(--editkit-popup-border);
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 120px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 0.15s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.15s ease;
+}
+
+.editkit-bubble-dropdown-wrap--open .editkit-bubble-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.editkit-bubble-dropdown-wrap .editkit-color-picker {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  left: auto;
+  z-index: 150;
+}
+
+.editkit-bubble-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: none;
+  background: transparent;
+  color: var(--editkit-text-muted);
+  border-radius: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: all 0.12s ease;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.editkit-bubble-menu-item:hover {
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text);
+}
+
+.editkit-bubble-menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+}
+
+.editkit-bubble-menu-icon svg {
+  width: 14px;
+  height: 14px;
 }
 
 /* ==========================================================================

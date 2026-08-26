@@ -87,12 +87,23 @@ export class TooltipManager {
     });
   }
 
+  private _isAnyDropdownOrModalOpen(): boolean {
+    return Boolean(
+      document.querySelector(
+        '.editkit-tb-dropdown-wrap--open, ' +
+        '.editkit-bubble-dropdown-wrap--open, ' +
+        '.editkit-table-dropdown-menu, ' +
+        '.editkit-popup--visible, ' +
+        '.editkit-modal-overlay.editkit-modal-overlay--visible, ' +
+        '.editkit-modal-overlay--visible, ' +
+        '.editkit-link-popover:not([style*="display: none"])'
+      )
+    );
+  }
+
   private _scheduleShow(target: HTMLElement): void {
-    // Never show tooltip if any dropdown, menu, popover, or modal is currently open
-    if (document.querySelector('.editkit-tb-dropdown-wrap--open, .editkit-table-dropdown-menu, .editkit-popup--visible, .editkit-modal-overlay.editkit-modal-overlay--visible, .editkit-link-popover:not([style*="display: none"])')) {
-      return;
-    }
-    if (target.closest('.editkit-tb-dropdown-wrap--open, .editkit-table-dropdown-menu, .editkit-popup--visible, .editkit-modal, .editkit-link-popover')) {
+    if (this._isAnyDropdownOrModalOpen()) return;
+    if (target.closest('.editkit-tb-dropdown-wrap--open, .editkit-bubble-dropdown-wrap--open, .editkit-table-dropdown-menu, .editkit-popup--visible, .editkit-modal, .editkit-link-popover')) {
       return;
     }
 
@@ -119,12 +130,11 @@ export class TooltipManager {
   }
 
   private _show(target: HTMLElement): void {
-    // Re-check dropdown state right before showing
-    if (document.querySelector('.editkit-tb-dropdown-wrap--open, .editkit-table-dropdown-menu, .editkit-popup--visible, .editkit-modal-overlay.editkit-modal-overlay--visible, .editkit-link-popover:not([style*="display: none"])')) {
+    if (this._isAnyDropdownOrModalOpen()) {
       this._hide();
       return;
     }
-    if (target.closest('.editkit-tb-dropdown-wrap--open, .editkit-table-dropdown-menu, .editkit-popup--visible, .editkit-modal, .editkit-link-popover')) {
+    if (target.closest('.editkit-tb-dropdown-wrap--open, .editkit-bubble-dropdown-wrap--open, .editkit-table-dropdown-menu, .editkit-popup--visible, .editkit-modal, .editkit-link-popover')) {
       this._hide();
       return;
     }
