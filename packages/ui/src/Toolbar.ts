@@ -18,6 +18,7 @@ import { SectionHeadingMenu } from './SectionHeadingMenu';
 import { PullQuoteMenu } from './PullQuoteMenu';
 import { ButtonBlockMenu } from './ButtonBlockMenu';
 import { FAQBlockManager } from './FAQBlockManager';
+import { ColumnBlockManager } from './ColumnBlockManager';
 import { SignatureModal } from './SignatureModal';
 import { TooltipManager } from './Tooltip';
 
@@ -81,6 +82,7 @@ export class EditKitToolbar {
   private pullQuoteMenu: PullQuoteMenu;
   private buttonBlockMenu: ButtonBlockMenu;
   private faqManager: FAQBlockManager;
+  private columnBlockManager: ColumnBlockManager;
   private openDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
@@ -115,6 +117,7 @@ export class EditKitToolbar {
     this.buttonBlockMenu = new ButtonBlockMenu(editor);
     this.buttonBlockMenu.mount(editor.root as HTMLElement);
     this.faqManager = new FAQBlockManager(editor);
+    this.columnBlockManager = new ColumnBlockManager(editor);
 
     TooltipManager.init();
 
@@ -1610,22 +1613,51 @@ export class EditKitToolbar {
   }
 
   private _insert2ColGrid(): void {
-    const html = `
-      <div class="editkit-grid editkit-grid-2">
-        <div class="editkit-grid-col"><p>Left column content goes here...</p></div>
-        <div class="editkit-grid-col"><p>Right column content goes here...</p></div>
-      </div><p><br></p>`;
-    document.execCommand('insertHTML', false, html);
+    this._insertColumnBlock('50-50');
   }
 
   private _insert3ColGrid(): void {
-    const html = `
-      <div class="editkit-grid editkit-grid-3">
-        <div class="editkit-grid-col"><p>Column 1 content...</p></div>
-        <div class="editkit-grid-col"><p>Column 2 content...</p></div>
-        <div class="editkit-grid-col"><p>Column 3 content...</p></div>
-      </div><p><br></p>`;
-    document.execCommand('insertHTML', false, html);
+    this._insertColumnBlock('3-col');
+  }
+
+  private _insertColumnBlock(layout: '50-50' | '3-col' | '1-col' | '70-30' | '30-70' = '50-50'): void {
+    const colBlock = this.columnBlockManager.createColumnBlockElement(layout);
+
+    const p = document.createElement('p');
+    p.innerHTML = '<br>';
+
+    const block = this.editor.commands.getActiveBlock?.() || null;
+    const contentEl = this.editor.contentEl;
+
+    const frag = document.createDocumentFragment();
+    frag.appendChild(colBlock);
+    frag.appendChild(p);
+
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && contentEl.contains(sel.anchorNode)) {
+      const range = sel.getRangeAt(0);
+      range.collapse(false);
+      range.insertNode(frag);
+    } else if (block && block !== contentEl && block.parentNode) {
+      block.parentNode.insertBefore(frag, block.nextSibling);
+    } else {
+      contentEl.appendChild(frag);
+    }
+
+    this.editor.emit('update', { editor: this.editor });
+
+    // Focus inside first column body
+    const firstBody = colBlock.querySelector('.editkit-column-body') as HTMLElement;
+    if (firstBody) {
+      setTimeout(() => {
+        const r = document.createRange();
+        r.selectNodeContents(firstBody);
+        r.collapse(false);
+        const s = window.getSelection();
+        s?.removeAllRanges();
+        s?.addRange(r);
+      }, 20);
+    }
   }
 
   private _insertHeroBanner(): void {

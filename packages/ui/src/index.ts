@@ -26,6 +26,7 @@ export { SectionHeadingMenu } from './SectionHeadingMenu';
 export { PullQuoteMenu } from './PullQuoteMenu';
 export { ButtonBlockMenu } from './ButtonBlockMenu';
 export { FAQBlockManager } from './FAQBlockManager';
+export { ColumnBlockManager } from './ColumnBlockManager';
 export { SignatureModal } from './SignatureModal';
 export { CropModal } from './CropModal';
 export { EmojiPicker } from './EmojiPicker';
