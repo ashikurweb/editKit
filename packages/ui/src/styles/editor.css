@@ -4,7 +4,7 @@
    Pure Modular CSS + Comprehensive CSS Custom Properties Design Tokens
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Cinzel:wght@400;600;700&family=Comic+Neue:ital,wght@0,400;0,700;1,400;1,700&family=Dancing+Script:wght@500;700&family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Lato:wght@400;700&family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600;700&family=Oswald:wght@400;600&family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
 /* ==========================================================================
    01. DESIGN TOKENS & CSS VARIABLES
@@ -14,26 +14,28 @@
 [data-editkit],
 [data-editkit-theme="dark"] {
   /* Surfaces & Backgrounds */
-  --editkit-bg: #0c0d10;
-  --editkit-card-bg: #141519;
-  --editkit-toolbar-bg: #18191e;
+  --editkit-bg: #07080a;
+  --editkit-card-bg: #111215;
+  --editkit-toolbar-bg: #18191f;
+  --editkit-content-bg: #14151a;
   --editkit-surface-hover: #22242c;
-  --editkit-surface-active: #323543;
-  --editkit-surface-elevated: #1e2027;
+  --editkit-surface-active: #2e313c;
+  --editkit-surface-elevated: #1a1c24;
   --editkit-popup-bg: #15161e;
   --editkit-popup-border: #262936;
 
   /* Text & Labels */
   --editkit-text: #e6e8ee;
   --editkit-text-muted: #8b90a0;
-  --editkit-text-dim: #5a5f70;
-  --editkit-placeholder: #454955;
+  --editkit-text-dim: #636877;
+  --editkit-placeholder: #4a5061;
 
   /* Borders & Dividers */
-  --editkit-border: #23252f;
-  --editkit-border-hover: #323543;
+  --editkit-border: #20232c;
+  --editkit-inner-border: #222530;
+  --editkit-border-hover: #2e323e;
   --editkit-border-focus: #7c3aed;
-  --editkit-divider: #23252f;
+  --editkit-divider: #252834;
 
   /* Brand / Accent / AI */
   --editkit-primary: #7c3aed;
@@ -57,34 +59,36 @@
   /* Shadows & Radii */
   --editkit-shadow-popup: 0 12px 32px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4);
   --editkit-shadow-floating: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --editkit-shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --editkit-radius-card: 14px;
+  --editkit-shadow-card: 0 16px 44px rgba(0, 0, 0, 0.45), 0 0 1px rgba(255, 255, 255, 0.08);
+  --editkit-radius-card: 18px;
   --editkit-radius-btn: 6px;
   --editkit-radius-pill: 9999px;
 }
 
 [data-editkit-theme="light"] {
   /* ── Clean White Surfaces ── */
-  --editkit-bg: #ffffff;
+  --editkit-bg: #f8fafc;
   --editkit-card-bg: #ffffff;
-  --editkit-toolbar-bg: #fafafa;
-  --editkit-surface-hover: #f4f4f5;
-  --editkit-surface-active: #e4e4e7;
-  --editkit-surface-elevated: #fafafa;
+  --editkit-toolbar-bg: #f4f4f7;
+  --editkit-content-bg: #fafafa;
+  --editkit-surface-hover: #f1f1f5;
+  --editkit-surface-active: #e4e4e9;
+  --editkit-surface-elevated: #ffffff;
   --editkit-popup-bg: #ffffff;
-  --editkit-popup-border: #e4e4e7;
+  --editkit-popup-border: #e2e4ea;
 
   /* ── Crisp Neutral Text ── */
   --editkit-text: #18181b;
   --editkit-text-muted: #71717a;
-  --editkit-text-dim: #a1a1aa;
-  --editkit-placeholder: #d4d4d8;
+  --editkit-text-dim: #9499a8;
+  --editkit-placeholder: #a1a6b4;
 
   /* ── Cool Gray Borders ── */
-  --editkit-border: #e4e4e7;
-  --editkit-border-hover: #d4d4d8;
+  --editkit-border: #e2e4ea;
+  --editkit-inner-border: #e6e8ef;
+  --editkit-border-hover: #d2d5e0;
   --editkit-border-focus: #6366f1;
-  --editkit-divider: #f4f4f5;
+  --editkit-divider: #e8eaef;
 
   /* ── Indigo Accent ── */
   --editkit-primary: #6366f1;
@@ -102,7 +106,7 @@
   /* ── Minimal Shadows ── */
   --editkit-shadow-popup: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
   --editkit-shadow-floating: 0 4px 12px rgba(0, 0, 0, 0.06);
-  --editkit-shadow-card: 0 0 0 1px rgba(0, 0, 0, 0.05);
+  --editkit-shadow-card: 0 8px 30px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
 /* ==========================================================================
@@ -120,6 +124,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px 8px 14px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   user-select: text;
   overflow: visible;
@@ -143,17 +149,16 @@
 .editkit-toolbar {
   display: flex;
   align-items: center;
-  gap: 0;
-  padding: 6px 10px;
+  gap: 3px;
+  padding: 4px 8px;
   background: var(--editkit-toolbar-bg);
-  border-bottom: 1px solid var(--editkit-border);
-  border-top-left-radius: var(--editkit-radius-card);
-  border-top-right-radius: var(--editkit-radius-card);
+  border: 1px solid var(--editkit-inner-border);
+  border-radius: 10px;
   user-select: none;
   overflow: visible;
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 100;
+  box-sizing: border-box;
 }
 
 .editkit-toolbar-group {
@@ -190,7 +195,6 @@
 
 .editkit-tb-btn:active:not(:disabled):not(.editkit-tb-btn--disabled) {
   background: var(--editkit-surface-active);
-  transform: scale(0.95);
   opacity: 1;
 }
 
@@ -372,7 +376,6 @@
 
 .editkit-tb-ai-btn:hover {
   filter: brightness(1.1);
-  transform: translateY(-1px);
 }
 
 .editkit-tb-ai-btn svg {
@@ -409,7 +412,7 @@
   border-radius: 10px;
   box-shadow: var(--editkit-shadow-popup);
   padding: 4px;
-  z-index: 100;
+  z-index: 250;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-4px);
@@ -425,6 +428,23 @@
 .editkit-tb-dropdown-menu--compact {
   min-width: 160px;
   white-space: nowrap;
+}
+
+.editkit-tb-dropdown-menu--font {
+  min-width: 180px;
+  max-height: 320px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.editkit-tb-dropdown-menu--font::-webkit-scrollbar {
+  width: 5px;
+}
+
+.editkit-tb-dropdown-menu--font::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
 }
 
 .editkit-tb-dropdown-menu--align {
@@ -1641,6 +1661,53 @@
 .editkit-bubble-dropdown-wrap {
   position: relative;
   display: inline-flex;
+}
+
+.editkit-bubble-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 6px;
+  border: 1px solid var(--editkit-border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--editkit-text);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  max-width: 100px;
+}
+
+.editkit-bubble-pill-btn:hover {
+  background: var(--editkit-surface-hover);
+  border-color: var(--editkit-border-hover);
+}
+
+.editkit-bubble-pill-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70px;
+}
+
+.editkit-bubble-dropdown-menu--font {
+  min-width: 160px;
+  max-height: 220px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.editkit-bubble-dropdown-menu--font::-webkit-scrollbar {
+  width: 4px;
+}
+
+.editkit-bubble-dropdown-menu--font::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
 }
 
 .editkit-bubble-btn--chevron {
@@ -3444,19 +3511,22 @@ body.editkit-row-resizing * {
    ========================================================================== */
 
 .editkit-content {
-  padding: 24px 32px;
-  min-height: 280px;
-  max-height: 65vh;
+  padding: 20px 24px;
+  min-height: 480px;
+  max-height: 70vh;
   overflow-y: auto;
   scrollbar-width: none;
   outline: none;
+  background: var(--editkit-content-bg);
+  border: 1px solid var(--editkit-inner-border);
+  border-radius: 10px;
   font-family: var(--editkit-font);
   font-size: var(--editkit-font-size);
   line-height: var(--editkit-line-height);
   color: var(--editkit-text);
   caret-color: var(--editkit-primary);
-  border-bottom-left-radius: var(--editkit-radius-card);
-  border-bottom-right-radius: var(--editkit-radius-card);
+  box-sizing: border-box;
+  position: relative;
 }
 
 .editkit-content::-webkit-scrollbar {
@@ -3467,29 +3537,20 @@ body.editkit-row-resizing * {
   background: var(--editkit-selection);
 }
 
-@keyframes editkitTyping {
-  0% {
-    clip-path: inset(0 100% 0 0);
-  }
-
-  100% {
-    clip-path: inset(0 0 0 0);
-  }
-}
-
 .editkit-content--empty::before {
   content: attr(data-placeholder);
   color: var(--editkit-placeholder);
   pointer-events: none;
   position: absolute;
+  top: 20px;
+  left: 24px;
   font-style: normal;
   font-weight: 400;
+  font-size: 14px;
   letter-spacing: -0.01em;
   opacity: 0.85;
   user-select: none;
   white-space: nowrap;
-  clip-path: inset(0 100% 0 0);
-  animation: editkitTyping 1.1s steps(38, end) forwards;
 }
 
 /* Headings Typography */

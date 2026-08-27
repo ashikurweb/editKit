@@ -61,10 +61,25 @@ const FONT_FAMILIES = [
   'DM Sans',
   'Inter',
   'Plus Jakarta Sans',
-  'Geist',
-  'Fira Code',
+  'Outfit',
+  'Poppins',
+  'Roboto',
+  'Montserrat',
+  'Open Sans',
+  'Lato',
+  'Comic Neue',
+  'Space Grotesk',
   'Playfair Display',
   'Merriweather',
+  'Lora',
+  'Cinzel',
+  'Georgia',
+  'Fira Code',
+  'JetBrains Mono',
+  'Space Mono',
+  'Caveat',
+  'Dancing Script',
+  'Oswald',
   'System UI',
 ];
 
@@ -397,7 +412,7 @@ export class EditKitToolbar {
     trigger.appendChild(chevron);
 
     const menu = document.createElement('div');
-    menu.classList.add('editkit-tb-dropdown-menu');
+    menu.classList.add('editkit-tb-dropdown-menu', 'editkit-tb-dropdown-menu--font');
 
     for (const font of FONT_FAMILIES) {
       const it = document.createElement('button');

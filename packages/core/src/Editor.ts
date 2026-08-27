@@ -467,7 +467,24 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     increaseFontSize: () => this._setFontSize(this._currentFontSize + 1),
     decreaseFontSize: () => this._setFontSize(Math.max(8, this._currentFontSize - 1)),
     getFontSize: () => this._currentFontSize,
-    getFontFamily: () => this._currentFontFamily,
+    getFontFamily: (): string => {
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount > 0 && this.contentEl.contains(sel.anchorNode)) {
+        let node: Node | null = sel.anchorNode;
+        while (node && node !== this.contentEl) {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            const el = node as HTMLElement;
+            const fam = el.style?.fontFamily;
+            if (fam) {
+              const clean = fam.split(',')[0].replace(/['"]/g, '').trim();
+              if (clean) return clean;
+            }
+          }
+          node = node.parentNode;
+        }
+      }
+      return this._currentFontFamily;
+    },
 
     // ── Text Color & Background ──
     setTextColor: (color: string) => this._setInlineStyle('color', color),
@@ -978,7 +995,13 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
 
   private _setFontFamily(family: string): void {
     this._currentFontFamily = family;
-    this.contentEl.style.fontFamily = `"${family}", -apple-system, sans-serif`;
+    const sel = window.getSelection();
+    if (sel && !sel.isCollapsed && this.contentEl.contains(sel.anchorNode)) {
+      this._setInlineStyle('fontFamily', `"${family}", -apple-system, sans-serif`);
+    } else {
+      this.contentEl.style.fontFamily = `"${family}", -apple-system, sans-serif`;
+      this._saveHistory();
+    }
     this._emitUpdate();
   }
 

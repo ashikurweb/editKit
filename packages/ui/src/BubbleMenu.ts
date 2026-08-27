@@ -9,11 +9,38 @@ import { ColorPickerPopover } from './ColorPicker';
 import { LinkPopover } from './LinkPopover';
 import { TooltipManager } from './Tooltip';
 
+const FONT_FAMILIES = [
+  'DM Sans',
+  'Inter',
+  'Plus Jakarta Sans',
+  'Outfit',
+  'Poppins',
+  'Roboto',
+  'Montserrat',
+  'Open Sans',
+  'Lato',
+  'Comic Neue',
+  'Space Grotesk',
+  'Playfair Display',
+  'Merriweather',
+  'Lora',
+  'Cinzel',
+  'Georgia',
+  'Fira Code',
+  'JetBrains Mono',
+  'Space Mono',
+  'Caveat',
+  'Dancing Script',
+  'Oswald',
+  'System UI',
+];
+
 export class BubbleMenu {
   readonly element: HTMLElement;
   private editor: EditKitEditor;
   private linkPopover: LinkPopover;
   private isVisible: boolean = false;
+  private fontLabel?: HTMLElement;
   private sizeDisplay!: HTMLElement;
   private activeDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
@@ -84,6 +111,11 @@ export class BubbleMenu {
       return d;
     };
 
+    // ── 0. Font Family Dropdown: [ DM Sans ˅ ] ──
+    this.element.appendChild(this._createFontDropdown());
+
+    this.element.appendChild(divider());
+
     // ── 1. Font Size Stepper: [ -  16  + ] ──
     const sizeWrap = document.createElement('div');
     sizeWrap.classList.add('editkit-bubble-stepper');
@@ -143,6 +175,65 @@ export class BubbleMenu {
 
     // ── 5. Color Picker: A ──
     this.element.appendChild(this._createColorDropdown());
+  }
+
+  private _createFontDropdown(): HTMLElement {
+    const wrap = document.createElement('div');
+    wrap.className = 'editkit-bubble-dropdown-wrap';
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'editkit-bubble-pill-btn';
+    trigger.setAttribute('data-editkit-tooltip', 'Font family');
+    trigger.setAttribute('aria-label', 'Font family');
+
+    this.fontLabel = document.createElement('span');
+    this.fontLabel.className = 'editkit-bubble-pill-text';
+    this.fontLabel.textContent = this.editor.commands.getFontFamily();
+
+    const chevron = document.createElement('span');
+    chevron.className = 'editkit-bubble-chevron';
+    chevron.innerHTML = icons.chevronDown;
+
+    trigger.appendChild(this.fontLabel);
+    trigger.appendChild(chevron);
+
+    const menu = document.createElement('div');
+    menu.className = 'editkit-bubble-dropdown-menu editkit-bubble-dropdown-menu--font';
+
+    for (const font of FONT_FAMILIES) {
+      const it = document.createElement('button');
+      it.type = 'button';
+      it.className = 'editkit-bubble-menu-item';
+      it.style.fontFamily = `"${font}", sans-serif`;
+      it.textContent = font;
+
+      it.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.editor.commands.setFontFamily(font);
+        if (this.fontLabel) this.fontLabel.textContent = font;
+        this._closeAllDropdowns();
+      });
+
+      menu.appendChild(it);
+    }
+
+    trigger.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      TooltipManager.hide();
+      const isOpen = wrap.classList.contains('editkit-bubble-dropdown-wrap--open');
+      this._closeAllDropdowns();
+      if (!isOpen) {
+        wrap.classList.add('editkit-bubble-dropdown-wrap--open');
+        this.activeDropdown = wrap;
+      }
+    });
+
+    wrap.appendChild(trigger);
+    wrap.appendChild(menu);
+    return wrap;
   }
 
   private _createAlignDropdown(): HTMLElement {
@@ -306,6 +397,10 @@ export class BubbleMenu {
         b.classList.remove('editkit-bubble-btn--active');
       }
     });
+
+    if (this.fontLabel) {
+      this.fontLabel.textContent = this.editor.commands.getFontFamily();
+    }
 
     if (this.sizeDisplay) {
       this.sizeDisplay.textContent = String(this.editor.commands.getFontSize() || 16);
