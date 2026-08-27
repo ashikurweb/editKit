@@ -2451,20 +2451,34 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     allElements.forEach(el => {
       const attrs = Array.from(el.attributes);
       attrs.forEach(attr => {
-        if (attr.name.startsWith('on') || attr.name === 'style') {
-          if (attr.name === 'style') {
-            const style = (el as HTMLElement).style;
-            const safeProps = ['color', 'background-color', 'text-align', 'font-weight',
-              'font-style', 'text-decoration', 'font-size', 'font-family'];
-            const safeStyles: string[] = [];
-            for (const prop of safeProps) {
-              const val = style.getPropertyValue(prop);
-              if (val) safeStyles.push(`${prop}: ${val}`);
-            }
+        const attrName = attr.name.toLowerCase();
+
+        if (attrName === 'style') {
+          const style = (el as HTMLElement).style;
+          // Let the editor theme own foreground and background colors. Copied
+          // pages commonly include white backgrounds and dark text inline,
+          // which otherwise override the editor's dark theme.
+          const safeProps = ['text-align', 'font-weight', 'font-style',
+            'text-decoration', 'font-size', 'font-family'];
+          const safeStyles: string[] = [];
+          for (const prop of safeProps) {
+            const val = style.getPropertyValue(prop);
+            if (val) safeStyles.push(`${prop}: ${val}`);
+          }
+          if (safeStyles.length > 0) {
             el.setAttribute('style', safeStyles.join('; '));
           } else {
             el.removeAttribute(attr.name);
           }
+        } else if (
+          attrName.startsWith('on') ||
+          attrName === 'bgcolor' ||
+          attrName === 'color' ||
+          attrName === 'background'
+        ) {
+          // Remove event handlers and legacy presentational attributes that can
+          // bypass the inline-style filter above.
+          el.removeAttribute(attr.name);
         }
       });
 
