@@ -17,6 +17,9 @@ import type {
   HeadingLevel,
   TableOptions,
   TableCellInfo,
+  TableBorderOptions,
+  TableHorizontalAlign,
+  TableVerticalAlign,
   BulletListStyle,
   NumberedListStyle,
   PanelType,
@@ -491,6 +494,7 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     alignCenter: () => this._setAlignment('center'),
     alignRight: () => this._setAlignment('right'),
     alignJustify: () => this._setAlignment('justify'),
+    setTextAlign: (alignment: TextAlign) => this._setAlignment(alignment),
     setLineHeight: (height: string | number) => this._setLineHeight(height),
     getLineHeight: () => this._currentLineHeight,
 
@@ -538,6 +542,7 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     },
     clearContent: () => this.clearContent(),
     clearAll: () => this.clearContent(),
+    getActiveBlock: () => this._getActiveBlock(),
     clearFormatting: () => this._clearFormatting(),
   };
 

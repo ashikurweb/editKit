@@ -1,14 +1,18 @@
-# @editkit/vue ✨
+# EditKit Vue Rich Text Editor — `@editkit/vue`
 
 <p align="center">
-  <strong>The Ultimate Vue 3 Rich Text Editor Component & Composables — Zero Dependencies, Native Tables & 2D Color Picker</strong>
+  <strong>A TypeScript WYSIWYG editor component and composable for Vue 3 and Nuxt</strong>
 </p>
 
+`@editkit/vue` is the official Vue 3 and Nuxt integration for [EditKit Text Editor](https://www.npmjs.com/package/editkit-text-editor), with `v-model`, native tables, a color picker, and floating menus.
+
 <p align="center">
+  <a href="https://www.npmjs.com/package/@editkit/vue"><img src="https://img.shields.io/npm/v/@editkit/vue?logo=npm" alt="@editkit/vue npm version" /></a>
+  <a href="https://www.npmjs.com/package/@editkit/vue"><img src="https://img.shields.io/npm/dm/@editkit/vue?logo=npm" alt="@editkit/vue monthly downloads" /></a>
   <img src="https://img.shields.io/badge/Vue-3.x-42b883?logo=vuedotjs&logoColor=white" alt="Vue 3 Support" />
   <img src="https://img.shields.io/badge/Nuxt-3.x-00dc82?logo=nuxt.js&logoColor=white" alt="Nuxt 3 Ready" />
   <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Dependencies-0%20External-8b5cf6" alt="Zero Dependencies" />
+  <img src="https://img.shields.io/badge/Editor%20Engine-First%20Party-8b5cf6" alt="No third-party editor engine" />
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
 </p>
 
@@ -20,7 +24,7 @@
 
 ## ⚡ Why @editkit/vue?
 
-- 🚀 **Zero External Dependencies**: Pure native TypeScript. No bloated third-party wrapper.
+- 🚀 **No Third-Party Editor Engine**: Built in TypeScript without ProseMirror, Lexical, Slate, or Quill.
 - 🟢 **Native Vue 3**: Fully supports `v-model`, `ref`, `reactive`, `<script setup>`, and Nuxt 3.
 - 📊 **First-Class Interactive Tables**: 6×6 hover grid selector, single-click row/column management, and cell coloring.
 - 🎨 **2D HSV Custom Color Picker**: 21 palette swatches + 2D spectrum canvas and hue slider.
@@ -42,6 +46,8 @@ pnpm add @editkit/vue @editkit/ui
 # Using yarn
 yarn add @editkit/vue @editkit/ui
 ```
+
+All-in-one alternative: `npm install editkit-text-editor vue`, then import from `editkit-text-editor/vue` and `editkit-text-editor/styles`.
 
 ---
 
@@ -84,11 +90,11 @@ const content = ref('<p>Hello from Vue 3 and EditKit!</p>');
 
 ```vue
 <script setup lang="ts">
-import { useTemplateRef } from 'vue';
+import { ref } from 'vue';
 import { useEditKitEditor } from '@editkit/vue';
 import '@editkit/ui/styles';
 
-const editorEl = useTemplateRef<HTMLElement>('editorEl');
+const editorEl = ref<HTMLElement | null>(null);
 const { editor } = useEditKitEditor(editorEl, {
   content: '<p>Composable based editor</p>',
   theme: 'dark',

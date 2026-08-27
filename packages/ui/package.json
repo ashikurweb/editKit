@@ -1,16 +1,27 @@
 {
   "name": "@editkit/ui",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "EditKit UI Components — Modern Toolbar, Floating Bubble Menu, Table Menu, 2D Color Picker & Pure CSS Theme Engine.",
   "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
     "./styles": "./src/styles/editor.css"
   },
   "files": [
-    "src",
+    "dist",
+    "src/styles/editor.css",
     "README.md",
     "LICENSE"
   ],
@@ -19,7 +30,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ashikurweb/editKit-text-editor.git",
+    "url": "git+https://github.com/ashikurweb/editKit-text-editor.git",
     "directory": "packages/ui"
   },
   "homepage": "https://github.com/ashikurweb/editKit-text-editor#readme",
@@ -28,6 +39,7 @@
   },
   "keywords": [
     "editkit",
+    "editkit-text-editor",
     "editkit-ui",
     "@editkit/ui",
     "editor-ui",
@@ -40,6 +52,12 @@
   ],
   "license": "MIT",
   "author": "Ashikur Rahman",
+  "sideEffects": [
+    "./src/styles/editor.css"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022 --external @editkit/core"
+  },
   "dependencies": {
     "@editkit/core": "workspace:*"
   },

@@ -1,15 +1,25 @@
 {
   "name": "@editkit/vue",
-  "version": "1.0.5",
-  "description": "Official Vue 3 Rich Text Editor Component & Composables with First-Class Tables, 2D Color Picker & Zero Dependencies. Fast alternative to TipTap & Quill for Nuxt 3, Vite & Laravel Inertia Vue.",
+  "version": "1.0.6",
+  "description": "Vue 3 and Nuxt rich text editor with components, composables, tables, and no third-party editor engine. A TypeScript alternative to TipTap and Quill.",
   "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
   },
   "files": [
-    "src",
+    "dist",
     "README.md",
     "LICENSE"
   ],
@@ -18,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ashikurweb/editKit-text-editor.git",
+    "url": "git+https://github.com/ashikurweb/editKit-text-editor.git",
     "directory": "packages/vue"
   },
   "homepage": "https://github.com/ashikurweb/editKit-text-editor#readme",
@@ -27,6 +37,7 @@
   },
   "keywords": [
     "editkit",
+    "editkit-text-editor",
     "editkit-vue",
     "@editkit/vue",
     "vue",
@@ -47,6 +58,9 @@
   ],
   "license": "MIT",
   "author": "Ashikur Rahman",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022 --external @editkit/core --external @editkit/ui --external vue"
+  },
   "peerDependencies": {
     "vue": "^3.0.0"
   },

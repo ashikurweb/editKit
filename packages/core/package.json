@@ -1,15 +1,25 @@
 {
   "name": "@editkit/core",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "EditKit Core Engine — Zero-dependency, framework-agnostic rich text editor in pure TypeScript. Fast, extensible alternative to ProseMirror, Quill, Lexical & Slate.",
   "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
   },
   "files": [
-    "src",
+    "dist",
     "README.md",
     "LICENSE"
   ],
@@ -18,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ashikurweb/editKit-text-editor.git",
+    "url": "git+https://github.com/ashikurweb/editKit-text-editor.git",
     "directory": "packages/core"
   },
   "homepage": "https://github.com/ashikurweb/editKit-text-editor#readme",
@@ -27,6 +37,7 @@
   },
   "keywords": [
     "editkit",
+    "editkit-text-editor",
     "editkit-core",
     "@editkit/core",
     "editor",
@@ -41,6 +52,9 @@
   ],
   "license": "MIT",
   "author": "Ashikur Rahman",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022"
+  },
   "devDependencies": {
     "typescript": "^5.8.3"
   }

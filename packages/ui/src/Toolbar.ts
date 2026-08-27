@@ -44,6 +44,7 @@ export interface ToolbarFeaturesConfig {
   bookmark?: boolean;
   panel?: boolean;
   callout?: boolean;
+  insertElements?: boolean;
   selectAll?: boolean;
   clearAll?: boolean;
   comment?: boolean;

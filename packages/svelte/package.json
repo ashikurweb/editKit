@@ -1,15 +1,25 @@
 {
   "name": "@editkit/svelte",
-  "version": "1.0.5",
-  "description": "Official Svelte Rich Text Editor Action with First-Class Tables, 2D Color Picker & Zero Dependencies for Svelte 3/4/5 (Runes) & SvelteKit.",
+  "version": "1.0.6",
+  "description": "Svelte and SvelteKit rich text editor action with tables, color picker, and no third-party editor engine. Supports Svelte 3, 4, and 5.",
   "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
   },
   "files": [
-    "src",
+    "dist",
     "README.md",
     "LICENSE"
   ],
@@ -18,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ashikurweb/editKit-text-editor.git",
+    "url": "git+https://github.com/ashikurweb/editKit-text-editor.git",
     "directory": "packages/svelte"
   },
   "homepage": "https://github.com/ashikurweb/editKit-text-editor#readme",
@@ -27,6 +37,7 @@
   },
   "keywords": [
     "editkit",
+    "editkit-text-editor",
     "editkit-svelte",
     "@editkit/svelte",
     "svelte",
@@ -43,8 +54,11 @@
   ],
   "license": "MIT",
   "author": "Ashikur Rahman",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022 --external @editkit/core --external @editkit/ui --external svelte"
+  },
   "peerDependencies": {
-    "svelte": ">=3.0.0 || ^4.0.0 || ^5.0.0"
+    "svelte": "^3.0.0 || ^4.0.0 || ^5.0.0"
   },
   "peerDependenciesMeta": {
     "svelte": {

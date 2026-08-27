@@ -31,7 +31,7 @@ export class TableFloatingMenu {
   private leftControlsWrap: HTMLElement;
   private bottomControlsWrap: HTMLElement;
   private cornerGrip: HTMLElement;
-  private headerCaretBtn: HTMLElement;
+  private headerCaretBtn: HTMLButtonElement;
   private tableCornerResizer: HTMLElement;
   private dropdownMenuEl: HTMLElement | null = null;
   private resizeGuideLine: HTMLElement;

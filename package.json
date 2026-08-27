@@ -1,23 +1,123 @@
 {
-  "name": "editkit",
-  "private": true,
-  "version": "1.0.5",
-  "description": "EditKit — Premium Framework-Agnostic Rich Text Editor",
+  "name": "editkit-text-editor",
+  "version": "1.0.6",
+  "description": "Open-source TypeScript rich text and WYSIWYG editor for React, Next.js, Vue, Nuxt, Svelte, SvelteKit, and vanilla JavaScript.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./types/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./types/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./react": {
+      "import": {
+        "types": "./types/react.d.ts",
+        "default": "./dist/react.js"
+      },
+      "require": {
+        "types": "./types/react.d.cts",
+        "default": "./dist/react.cjs"
+      }
+    },
+    "./vue": {
+      "import": {
+        "types": "./types/vue.d.ts",
+        "default": "./dist/vue.js"
+      },
+      "require": {
+        "types": "./types/vue.d.cts",
+        "default": "./dist/vue.cjs"
+      }
+    },
+    "./svelte": {
+      "import": {
+        "types": "./types/svelte.d.ts",
+        "default": "./dist/svelte.js"
+      },
+      "require": {
+        "types": "./types/svelte.d.cts",
+        "default": "./dist/svelte.cjs"
+      }
+    },
+    "./styles": "./src/styles.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src/styles.css",
+    "types",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": [
+    "./src/styles.css"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ashikurweb/editKit-text-editor.git"
+    "url": "git+https://github.com/ashikurweb/editKit-text-editor.git"
   },
   "homepage": "https://github.com/ashikurweb/editKit-text-editor#readme",
   "bugs": {
     "url": "https://github.com/ashikurweb/editKit-text-editor/issues"
   },
+  "keywords": [
+    "editkit-text-editor",
+    "editkit",
+    "rich-text-editor",
+    "wysiwyg-editor",
+    "text-editor",
+    "typescript-editor",
+    "javascript-editor",
+    "react-rich-text-editor",
+    "nextjs-rich-text-editor",
+    "vue-rich-text-editor",
+    "nuxt-rich-text-editor",
+    "svelte-rich-text-editor",
+    "sveltekit-rich-text-editor",
+    "angular-rich-text-editor",
+    "laravel-rich-text-editor",
+    "inertia-editor",
+    "contenteditable",
+    "headless-editor",
+    "document-editor",
+    "tiptap-alternative",
+    "quill-alternative",
+    "lexical-alternative",
+    "zero-dependencies"
+  ],
+  "license": "MIT",
+  "author": "Ashikur Rahman",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "dev": "turbo run dev",
-    "build": "turbo run build",
+    "build": "turbo run build && pnpm run build:package",
+    "build:package": "tsup src/index.ts src/react.ts src/vue.ts src/svelte.ts --format esm,cjs --sourcemap --clean --target es2022 --external @editkit/core --external @editkit/ui --external @editkit/react --external @editkit/vue --external @editkit/svelte --external react --external react-dom --external vue --external svelte",
+    "typecheck": "tsc --noEmit --project tsconfig.json",
     "playground": "pnpm --filter @editkit/playground dev",
     "clean": "turbo run clean"
   },
+  "dependencies": {
+    "@editkit/core": "workspace:*",
+    "@editkit/react": "workspace:*",
+    "@editkit/svelte": "workspace:*",
+    "@editkit/ui": "workspace:*",
+    "@editkit/vue": "workspace:*"
+  },
   "devDependencies": {
+    "tsup": "^8.5.1",
     "turbo": "^2.5.0",
     "typescript": "^5.8.3"
   },

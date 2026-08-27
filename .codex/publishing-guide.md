@@ -1,6 +1,6 @@
 # 📦 EditKit NPM Publishing & Maintenance Guide
 
-This document is a comprehensive, step-by-step guide on how to **publish**, **update**, and **maintain** the `@editkit` packages on NPM.
+This document explains how to **publish**, **update**, and **maintain** the `editkit-text-editor` umbrella package and the modular `@editkit/*` packages on npm.
 
 ---
 
@@ -26,6 +26,7 @@ Make sure you have:
 ## 2. NPM Account & Scope Setup
 
 EditKit uses scoped package names:
+- `editkit-text-editor` (all-in-one public package)
 - `@editkit/core`
 - `@editkit/ui`
 - `@editkit/react`
@@ -68,6 +69,7 @@ npm whoami
 ### Step 3: Run the build & typecheck
 ```bash
 npm run build
+pnpm -r exec tsc --noEmit
 ```
 
 ### Step 4: Publish all packages simultaneously
@@ -76,7 +78,7 @@ pnpm -r publish --access public
 ```
 
 > [!TIP]
-> The `-r` flag tells pnpm to recursively publish all workspace packages in the correct dependency order (`core` ➔ `ui` ➔ `react` / `vue` / `svelte`).
+> The `-r` flag tells pnpm to recursively publish all workspace packages in dependency order (`core` ➔ `ui` ➔ framework integrations ➔ `editkit-text-editor`). The private playground is skipped.
 
 ---
 
@@ -111,7 +113,7 @@ pnpm -r publish --access public
 ## 5. Monorepo Package Structure
 
 ```
-Vellora-editor / EditKit
+editKit-text-editor
 ├── assets/
 │   └── editkit-preview.png     # Screenshot shown in README.md
 ├── packages/
@@ -128,7 +130,8 @@ Vellora-editor / EditKit
 │   └── publishing-guide.md     # Quick Codex reference
 ├── README.md                   # Main GitHub / NPM Documentation
 ├── LICENSE                     # MIT Open-Source License
-├── package.json                # Root monorepo workspace configuration
+├── src/                        # editkit-text-editor umbrella exports
+├── package.json                # Root package and monorepo configuration
 └── pnpm-workspace.yaml         # Workspace definitions
 ```
 
@@ -143,4 +146,4 @@ Vellora-editor / EditKit
 | **Check TypeScript types** | `pnpm -r exec tsc --noEmit` |
 | **Clean build caches** | `npm run clean` |
 | **Check NPM Login** | `npm whoami` |
-| **Publish to NPM** | `pnpm -r publish --access public` |
+| **Publish to npm** | `pnpm -r publish --access public` |

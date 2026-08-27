@@ -1,14 +1,18 @@
-# @editkit/react ✨
+# EditKit React Rich Text Editor — `@editkit/react`
 
 <p align="center">
-  <strong>The Ultimate React Rich Text Editor SDK — Zero Dependencies, Native Tables, 2D Color Picker & Modular Toolbars</strong>
+  <strong>A TypeScript WYSIWYG editor component and hook for React and Next.js</strong>
 </p>
 
+`@editkit/react` is the official React and Next.js integration for [EditKit Text Editor](https://www.npmjs.com/package/editkit-text-editor), with native tables, a color picker, floating menus, and modular toolbars.
+
 <p align="center">
+  <a href="https://www.npmjs.com/package/@editkit/react"><img src="https://img.shields.io/npm/v/@editkit/react?logo=npm" alt="@editkit/react npm version" /></a>
+  <a href="https://www.npmjs.com/package/@editkit/react"><img src="https://img.shields.io/npm/dm/@editkit/react?logo=npm" alt="@editkit/react monthly downloads" /></a>
   <img src="https://img.shields.io/badge/React-16.8%2B%20%7C%2017%20%7C%2018%20%7C%2019-61dafb?logo=react&logoColor=black" alt="React 18 & 19" />
   <img src="https://img.shields.io/badge/Next.js-App%20%26%20Pages%20Router-black?logo=next.js&logoColor=white" alt="Next.js Support" />
   <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript Ready" />
-  <img src="https://img.shields.io/badge/Dependencies-0%20External-8b5cf6" alt="Zero Dependencies" />
+  <img src="https://img.shields.io/badge/Editor%20Engine-First%20Party-8b5cf6" alt="No third-party editor engine" />
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
 </p>
 
@@ -20,7 +24,7 @@
 
 ## ⚡ Why @editkit/react?
 
-- 🚀 **Zero External Dependencies**: 100% pure TypeScript. No heavy ProseMirror, Lexical, Slate, or Quill bundle bloat.
+- 🚀 **No Third-Party Editor Engine**: Built in TypeScript without ProseMirror, Lexical, Slate, or Quill.
 - ⚛️ **Universal React Support**: Works seamlessly in **React 16.8+**, **React 18**, **React 19**, **Next.js (App & Pages Router)**, **Remix**, and **Laravel Inertia React**.
 - 📊 **First-Class Interactive Tables**: 6×6 visual hover grid, one-click row/column add & delete, cell background coloring, and contextual table menu.
 - 🎨 **2D HSV Custom Color Picker**: Text and background highlight color with 21 palette swatches + 2D saturation/brightness spectrum and hue slider.
@@ -43,6 +47,8 @@ pnpm add @editkit/react @editkit/ui
 yarn add @editkit/react @editkit/ui
 ```
 
+All-in-one alternative: `npm install editkit-text-editor react react-dom`, then import from `editkit-text-editor/react` and `editkit-text-editor/styles`.
+
 ---
 
 ## 🚀 Quick Start
@@ -50,6 +56,8 @@ yarn add @editkit/react @editkit/ui
 ### 1. Ready-to-Use Component (`<EditKitEditor />`)
 
 ```tsx
+'use client';
+
 import React, { useState } from 'react';
 import { EditKitEditor } from '@editkit/react';
 import '@editkit/ui/styles';

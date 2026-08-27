@@ -1,10 +1,14 @@
-# @editkit/core ✨
+# EditKit Core Rich Text Editor — `@editkit/core`
 
 <p align="center">
-  <strong>EditKit Core Engine — A Zero-Dependency, High-Performance, Framework-Agnostic Rich Text Editor</strong>
+  <strong>A zero-dependency, framework-agnostic TypeScript rich text editor engine</strong>
 </p>
 
+`@editkit/core` is the headless editor engine behind [EditKit Text Editor](https://www.npmjs.com/package/editkit-text-editor), an open-source WYSIWYG editor for vanilla JavaScript, React, Vue, and Svelte.
+
 <p align="center">
+  <a href="https://www.npmjs.com/package/@editkit/core"><img src="https://img.shields.io/npm/v/@editkit/core?logo=npm" alt="@editkit/core npm version" /></a>
+  <a href="https://www.npmjs.com/package/@editkit/core"><img src="https://img.shields.io/npm/dm/@editkit/core?logo=npm" alt="@editkit/core monthly downloads" /></a>
   <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript Ready" />
   <img src="https://img.shields.io/badge/Dependencies-0%20External-8b5cf6" alt="Zero Dependencies" />
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
@@ -23,6 +27,8 @@ npm install @editkit/core @editkit/ui
 # or
 pnpm add @editkit/core @editkit/ui
 ```
+
+For the all-in-one package, install `editkit-text-editor` and import the same APIs from `editkit-text-editor`.
 
 ---
 
