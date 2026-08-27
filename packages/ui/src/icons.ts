@@ -131,4 +131,9 @@ export const icons: Record<string, string> = {
   featureRow: svg('<rect x="3" y="6" width="7.5" height="12" rx="2" stroke-width="1.8"></rect><line x1="14" y1="9.5" x2="21" y2="9.5" stroke-width="1.8" stroke-linecap="round"></line><line x1="14" y1="14.5" x2="19" y2="14.5" stroke-width="1.8" stroke-linecap="round"></line>'),
   threeUp: svg('<rect x="3" y="4" width="4.5" height="16" rx="1.5" stroke-width="1.8"></rect><rect x="9.75" y="4" width="4.5" height="16" rx="1.5" stroke-width="1.8"></rect><rect x="16.5" y="4" width="4.5" height="16" rx="1.5" stroke-width="1.8"></rect>'),
   ctaBand: svg('<rect x="3" y="5" width="18" height="14" rx="3" stroke-width="1.8"></rect><circle cx="8" cy="12" r="2.2" stroke-width="1.5"></circle><line x1="13" y1="12" x2="18" y2="12" stroke-width="1.8" stroke-linecap="round"></line>'),
+  printer: svg('<polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect>'),
+  copy: svg('<rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>'),
+  monitor: svg('<rect width="20" height="14" x="2" y="3" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line>'),
+  tablet: svg('<rect width="16" height="20" x="4" y="2" rx="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line>'),
+  smartphone: svg('<rect width="14" height="20" x="5" y="2" rx="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line>'),
 };

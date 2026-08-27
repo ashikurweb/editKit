@@ -31,5 +31,7 @@ export { SignatureModal } from './SignatureModal';
 export { CropModal } from './CropModal';
 export { EmojiPicker } from './EmojiPicker';
 export { SymbolPicker } from './SymbolPicker';
+export { PreviewModal } from './PreviewModal';
 export { TooltipManager } from './Tooltip';
 export { icons } from './icons';
+

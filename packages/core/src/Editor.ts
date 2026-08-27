@@ -33,6 +33,11 @@ const BLOCK_TAGS = new Set([
   'DIV', 'TABLE', 'TR', 'TD', 'TH', 'THEAD', 'TBODY',
 ]);
 
+// Table elements whose copied dimensions should not control pasted layout.
+const TABLE_LAYOUT_TAGS = new Set([
+  'TABLE', 'COLGROUP', 'COL', 'THEAD', 'TBODY', 'TFOOT', 'TR', 'TD', 'TH',
+]);
+
 // ── Mark ↔ tag mapping ──────────────────────────────────────
 const MARK_TAG_MAP: Record<string, string> = {
   bold: 'STRONG',
@@ -2449,6 +2454,7 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
 
     const allElements = temp.querySelectorAll('*');
     allElements.forEach(el => {
+      const isTableLayoutElement = TABLE_LAYOUT_TAGS.has(el.tagName);
       const attrs = Array.from(el.attributes);
       attrs.forEach(attr => {
         const attrName = attr.name.toLowerCase();
@@ -2474,10 +2480,12 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
           attrName.startsWith('on') ||
           attrName === 'bgcolor' ||
           attrName === 'color' ||
-          attrName === 'background'
+          attrName === 'background' ||
+          (isTableLayoutElement && (attrName === 'width' || attrName === 'height'))
         ) {
           // Remove event handlers and legacy presentational attributes that can
-          // bypass the inline-style filter above.
+          // bypass the inline-style filter above. Table dimensions are also
+          // normalized so copied column widths cannot force a cramped layout.
           el.removeAttribute(attr.name);
         }
       });

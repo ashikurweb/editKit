@@ -20,6 +20,7 @@ import { ButtonBlockMenu } from './ButtonBlockMenu';
 import { FAQBlockManager } from './FAQBlockManager';
 import { ColumnBlockManager } from './ColumnBlockManager';
 import { SignatureModal } from './SignatureModal';
+import { PreviewModal } from './PreviewModal';
 import { TooltipManager } from './Tooltip';
 
 export interface ToolbarFeaturesConfig {
@@ -47,6 +48,7 @@ export interface ToolbarFeaturesConfig {
   insertElements?: boolean;
   selectAll?: boolean;
   clearAll?: boolean;
+  preview?: boolean;
   comment?: boolean;
   versionHistory?: boolean;
   more?: boolean;
@@ -99,6 +101,7 @@ export class EditKitToolbar {
   private buttonBlockMenu: ButtonBlockMenu;
   private faqManager: FAQBlockManager;
   private columnBlockManager: ColumnBlockManager;
+  private previewModal: PreviewModal;
   private openDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
 
@@ -134,6 +137,7 @@ export class EditKitToolbar {
     this.buttonBlockMenu.mount(editor.root as HTMLElement);
     this.faqManager = new FAQBlockManager(editor);
     this.columnBlockManager = new ColumnBlockManager(editor);
+    this.previewModal = new PreviewModal(editor);
 
     TooltipManager.init();
 
@@ -255,7 +259,7 @@ export class EditKitToolbar {
     }
     if (group6.length > 0) sections.push(group6);
 
-    // Group 7: Secondary Utilities (Select All, Clear All, Comment, History, More)
+    // Group 7: Secondary Utilities (Select All, Clear All, View Preview, More)
     const group7: HTMLElement[] = [];
     if (isEnabled('selectAll')) {
       group7.push(this._createBtn('typography', 'Select All', () => this.editor.commands.selectAll(), undefined, '⌘A'));
@@ -270,8 +274,9 @@ export class EditKitToolbar {
       this.clearAllBtn.classList.add('editkit-tb-btn--disabled');
       group7.push(this.clearAllBtn);
     }
-    if (isEnabled('comment')) group7.push(this._createBtn('comment', 'Add Comment', () => this._addCommentMock()));
-    if (isEnabled('versionHistory')) group7.push(this._createBtn('clock', 'Version History', () => alert('Version History: Snapshot saved.')));
+    if (isEnabled('preview', true)) {
+      group7.push(this._createBtn('eye', 'View Preview', () => this.previewModal.show(), undefined, '⌘P'));
+    }
     if (isEnabled('more')) group7.push(this._createMoreDropdown());
     if (group7.length > 0) sections.push(group7);
 
