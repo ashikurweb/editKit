@@ -34,6 +34,7 @@ export class TableFloatingMenu {
   private headerCaretBtn: HTMLButtonElement;
   private tableCornerResizer: HTMLElement;
   private dropdownMenuEl: HTMLElement | null = null;
+  private dropdownTriggerEl: HTMLElement | null = null;
   private resizeGuideLine: HTMLElement;
   private resizeGuideLineH: HTMLElement;
 
@@ -219,20 +220,33 @@ export class TableFloatingMenu {
     };
     document.addEventListener('mousedown', onDocClick);
 
-    // 4. Global resize / scroll updates
-    const onResize = () => {
+    // 4. Scroll & wheel event handling
+    const onScroll = () => {
       if (this.activeTable && this.isVisible) {
         this._updatePositionsOnly();
       }
     };
-    window.addEventListener('resize', onResize);
-    window.addEventListener('scroll', onResize, true);
+    this.editor.contentEl.addEventListener('scroll', onScroll, { passive: true });
+
+    const onWheel = (e: WheelEvent) => {
+      this.editor.contentEl.scrollTop += e.deltaY;
+      this.editor.contentEl.scrollLeft += e.deltaX;
+      if (this.activeTable && this.isVisible) {
+        this._updatePositionsOnly();
+      }
+    };
+    this.element.addEventListener('wheel', onWheel, { passive: true });
+
+    window.addEventListener('resize', onScroll);
+    window.addEventListener('scroll', onScroll, true);
 
     this._unsubscribers.push(() => {
       this.editor.contentEl.removeEventListener('mousemove', onContentMouseMove);
+      this.editor.contentEl.removeEventListener('scroll', onScroll);
+      this.element.removeEventListener('wheel', onWheel);
       document.removeEventListener('mousedown', onDocClick);
-      window.removeEventListener('resize', onResize);
-      window.removeEventListener('scroll', onResize, true);
+      window.removeEventListener('resize', onScroll);
+      window.removeEventListener('scroll', onScroll, true);
     });
   }
 
@@ -371,88 +385,178 @@ export class TableFloatingMenu {
   }
 
   private _updatePositionsOnly(): void {
-    if (!this.activeTable) return;
+    if (!this.activeTable || !this.activeTable.isConnected) {
+      this.hide();
+      return;
+    }
     const table = this.activeTable;
     const editorRect = this.editor.root.getBoundingClientRect();
     const tableRect = table.getBoundingClientRect();
+    const contentRect = this.editor.contentEl.getBoundingClientRect();
+
+    // 1. Check if the table is completely outside the visible content area
+    if (
+      tableRect.bottom <= contentRect.top + 2 ||
+      tableRect.top >= contentRect.bottom - 2 ||
+      tableRect.right <= contentRect.left + 2 ||
+      tableRect.left >= contentRect.right - 2
+    ) {
+      this.topControlsWrap.style.display = 'none';
+      this.leftControlsWrap.style.display = 'none';
+      this.bottomControlsWrap.style.display = 'none';
+      this.cornerGrip.style.display = 'none';
+      this.headerCaretBtn.style.display = 'none';
+      this.tableCornerResizer.style.display = 'none';
+      this._closeDropdown();
+      return;
+    }
 
     const tableTop = tableRect.top - editorRect.top;
     const tableLeft = tableRect.left - editorRect.left;
     const tableWidth = tableRect.width;
     const tableHeight = tableRect.height;
 
-    // Corner Grip (comfortable spacing)
-    this.cornerGrip.style.top = `${tableTop - 20}px`;
-    this.cornerGrip.style.left = `${tableLeft - 20}px`;
-
-    // Top Controls (comfortable spacing)
-    this.topControlsWrap.style.top = `${tableTop - 18}px`;
-    this.topControlsWrap.style.left = `${tableLeft}px`;
-    this.topControlsWrap.style.width = `${tableWidth}px`;
-
-    // Position "+ Above" centered
-    const addAboveBtn = this.topControlsWrap.querySelector('.editkit-table-pill-btn--top') as HTMLElement;
-    if (addAboveBtn) {
-      addAboveBtn.style.left = `${tableWidth / 2}px`;
-      addAboveBtn.style.top = '-14px';
+    // 2. Corner Grip (::: handle)
+    // Check if the top-left corner is scrolled out of view or would overlap toolbar
+    const cornerTop = tableRect.top - 20;
+    const cornerLeft = tableRect.left - 20;
+    if (cornerTop < contentRect.top || cornerTop > contentRect.bottom || cornerLeft < contentRect.left - 10) {
+      this.cornerGrip.style.display = 'none';
+    } else {
+      this.cornerGrip.style.display = 'flex';
+      this.cornerGrip.style.top = `${tableTop - 20}px`;
+      this.cornerGrip.style.left = `${tableLeft - 20}px`;
     }
 
-    // Position Column Bullets at center of each column
-    const firstRow = table.rows[0];
-    if (firstRow) {
-      const colBullets = this.topControlsWrap.querySelectorAll('.editkit-table-col-bullet');
-      for (let c = 0; c < firstRow.cells.length; c++) {
-        const cell = firstRow.cells[c];
-        const cellRect = cell.getBoundingClientRect();
-        const bullet = colBullets[c] as HTMLElement;
-        if (bullet) {
-          const colCenter = (cellRect.left - tableRect.left) + cellRect.width / 2;
-          bullet.style.left = `${colCenter}px`;
+    // 3. Top Controls (+ Above button & Column Bullets)
+    // Top controls need at least 32px above the table top inside contentRect to not overlap toolbar
+    const topControlsTop = tableRect.top - 32;
+    if (topControlsTop < contentRect.top || tableRect.top > contentRect.bottom) {
+      this.topControlsWrap.style.display = 'none';
+    } else {
+      this.topControlsWrap.style.display = 'block';
+      this.topControlsWrap.style.top = `${tableTop - 18}px`;
+      this.topControlsWrap.style.left = `${tableLeft}px`;
+      this.topControlsWrap.style.width = `${tableWidth}px`;
+
+      // Position "+ Above" centered
+      const addAboveBtn = this.topControlsWrap.querySelector('.editkit-table-pill-btn--top') as HTMLElement;
+      if (addAboveBtn) {
+        addAboveBtn.style.left = `${tableWidth / 2}px`;
+        addAboveBtn.style.top = '-14px';
+      }
+
+      // Position Column Bullets at center of each column
+      const firstRow = table.rows[0];
+      if (firstRow) {
+        const colBullets = this.topControlsWrap.querySelectorAll('.editkit-table-col-bullet');
+        for (let c = 0; c < firstRow.cells.length; c++) {
+          const cell = firstRow.cells[c];
+          const cellRect = cell.getBoundingClientRect();
+          const bullet = colBullets[c] as HTMLElement;
+          if (bullet) {
+            // Check if column is within horizontal visible bounds
+            if (cellRect.right < contentRect.left || cellRect.left > contentRect.right) {
+              bullet.style.display = 'none';
+            } else {
+              bullet.style.display = 'inline-flex';
+              const colCenter = (cellRect.left - tableRect.left) + cellRect.width / 2;
+              bullet.style.left = `${colCenter}px`;
+            }
+          }
         }
       }
     }
 
-    // Left Controls (comfortable spacing)
-    this.leftControlsWrap.style.top = `${tableTop}px`;
-    this.leftControlsWrap.style.left = `${tableLeft - 18}px`;
-    this.leftControlsWrap.style.height = `${tableHeight}px`;
+    // 4. Left Controls (Row Bullets)
+    if (tableRect.left - 20 < contentRect.left - 10 || tableRect.left > contentRect.right) {
+      this.leftControlsWrap.style.display = 'none';
+    } else {
+      this.leftControlsWrap.style.display = 'block';
+      this.leftControlsWrap.style.top = `${tableTop}px`;
+      this.leftControlsWrap.style.left = `${tableLeft - 18}px`;
+      this.leftControlsWrap.style.height = `${tableHeight}px`;
 
-    // Position Row Bullets at center of each row
-    const rowBullets = this.leftControlsWrap.querySelectorAll('.editkit-table-row-bullet');
-    for (let r = 0; r < table.rows.length; r++) {
-      const row = table.rows[r];
-      const rowRect = row.getBoundingClientRect();
-      const bullet = rowBullets[r] as HTMLElement;
-      if (bullet) {
-        const rowCenter = (rowRect.top - tableRect.top) + rowRect.height / 2;
-        bullet.style.top = `${rowCenter}px`;
+      // Position Row Bullets at center of each visible row
+      const rowBullets = this.leftControlsWrap.querySelectorAll('.editkit-table-row-bullet');
+      for (let r = 0; r < table.rows.length; r++) {
+        const row = table.rows[r];
+        const rowRect = row.getBoundingClientRect();
+        const bullet = rowBullets[r] as HTMLElement;
+        if (bullet) {
+          // If this row is scrolled out above contentRect or below contentRect, hide bullet
+          if (rowRect.bottom < contentRect.top + 8 || rowRect.top > contentRect.bottom - 8) {
+            bullet.style.display = 'none';
+          } else {
+            bullet.style.display = 'inline-flex';
+            const rowCenter = (rowRect.top - tableRect.top) + rowRect.height / 2;
+            bullet.style.top = `${rowCenter}px`;
+          }
+        }
       }
     }
 
-    // Bottom Controls (+ Below)
-    this.bottomControlsWrap.style.top = `${tableTop + tableHeight + 10}px`;
-    this.bottomControlsWrap.style.left = `${tableLeft}px`;
-    this.bottomControlsWrap.style.width = `${tableWidth}px`;
+    // 5. Bottom Controls (+ Below Button)
+    // Needs 30px below table bottom inside contentRect
+    if (tableRect.bottom + 30 > contentRect.bottom || tableRect.bottom < contentRect.top) {
+      this.bottomControlsWrap.style.display = 'none';
+    } else {
+      this.bottomControlsWrap.style.display = 'block';
+      this.bottomControlsWrap.style.top = `${tableTop + tableHeight + 10}px`;
+      this.bottomControlsWrap.style.left = `${tableLeft}px`;
+      this.bottomControlsWrap.style.width = `${tableWidth}px`;
 
-    const addBelowBtn = this.bottomControlsWrap.querySelector('.editkit-table-pill-btn--bottom') as HTMLElement;
-    if (addBelowBtn) {
-      addBelowBtn.style.left = `${tableWidth / 2}px`;
+      const addBelowBtn = this.bottomControlsWrap.querySelector('.editkit-table-pill-btn--bottom') as HTMLElement;
+      if (addBelowBtn) {
+        addBelowBtn.style.left = `${tableWidth / 2}px`;
+      }
     }
 
-    // Bottom-Right Corner Resizer (Square Shape Resizer)
-    this.tableCornerResizer.style.top = `${tableTop + tableHeight - 7}px`;
-    this.tableCornerResizer.style.left = `${tableLeft + tableWidth - 7}px`;
+    // 6. Bottom-Right Corner Resizer
+    if (
+      tableRect.bottom > contentRect.bottom ||
+      tableRect.bottom < contentRect.top ||
+      tableRect.right > contentRect.right ||
+      tableRect.right < contentRect.left
+    ) {
+      this.tableCornerResizer.style.display = 'none';
+    } else {
+      this.tableCornerResizer.style.display = 'block';
+      this.tableCornerResizer.style.top = `${tableTop + tableHeight - 7}px`;
+      this.tableCornerResizer.style.left = `${tableLeft + tableWidth - 7}px`;
+    }
 
-    // Header Caret Button (v) inside the active header cell (aligned to right)
+    // 7. Header Caret Button (v) inside the active header cell
+    const firstRow = table.rows[0];
     const activeCol = this.activeCell ? this.activeCell.cellIndex : (firstRow ? firstRow.cells.length - 1 : 0);
     const targetHeader = (firstRow && firstRow.cells[activeCol]) || firstRow?.cells[0];
     if (targetHeader) {
-      const cellRect = targetHeader.getBoundingClientRect();
-      this.headerCaretBtn.style.top = `${cellRect.top - editorRect.top + 6}px`;
-      this.headerCaretBtn.style.left = `${cellRect.right - editorRect.left - 26}px`;
-      this.headerCaretBtn.style.display = 'flex';
+      const headerCellRect = targetHeader.getBoundingClientRect();
+      if (
+        headerCellRect.bottom <= contentRect.top + 10 ||
+        headerCellRect.top >= contentRect.bottom - 10 ||
+        headerCellRect.right <= contentRect.left ||
+        headerCellRect.left >= contentRect.right
+      ) {
+        this.headerCaretBtn.style.display = 'none';
+      } else {
+        this.headerCaretBtn.style.display = 'flex';
+        this.headerCaretBtn.style.top = `${headerCellRect.top - editorRect.top + 6}px`;
+        this.headerCaretBtn.style.left = `${headerCellRect.right - editorRect.left - 26}px`;
+      }
     } else {
       this.headerCaretBtn.style.display = 'none';
+    }
+
+    // 8. Update Dropdown position if open
+    if (this.dropdownMenuEl && this.dropdownTriggerEl) {
+      const triggerRect = this.dropdownTriggerEl.getBoundingClientRect();
+      if (triggerRect.bottom <= contentRect.top || triggerRect.top >= contentRect.bottom) {
+        this._closeDropdown();
+      } else {
+        this.dropdownMenuEl.style.top = `${triggerRect.bottom - editorRect.top + 4}px`;
+        this.dropdownMenuEl.style.left = `${triggerRect.left - editorRect.left}px`;
+      }
     }
   }
 
@@ -813,6 +917,7 @@ export class TableFloatingMenu {
       return;
     }
 
+    this.dropdownTriggerEl = triggerEl;
     this.dropdownMenuEl = document.createElement('div');
     this.dropdownMenuEl.className = 'editkit-table-dropdown-menu';
 
@@ -960,5 +1065,6 @@ export class TableFloatingMenu {
       this.dropdownMenuEl.remove();
       this.dropdownMenuEl = null;
     }
+    this.dropdownTriggerEl = null;
   }
 }
