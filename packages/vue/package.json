@@ -1,6 +1,6 @@
 {
   "name": "@editkit/vue",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Vue 3 and Nuxt rich text editor with components, composables, tables, and no third-party editor engine. A TypeScript alternative to TipTap and Quill.",
   "type": "module",
   "main": "./dist/index.cjs",

@@ -227,16 +227,16 @@ export class DecorativeDividerModal extends Modal {
     let dividerHtml = '';
     if (item.category === 'labeled') {
       dividerHtml = `
-        <div class="editkit-decorative-divider editkit-dec-div--labeled" data-divider-type="labeled" data-rule-style="${item.ruleStyle || 'dashed'}" contenteditable="false">
+        <div class="editkit-decorative-divider editkit-dec-div--labeled" data-divider-type="labeled" data-rule-style="${item.ruleStyle || 'dashed'}" contenteditable="false" data-editkit-runtime-attrs>
           <span class="editkit-dec-div-line editkit-dec-div-line--${item.ruleStyle || 'dashed'}"></span>
-          <span class="editkit-dec-div-label" contenteditable="true" spellcheck="false">LABEL</span>
+          <span class="editkit-dec-div-label" contenteditable="true" spellcheck="false" data-editkit-runtime-attrs>LABEL</span>
           <span class="editkit-dec-div-line editkit-dec-div-line--${item.ruleStyle || 'dashed'}"></span>
         </div>
       `;
     } else if (item.category === 'ornament') {
       const sym = item.symbol || '✦';
       dividerHtml = `
-        <div class="editkit-decorative-divider editkit-dec-div--ornament" data-divider-type="ornament" data-symbol="${sym}" contenteditable="false">
+        <div class="editkit-decorative-divider editkit-dec-div--ornament" data-divider-type="ornament" data-symbol="${sym}" contenteditable="false" data-editkit-runtime-attrs>
           <span class="editkit-dec-div-symbol">${sym}&nbsp;&nbsp;&nbsp;${sym}&nbsp;&nbsp;&nbsp;${sym}</span>
         </div>
       `;
@@ -244,7 +244,7 @@ export class DecorativeDividerModal extends Modal {
       // asterism
       const sym = item.symbol || '⁂';
       dividerHtml = `
-        <div class="editkit-decorative-divider editkit-dec-div--asterism" data-divider-type="asterism" data-symbol="${sym}" contenteditable="false">
+        <div class="editkit-decorative-divider editkit-dec-div--asterism" data-divider-type="asterism" data-symbol="${sym}" contenteditable="false" data-editkit-runtime-attrs>
           <span class="editkit-dec-div-symbol">${sym}</span>
         </div>
       `;

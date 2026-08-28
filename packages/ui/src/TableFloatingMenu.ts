@@ -1,12 +1,11 @@
 // ============================================================
 // EditKit — Interactive Table Manager & Floating Overlay
 // Includes:
-// 1. Column & Row hover bullets (morphing to + icons)
-// 2. Centered "+ Above" and "+ Below" insert buttons
-// 3. Top-left corner drag grip (:::)
-// 4. Header dropdown caret (v) & Full contextual dropdown menu (Image 2)
-// 5. Interactive column width resizing on <th> (drag left/right to resize)
-// 6. Modals for Cell Color (Image 3), Table Border (Image 4), Table Alignment (Image 5)
+// 1. Centered "+ Above" and "+ Below" insert buttons
+// 2. Top-left corner drag grip (:::)
+// 3. Header dropdown caret (v) & Full contextual dropdown menu (Image 2)
+// 4. Interactive column width resizing on <th> (drag left/right to resize)
+// 5. Modals for Cell Color (Image 3), Table Border (Image 4), Table Alignment (Image 5)
 // ============================================================
 
 import type { EditKitEditor, TableCellInfo } from '@editkit/core';
@@ -28,7 +27,6 @@ export class TableFloatingMenu {
 
   // UI Elements
   private topControlsWrap: HTMLElement;
-  private leftControlsWrap: HTMLElement;
   private bottomControlsWrap: HTMLElement;
   private cornerGrip: HTMLElement;
   private headerCaretBtn: HTMLButtonElement;
@@ -73,22 +71,17 @@ export class TableFloatingMenu {
     this.element = document.createElement('div');
     this.element.classList.add('editkit-table-overlay');
 
-    // 1. Top Controls (Pill + Above & Column bullets)
+    // 1. Top Controls (+ Above)
     this.topControlsWrap = document.createElement('div');
     this.topControlsWrap.classList.add('editkit-table-top-controls');
     this.element.appendChild(this.topControlsWrap);
 
-    // 2. Left Controls (Row bullets)
-    this.leftControlsWrap = document.createElement('div');
-    this.leftControlsWrap.classList.add('editkit-table-left-controls');
-    this.element.appendChild(this.leftControlsWrap);
-
-    // 3. Bottom Controls (Pill + Below)
+    // 2. Bottom Controls (+ Below)
     this.bottomControlsWrap = document.createElement('div');
     this.bottomControlsWrap.classList.add('editkit-table-bottom-controls');
     this.element.appendChild(this.bottomControlsWrap);
 
-    // 4. Corner Grip handle
+    // 3. Corner Grip handle
     this.cornerGrip = document.createElement('div');
     this.cornerGrip.classList.add('editkit-table-corner-grip');
     this.cornerGrip.setAttribute('title', 'Table options');
@@ -106,7 +99,7 @@ export class TableFloatingMenu {
     });
     this.element.appendChild(this.cornerGrip);
 
-    // 5. Header Caret Dropdown Button (v)
+    // 4. Header Caret Dropdown Button (v)
     this.headerCaretBtn = document.createElement('button');
     this.headerCaretBtn.type = 'button';
     this.headerCaretBtn.classList.add('editkit-table-header-caret');
@@ -123,7 +116,7 @@ export class TableFloatingMenu {
     });
     this.element.appendChild(this.headerCaretBtn);
 
-    // 6. Bottom-Right Corner Resizer (Square Shape Resizing)
+    // 5. Bottom-Right Corner Resizer (Square Shape Resizing)
     this.tableCornerResizer = document.createElement('div');
     this.tableCornerResizer.classList.add('editkit-table-corner-resizer');
     this.tableCornerResizer.setAttribute('title', 'Resize table shape');
@@ -139,7 +132,7 @@ export class TableFloatingMenu {
     });
     this.element.appendChild(this.tableCornerResizer);
 
-    // 7. Vertical & Horizontal Resize guide lines
+    // 6. Vertical & Horizontal Resize guide lines
     this.resizeGuideLine = document.createElement('div');
     this.resizeGuideLine.classList.add('editkit-table-resize-guide');
     this.element.appendChild(this.resizeGuideLine);
@@ -311,10 +304,7 @@ export class TableFloatingMenu {
     if (!this.activeTable) return;
 
     const table = this.activeTable;
-    const editorRect = this.editor.root.getBoundingClientRect();
-    const tableRect = table.getBoundingClientRect();
-
-    // ── 1. Top Controls (+ Above Button & Column Bullets) ──
+    // ── 1. Top Controls (+ Above Button) ──
     this.topControlsWrap.innerHTML = '';
 
     // "+ Above" button
@@ -329,57 +319,9 @@ export class TableFloatingMenu {
     });
     this.topControlsWrap.appendChild(addAboveBtn);
 
-    // Column Bullets (One for each column)
-    const firstRow = table.rows[0];
-    if (firstRow) {
-      const totalCols = firstRow.cells.length;
-      for (let c = 0; c < totalCols; c++) {
-        const cell = firstRow.cells[c];
-        const bullet = document.createElement('button');
-        bullet.type = 'button';
-        bullet.className = 'editkit-table-col-bullet';
-        bullet.setAttribute('data-col-index', String(c));
-        bullet.setAttribute('title', 'Add column');
-        bullet.innerHTML = `
-          <span class="editkit-bullet-dot"></span>
-          <span class="editkit-bullet-plus">+</span>
-        `;
-
-        bullet.addEventListener('mousedown', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          this._addColumnAt(c);
-        });
-
-        this.topControlsWrap.appendChild(bullet);
-      }
-    }
-
-    // ── 2. Left Controls (Row Bullets) ──
-    this.leftControlsWrap.innerHTML = '';
     const totalRows = table.rows.length;
-    for (let r = 0; r < totalRows; r++) {
-      const row = table.rows[r];
-      const bullet = document.createElement('button');
-      bullet.type = 'button';
-      bullet.className = 'editkit-table-row-bullet';
-      bullet.setAttribute('data-row-index', String(r));
-      bullet.setAttribute('title', 'Add row');
-      bullet.innerHTML = `
-        <span class="editkit-bullet-dot"></span>
-        <span class="editkit-bullet-plus">+</span>
-      `;
 
-      bullet.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        this._addRowAt(r, 'below');
-      });
-
-      this.leftControlsWrap.appendChild(bullet);
-    }
-
-    // ── 3. Bottom Controls (+ Below Button) ──
+    // ── 2. Bottom Controls (+ Below Button) ──
     this.bottomControlsWrap.innerHTML = '';
     const addBelowBtn = document.createElement('button');
     addBelowBtn.type = 'button';
@@ -415,7 +357,6 @@ export class TableFloatingMenu {
       tableRect.left >= contentRect.right - 2
     ) {
       this.topControlsWrap.style.display = 'none';
-      this.leftControlsWrap.style.display = 'none';
       this.bottomControlsWrap.style.display = 'none';
       this.cornerGrip.style.display = 'none';
       this.headerCaretBtn.style.display = 'none';
@@ -441,7 +382,7 @@ export class TableFloatingMenu {
       this.cornerGrip.style.left = `${tableLeft - 20}px`;
     }
 
-    // 3. Top Controls (+ Above button & Column Bullets)
+    // 3. Top Controls (+ Above button)
     // Top controls need at least 32px above the table top inside contentRect to not overlap toolbar
     const topControlsTop = tableRect.top - 32;
     if (topControlsTop < contentRect.top || tableRect.top > contentRect.bottom) {
@@ -459,57 +400,9 @@ export class TableFloatingMenu {
         addAboveBtn.style.top = '-14px';
       }
 
-      // Position Column Bullets at center of each column
-      const firstRow = table.rows[0];
-      if (firstRow) {
-        const colBullets = this.topControlsWrap.querySelectorAll('.editkit-table-col-bullet');
-        for (let c = 0; c < firstRow.cells.length; c++) {
-          const cell = firstRow.cells[c];
-          const cellRect = cell.getBoundingClientRect();
-          const bullet = colBullets[c] as HTMLElement;
-          if (bullet) {
-            // Check if column is within horizontal visible bounds
-            if (cellRect.right < contentRect.left || cellRect.left > contentRect.right) {
-              bullet.style.display = 'none';
-            } else {
-              bullet.style.display = 'inline-flex';
-              const colCenter = (cellRect.left - tableRect.left) + cellRect.width / 2;
-              bullet.style.left = `${colCenter}px`;
-            }
-          }
-        }
-      }
     }
 
-    // 4. Left Controls (Row Bullets)
-    if (tableRect.left - 20 < contentRect.left - 10 || tableRect.left > contentRect.right) {
-      this.leftControlsWrap.style.display = 'none';
-    } else {
-      this.leftControlsWrap.style.display = 'block';
-      this.leftControlsWrap.style.top = `${tableTop}px`;
-      this.leftControlsWrap.style.left = `${tableLeft - 18}px`;
-      this.leftControlsWrap.style.height = `${tableHeight}px`;
-
-      // Position Row Bullets at center of each visible row
-      const rowBullets = this.leftControlsWrap.querySelectorAll('.editkit-table-row-bullet');
-      for (let r = 0; r < table.rows.length; r++) {
-        const row = table.rows[r];
-        const rowRect = row.getBoundingClientRect();
-        const bullet = rowBullets[r] as HTMLElement;
-        if (bullet) {
-          // If this row is scrolled out above contentRect or below contentRect, hide bullet
-          if (rowRect.bottom < contentRect.top + 8 || rowRect.top > contentRect.bottom - 8) {
-            bullet.style.display = 'none';
-          } else {
-            bullet.style.display = 'inline-flex';
-            const rowCenter = (rowRect.top - tableRect.top) + rowRect.height / 2;
-            bullet.style.top = `${rowCenter}px`;
-          }
-        }
-      }
-    }
-
-    // 5. Bottom Controls (+ Below Button)
+    // 4. Bottom Controls (+ Below Button)
     // Needs 30px below table bottom inside contentRect
     if (tableRect.bottom + 30 > contentRect.bottom || tableRect.bottom < contentRect.top) {
       this.bottomControlsWrap.style.display = 'none';
@@ -525,7 +418,7 @@ export class TableFloatingMenu {
       }
     }
 
-    // 6. Bottom-Right Corner Resizer
+    // 5. Bottom-Right Corner Resizer
     if (
       tableRect.bottom > contentRect.bottom ||
       tableRect.bottom < contentRect.top ||
@@ -887,7 +780,7 @@ export class TableFloatingMenu {
     document.addEventListener('mouseup', onMouseUp);
   }
 
-  // ── Row & Column Insertion Helpers ──
+  // ── Row Insertion Helper ──
   private _addRowAt(rowIndex: number, position: 'above' | 'below'): void {
     if (!this.activeTable) return;
     const table = this.activeTable;
@@ -911,35 +804,6 @@ export class TableFloatingMenu {
       refRow.parentNode!.insertBefore(newRow, refRow);
     } else {
       refRow.parentNode!.insertBefore(newRow, refRow.nextSibling);
-    }
-
-    (this.editor as any)._saveHistory?.();
-    (this.editor as any)._emitUpdate?.();
-    this._updateOverlay();
-  }
-
-  private _addColumnAt(colIndex: number): void {
-    if (!this.activeTable) return;
-    const table = this.activeTable;
-
-    const newColWidth = 110;
-    if (table.style.width) {
-      const currentWidth = parseInt(table.style.width, 10) || table.getBoundingClientRect().width;
-      table.style.width = `${currentWidth + newColWidth}px`;
-    }
-
-    for (const r of Array.from(table.rows)) {
-      const isHeader = r.parentElement?.tagName === 'THEAD' || r.cells[0]?.tagName === 'TH';
-      const newCell = document.createElement(isHeader ? 'th' : 'td');
-      newCell.innerHTML = '<br>';
-      newCell.style.width = `${newColWidth}px`;
-      newCell.style.minWidth = `${newColWidth}px`;
-
-      if (colIndex + 1 >= r.cells.length) {
-        r.appendChild(newCell);
-      } else {
-        r.insertBefore(newCell, r.cells[colIndex + 1]);
-      }
     }
 
     (this.editor as any)._saveHistory?.();

@@ -48,9 +48,16 @@ const TRANSIENT_CONTENT_SELECTOR = [
   '.editkit-table-row-resizer',
 ].join(',');
 
+const RUNTIME_ATTRIBUTES_SELECTOR = '[data-editkit-runtime-attrs]';
+
 function cloneSerializableContent(contentEl: HTMLElement): HTMLElement {
   const clone = contentEl.cloneNode(true) as HTMLElement;
   clone.querySelectorAll(TRANSIENT_CONTENT_SELECTOR).forEach(element => element.remove());
+  clone.querySelectorAll(RUNTIME_ATTRIBUTES_SELECTOR).forEach(element => {
+    element.removeAttribute('contenteditable');
+    element.removeAttribute('spellcheck');
+    element.removeAttribute('data-editkit-runtime-attrs');
+  });
   return clone;
 }
 
@@ -389,6 +396,7 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
    */
   setContent(html: string, emitUpdate: boolean = true): void {
     this.contentEl.innerHTML = html || '<p><br></p>';
+    this.emit('contentSet', { editor: this });
     this._saveHistory();
     if (emitUpdate) this._emitUpdate();
   }
@@ -2125,6 +2133,7 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
       el.classList.add('editkit-math-block');
       el.setAttribute('data-math', opts.latex);
       el.setAttribute('contenteditable', 'false');
+      el.setAttribute('data-editkit-runtime-attrs', '');
       el.innerHTML = this._renderMath(opts.latex);
 
       const block = this._getActiveBlock() || this.contentEl;
@@ -2148,6 +2157,7 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
       el.classList.add('editkit-math-inline');
       el.setAttribute('data-math', opts.latex);
       el.setAttribute('contenteditable', 'false');
+      el.setAttribute('data-editkit-runtime-attrs', '');
       el.innerHTML = this._renderMath(opts.latex);
 
       if (sel && sel.rangeCount > 0 && this.contentEl.contains(sel.anchorNode)) {
@@ -2227,6 +2237,7 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     const iconEl = document.createElement('div');
     iconEl.classList.add('editkit-panel-icon');
     iconEl.setAttribute('contenteditable', 'false');
+    iconEl.setAttribute('data-editkit-runtime-attrs', '');
     iconEl.innerHTML = this._getPanelIconSvg(type);
 
     const bodyEl = document.createElement('div');

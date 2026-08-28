@@ -139,6 +139,7 @@ export type NumberedListStyle = 'decimal' | 'lower-alpha' | 'lower-roman';
 /** Editor event types */
 export interface EditKitEvents {
   create: { editor: any };
+  contentSet: { editor: any };
   update: { editor: any };
   selectionUpdate: { editor: any };
   focus: { editor: any; event: FocusEvent };

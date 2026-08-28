@@ -88,8 +88,8 @@ Decide on your version bump (SemVer: `Major.Minor.Patch`):
 
 Update the `"version"` field in the six public package manifests: the root package plus `core`, `ui`, `react`, `vue`, and `svelte`. Keep the private playground package on its independent version. For example:
 ```bash
-# Example: update the six public packages to 1.0.7 without creating Git tags
-pnpm --filter editkit-text-editor --filter @editkit/core --filter @editkit/ui --filter @editkit/react --filter @editkit/vue --filter @editkit/svelte exec npm version 1.0.7 --no-git-tag-version
+# Example: update the six public packages to 1.0.8 without creating Git tags
+pnpm --filter editkit-text-editor --filter @editkit/core --filter @editkit/ui --filter @editkit/react --filter @editkit/vue --filter @editkit/svelte exec npm version 1.0.8 --no-git-tag-version
 ```
 
 Do not use an unfiltered recursive version command: it also changes the private playground version.

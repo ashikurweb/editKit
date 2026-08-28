@@ -27,6 +27,10 @@ import { ColumnBlockManager } from './ColumnBlockManager';
 import { SignatureModal } from './SignatureModal';
 import { PreviewModal } from './PreviewModal';
 import { TooltipManager } from './Tooltip';
+import { closeDropdown, openDropdown } from './DropdownTransition';
+import { hydrateCommonBlocks, markTransient, setRuntimeEditable } from './ContentHydration';
+
+const TOOLBAR_DROPDOWN_OPEN_CLASS = 'editkit-tb-dropdown-wrap--open';
 
 export interface ToolbarFeaturesConfig {
   history?: boolean;
@@ -162,14 +166,19 @@ export class EditKitToolbar {
     this.element.setAttribute('aria-label', 'Editor formatting toolbar');
 
     this._buildToolbar();
+    this._hydratePersistedBlocks();
     this._syncStates();
 
     // Selection & update listeners
     const unsub1 = editor.on('selectionUpdate', () => this._syncStates());
-    const unsub2 = editor.on('update', () => this._syncStates());
+    const unsubContentSet = editor.on('contentSet', () => this._hydratePersistedBlocks());
+    const unsub2 = editor.on('update', () => {
+      this._hydratePersistedBlocks();
+      this._syncStates();
+    });
     const unsub3 = editor.on('openLinkPopover', () => this.linkPopover.show());
     const unsubDestroy = editor.on('destroy', () => this.destroy());
-    this._unsubscribers.push(unsub1, unsub2, unsub3, unsubDestroy);
+    this._unsubscribers.push(unsub1, unsubContentSet, unsub2, unsub3, unsubDestroy);
 
     // Global outside click for dropdowns
     const outsideClick = (e: MouseEvent) => {
@@ -330,6 +339,14 @@ export class EditKitToolbar {
     });
 
     this.element.appendChild(leftGroup);
+  }
+
+  private _hydratePersistedBlocks(): void {
+    if (!this.editor.isEditable) return;
+    hydrateCommonBlocks(this.editor);
+    this.faqManager.hydrateBlocks();
+    this.columnBlockManager.hydrateBlocks(this.imageModal);
+    this.buttonBlockMenu.hydrateBlocks();
   }
 
   // ── Helper: Basic Button ──
@@ -1113,7 +1130,7 @@ export class EditKitToolbar {
     const chart = document.createElement('figure');
     chart.classList.add('editkit-chart-block');
     chart.setAttribute('data-editkit-chart', 'bar');
-    chart.setAttribute('contenteditable', 'false');
+    setRuntimeEditable(chart, false);
     chart.setAttribute('role', 'img');
     chart.setAttribute('aria-label', 'Bar chart: Q1 42, Q2 68, Q3 54, Q4 82');
 
@@ -1475,7 +1492,7 @@ export class EditKitToolbar {
       if (file) {
         const sizeStr = file.size > 1024 * 1024 ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : `${Math.round(file.size / 1024)} KB`;
         const html = `
-          <div class="editkit-file-card" contenteditable="false">
+          <div class="editkit-file-card" contenteditable="false" data-editkit-runtime-attrs>
             <span class="editkit-file-card-icon">${icons.paperclip}</span>
             <div class="editkit-file-card-info">
               <span class="editkit-file-card-name">${file.name}</span>
@@ -1491,12 +1508,12 @@ export class EditKitToolbar {
 
   private _insertSignatureBlock(): void {
     const html = `
-      <div class="editkit-signature-card" contenteditable="false">
+      <div class="editkit-signature-card" contenteditable="false" data-editkit-runtime-attrs>
         <div class="editkit-signature-draw"><span class="editkit-signature-symbol">✎</span> <span class="editkit-signature-placeholder">Sign here</span></div>
         <div class="editkit-signature-line"></div>
         <div class="editkit-signature-meta">
-          <span class="editkit-signature-name" contenteditable="true">Authorized Signatory</span>
-          <span class="editkit-signature-date" contenteditable="true">Date: ${new Date().toLocaleDateString()}</span>
+          <span class="editkit-signature-name" contenteditable="true" data-editkit-runtime-attrs>Authorized Signatory</span>
+          <span class="editkit-signature-date" contenteditable="true" data-editkit-runtime-attrs>Date: ${new Date().toLocaleDateString()}</span>
         </div>
       </div><p><br></p>`;
     document.execCommand('insertHTML', false, html);
@@ -1511,18 +1528,16 @@ export class EditKitToolbar {
     headingWrap.classList.add('editkit-section-heading');
     headingWrap.setAttribute('data-align', 'left');
     headingWrap.setAttribute('data-badge', '01');
-    headingWrap.setAttribute('contenteditable', 'false');
+    setRuntimeEditable(headingWrap, false);
 
     const badgeSpan = document.createElement('span');
     badgeSpan.classList.add('editkit-sec-badge');
-    badgeSpan.setAttribute('contenteditable', 'true');
-    badgeSpan.setAttribute('spellcheck', 'false');
+    setRuntimeEditable(badgeSpan, true, false);
     badgeSpan.textContent = '01';
 
     const titleH2 = document.createElement('h2');
     titleH2.classList.add('editkit-sec-title');
-    titleH2.setAttribute('contenteditable', 'true');
-    titleH2.setAttribute('spellcheck', 'false');
+    setRuntimeEditable(titleH2, true, false);
     titleH2.textContent = 'Section title';
 
     headingWrap.appendChild(badgeSpan);
@@ -1546,21 +1561,19 @@ export class EditKitToolbar {
     const quoteWrap = document.createElement('figure');
     quoteWrap.classList.add('editkit-pull-quote');
     quoteWrap.setAttribute('data-rule-mode', 'full');
-    quoteWrap.setAttribute('contenteditable', 'false');
+    setRuntimeEditable(quoteWrap, false);
 
     const topLine = document.createElement('div');
     topLine.classList.add('editkit-pq-line', 'editkit-pq-line--top');
 
     const quoteBlock = document.createElement('blockquote');
     quoteBlock.classList.add('editkit-pq-quote');
-    quoteBlock.setAttribute('contenteditable', 'true');
-    quoteBlock.setAttribute('spellcheck', 'false');
+    setRuntimeEditable(quoteBlock, true, false);
     quoteBlock.textContent = 'Pull quote';
 
     const attrFig = document.createElement('figcaption');
     attrFig.classList.add('editkit-pq-attribution');
-    attrFig.setAttribute('contenteditable', 'true');
-    attrFig.setAttribute('spellcheck', 'false');
+    setRuntimeEditable(attrFig, true, false);
     attrFig.textContent = 'ATTRIBUTION';
 
     const bottomLine = document.createElement('div');
@@ -1592,18 +1605,18 @@ export class EditKitToolbar {
     btnWrap.setAttribute('data-radius', 'rounded');
     btnWrap.setAttribute('data-align', 'left');
     btnWrap.setAttribute('data-color', '#f59e0b');
-    btnWrap.setAttribute('contenteditable', 'false');
+    setRuntimeEditable(btnWrap, false);
 
     const linkEl = document.createElement('a');
     linkEl.classList.add('editkit-btn-element');
     linkEl.setAttribute('href', 'https://');
     linkEl.setAttribute('target', '_blank');
-    linkEl.setAttribute('contenteditable', 'true');
-    linkEl.setAttribute('spellcheck', 'false');
+    setRuntimeEditable(linkEl, true, false);
     linkEl.textContent = 'Button';
 
     const editIcon = document.createElement('span');
     editIcon.classList.add('editkit-btn-edit-icon');
+    markTransient(editIcon);
     editIcon.setAttribute('title', 'Edit link URL');
     editIcon.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`;
 
@@ -1689,18 +1702,18 @@ export class EditKitToolbar {
     btnWrap.setAttribute('data-radius', 'rounded');
     btnWrap.setAttribute('data-align', 'left');
     btnWrap.setAttribute('data-color', '#f59e0b');
-    btnWrap.setAttribute('contenteditable', 'false');
+    setRuntimeEditable(btnWrap, false);
 
     const linkEl = document.createElement('a');
     linkEl.classList.add('editkit-btn-element');
     linkEl.setAttribute('href', 'https://');
     linkEl.setAttribute('target', '_blank');
-    linkEl.setAttribute('contenteditable', 'true');
-    linkEl.setAttribute('spellcheck', 'false');
+    setRuntimeEditable(linkEl, true, false);
     linkEl.textContent = 'Get started';
 
     const editIcon = document.createElement('span');
     editIcon.classList.add('editkit-btn-edit-icon');
+    markTransient(editIcon);
     editIcon.setAttribute('title', 'Edit link URL');
     editIcon.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`;
 
@@ -1764,7 +1777,7 @@ export class EditKitToolbar {
     const card = document.createElement('div');
     card.classList.add('editkit-cta-band-card');
     card.setAttribute('data-editkit-block', 'cta-band');
-    card.setAttribute('contenteditable', 'false');
+    setRuntimeEditable(card, false);
 
     // Ambient Glow Effect
     const glow = document.createElement('div');
@@ -1774,8 +1787,7 @@ export class EditKitToolbar {
     // Left Content Area
     const info = document.createElement('div');
     info.classList.add('editkit-cta-card-info');
-    info.setAttribute('contenteditable', 'true');
-    info.setAttribute('spellcheck', 'false');
+    setRuntimeEditable(info, true, false);
 
     const badge = document.createElement('div');
     badge.classList.add('editkit-cta-card-badge');
@@ -1804,7 +1816,7 @@ export class EditKitToolbar {
     // Right Action Area with Button Block
     const action = document.createElement('div');
     action.classList.add('editkit-cta-card-action');
-    action.setAttribute('contenteditable', 'false');
+    setRuntimeEditable(action, false);
 
     const btnWrap = document.createElement('div');
     btnWrap.classList.add('editkit-button-block');
@@ -1812,18 +1824,18 @@ export class EditKitToolbar {
     btnWrap.setAttribute('data-radius', 'rounded');
     btnWrap.setAttribute('data-align', 'left');
     btnWrap.setAttribute('data-color', '#f59e0b');
-    btnWrap.setAttribute('contenteditable', 'false');
+    setRuntimeEditable(btnWrap, false);
 
     const linkEl = document.createElement('a');
     linkEl.classList.add('editkit-btn-element');
     linkEl.setAttribute('href', 'https://');
     linkEl.setAttribute('target', '_blank');
-    linkEl.setAttribute('contenteditable', 'true');
-    linkEl.setAttribute('spellcheck', 'false');
+    setRuntimeEditable(linkEl, true, false);
     linkEl.textContent = 'Get Started Free →';
 
     const editIcon = document.createElement('span');
     editIcon.classList.add('editkit-btn-edit-icon');
+    markTransient(editIcon);
     editIcon.setAttribute('title', 'Edit link URL');
     editIcon.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`;
 
@@ -1832,8 +1844,7 @@ export class EditKitToolbar {
 
     const actionSub = document.createElement('div');
     actionSub.classList.add('editkit-cta-card-action-sub');
-    actionSub.setAttribute('contenteditable', 'true');
-    actionSub.setAttribute('spellcheck', 'false');
+    setRuntimeEditable(actionSub, true, false);
     actionSub.textContent = 'Instant setup • 14-day free trial';
 
     action.appendChild(btnWrap);
@@ -1862,19 +1873,19 @@ export class EditKitToolbar {
   // ── Dropdown Toggle & Close ──
   private _toggleDropdown(wrap: HTMLElement): void {
     TooltipManager.hide();
-    if (wrap.classList.contains('editkit-tb-dropdown-wrap--open')) {
+    if (wrap.classList.contains(TOOLBAR_DROPDOWN_OPEN_CLASS)) {
       this._closeDropdown();
     } else {
       this._closeDropdown();
       this._syncStates();
-      wrap.classList.add('editkit-tb-dropdown-wrap--open');
+      openDropdown(wrap, TOOLBAR_DROPDOWN_OPEN_CLASS);
       this.openDropdown = wrap;
     }
   }
 
   private _closeDropdown(): void {
     if (this.openDropdown) {
-      this.openDropdown.classList.remove('editkit-tb-dropdown-wrap--open');
+      closeDropdown(this.openDropdown, TOOLBAR_DROPDOWN_OPEN_CLASS);
       this.openDropdown.querySelectorAll('.editkit-tb-submenu-wrap--pinned').forEach(el => {
         el.classList.remove('editkit-tb-submenu-wrap--pinned');
       });

@@ -1,6 +1,6 @@
 {
   "name": "@editkit/react",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "React and Next.js rich text editor with tables, color picker, bubble menu, and no third-party editor engine. A TypeScript alternative to TipTap, Quill, Lexical, and Slate.",
   "type": "module",
   "main": "./dist/index.cjs",

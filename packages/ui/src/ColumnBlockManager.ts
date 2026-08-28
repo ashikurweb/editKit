@@ -7,6 +7,7 @@
 
 import type { EditKitEditor } from '@editkit/core';
 import { icons } from './icons';
+import { markTransient, setRuntimeEditable } from './ContentHydration';
 
 export interface CommandMenuItem {
   id: string;
@@ -17,12 +18,21 @@ export interface CommandMenuItem {
   action: (targetBody: HTMLElement, editor: EditKitEditor) => void;
 }
 
+interface FeatureImageModal {
+  show: (
+    initialView?: 'url' | 'dropzone',
+    onInsert?: (data: { src: string; alt?: string }) => void,
+  ) => void;
+}
+
 export class ColumnBlockManager {
   private editor: EditKitEditor;
   private activeMenu: HTMLElement | null = null;
   private activeColumnBody: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
   private _isDestroyed: boolean = false;
+  private _boundFeaturePlaceholders = new WeakSet<HTMLElement>();
+  private _boundControls = new WeakSet<HTMLElement>();
 
   constructor(editor: EditKitEditor) {
     this.editor = editor;
@@ -37,19 +47,173 @@ export class ColumnBlockManager {
     this._closeMenu();
   }
 
+  /** Restores column editing chrome and nested editable regions after sanitization. */
+  hydrateBlocks(imageModal?: FeatureImageModal): void {
+    if (!this.editor.isEditable) return;
+
+    this.editor.contentEl.querySelectorAll<HTMLElement>('.editkit-columns-container').forEach(container => {
+      setRuntimeEditable(container, false);
+
+      let handle = container.querySelector<HTMLElement>('.editkit-columns-handle');
+      if (!handle) {
+        handle = document.createElement('div');
+        handle.classList.add('editkit-columns-handle');
+        handle.title = 'Drag Columns';
+        handle.innerHTML = '<span></span><span></span><span></span><span></span><span></span><span></span>';
+        container.insertBefore(handle, container.firstChild);
+      }
+      markTransient(handle);
+
+      const columns = Array.from(container.querySelectorAll<HTMLElement>('.editkit-column-item'));
+      columns.forEach((column, index) => {
+        if (!column.hasAttribute('data-col')) column.setAttribute('data-col', String(index + 1));
+        const body = column.querySelector<HTMLElement>('.editkit-column-body');
+        if (body) setRuntimeEditable(body, true, false);
+
+        let header = column.querySelector<HTMLElement>('.editkit-column-header');
+        if (!header) {
+          header = this._createHydratedColumnHeader(index + 1);
+          column.insertBefore(header, body || column.firstChild);
+        } else {
+          let label = header.querySelector<HTMLElement>('.editkit-column-label');
+          if (!label) {
+            label = document.createElement('span');
+            label.classList.add('editkit-column-label');
+            label.textContent = `COL ${index + 1}`;
+            header.prepend(label);
+          }
+          if (!header.querySelector('.editkit-column-add-btn')) {
+            const addButton = document.createElement('button');
+            addButton.type = 'button';
+            addButton.classList.add('editkit-column-add-btn');
+            addButton.textContent = '+ block';
+            addButton.title = 'Insert block';
+            header.appendChild(addButton);
+          }
+        }
+        markTransient(header);
+      });
+
+      const layout = container.getAttribute('data-layout') || (columns.length === 3 ? '3-col' : columns.length === 1 ? '1-col' : '50-50');
+      if (!container.hasAttribute('data-layout')) container.setAttribute('data-layout', layout);
+      let controls = container.querySelector<HTMLElement>('.editkit-columns-controls');
+      if (!controls || !this._boundControls.has(controls)) {
+        controls?.remove();
+        controls = this._createControls(container, layout);
+        container.appendChild(controls);
+      }
+      markTransient(controls);
+
+      if (container.classList.contains('editkit-feature-row-container')) {
+        this._hydrateFeatureImagePlaceholder(container, imageModal);
+      }
+    });
+  }
+
+  private _createHydratedColumnHeader(index: number): HTMLElement {
+    const header = document.createElement('div');
+    header.classList.add('editkit-column-header');
+    const label = document.createElement('span');
+    label.classList.add('editkit-column-label');
+    label.textContent = `COL ${index}`;
+    const addButton = document.createElement('button');
+    addButton.type = 'button';
+    addButton.classList.add('editkit-column-add-btn');
+    addButton.textContent = '+ block';
+    addButton.title = 'Insert block';
+    header.append(label, addButton);
+    return header;
+  }
+
+  private _hydrateFeatureImagePlaceholder(
+    container: HTMLElement,
+    imageModal?: FeatureImageModal,
+  ): void {
+    const bodies = container.querySelectorAll<HTMLElement>('.editkit-column-body');
+    const body = bodies[1];
+    if (!body || body.querySelector('.editkit-feature-img')) return;
+
+    let placeholder = body.querySelector<HTMLElement>('.editkit-feature-img-placeholder');
+    if (!placeholder) {
+      placeholder = document.createElement('div');
+      placeholder.classList.add('editkit-feature-img-placeholder');
+      placeholder.innerHTML = `
+        <div class="editkit-fip-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+        <div class="editkit-fip-title">Add image</div>
+        <div class="editkit-fip-sub">Click to upload</div>`;
+      body.appendChild(placeholder);
+    }
+    markTransient(placeholder);
+    placeholder.setAttribute('role', 'button');
+    placeholder.setAttribute('tabindex', '0');
+    placeholder.setAttribute('title', 'Click to upload image');
+
+    let input = placeholder.querySelector<HTMLInputElement>('.editkit-fip-file-input');
+    if (!input) {
+      input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.classList.add('editkit-fip-file-input');
+      input.style.display = 'none';
+      placeholder.appendChild(input);
+    }
+
+    if (this._boundFeaturePlaceholders.has(placeholder)) return;
+    this._boundFeaturePlaceholders.add(placeholder);
+
+    const insertImage = (src: string, alt: string) => {
+      const image = document.createElement('img');
+      image.src = src;
+      image.alt = alt;
+      image.classList.add('editkit-feature-img');
+      placeholder?.replaceWith(image);
+      this.editor.emit('update', { editor: this.editor });
+    };
+    const readFile = (file: File) => {
+      if (!file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = event => insertImage(String(event.target?.result || ''), file.name || 'Product preview');
+      reader.readAsDataURL(file);
+    };
+
+    placeholder.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (imageModal) {
+        imageModal.show('dropzone', data => insertImage(data.src, data.alt || 'Product preview'));
+      } else {
+        input?.click();
+      }
+    });
+    input.addEventListener('change', () => {
+      if (input?.files?.[0]) readFile(input.files[0]);
+    });
+    placeholder.addEventListener('dragover', event => {
+      event.preventDefault();
+      placeholder?.classList.add('editkit-fip--dragover');
+    });
+    placeholder.addEventListener('dragleave', () => placeholder?.classList.remove('editkit-fip--dragover'));
+    placeholder.addEventListener('drop', event => {
+      event.preventDefault();
+      placeholder?.classList.remove('editkit-fip--dragover');
+      if (event.dataTransfer?.files[0]) readFile(event.dataTransfer.files[0]);
+    });
+  }
+
   // ── 1. Create Column Block Element (Matches Image 1) ──
   createColumnBlockElement(layout: '50-50' | '3-col' | '1-col' | '70-30' | '30-70' = '50-50'): HTMLElement {
     const container = document.createElement('div');
     container.classList.add('editkit-columns-container');
     container.setAttribute('data-editkit-block', 'columns');
     container.setAttribute('data-layout', layout);
-    container.setAttribute('contenteditable', 'false');
+    setRuntimeEditable(container, false);
 
     // Drag Gripper Handle
     const handle = document.createElement('div');
     handle.classList.add('editkit-columns-handle');
     handle.title = 'Drag Columns';
     handle.innerHTML = `<span></span><span></span><span></span><span></span><span></span><span></span>`;
+    markTransient(handle);
     container.appendChild(handle);
 
     // Columns Row
@@ -75,13 +239,14 @@ export class ColumnBlockManager {
     container.classList.add('editkit-columns-container', 'editkit-feature-row-container');
     container.setAttribute('data-editkit-block', 'columns');
     container.setAttribute('data-layout', '50-50');
-    container.setAttribute('contenteditable', 'false');
+    setRuntimeEditable(container, false);
 
     // Drag Gripper Handle
     const handle = document.createElement('div');
     handle.classList.add('editkit-columns-handle');
     handle.title = 'Drag Columns';
     handle.innerHTML = `<span></span><span></span><span></span><span></span><span></span><span></span>`;
+    markTransient(handle);
     container.appendChild(handle);
 
     // Columns Row
@@ -95,7 +260,7 @@ export class ColumnBlockManager {
 
     const header1 = document.createElement('div');
     header1.classList.add('editkit-column-header');
-    header1.setAttribute('contenteditable', 'false');
+    markTransient(header1);
     const label1 = document.createElement('span');
     label1.classList.add('editkit-column-label');
     label1.textContent = 'COL 1';
@@ -108,8 +273,7 @@ export class ColumnBlockManager {
 
     const body1 = document.createElement('div');
     body1.classList.add('editkit-column-body');
-    body1.setAttribute('contenteditable', 'true');
-    body1.setAttribute('spellcheck', 'false');
+    setRuntimeEditable(body1, true, false);
 
     const h3_1 = document.createElement('h3');
     h3_1.classList.add('editkit-feature-col-title');
@@ -138,7 +302,7 @@ export class ColumnBlockManager {
 
     const header2 = document.createElement('div');
     header2.classList.add('editkit-column-header');
-    header2.setAttribute('contenteditable', 'false');
+    markTransient(header2);
     const label2 = document.createElement('span');
     label2.classList.add('editkit-column-label');
     label2.textContent = 'COL 2';
@@ -151,8 +315,7 @@ export class ColumnBlockManager {
 
     const body2 = document.createElement('div');
     body2.classList.add('editkit-column-body');
-    body2.setAttribute('contenteditable', 'true');
-    body2.setAttribute('spellcheck', 'false');
+    setRuntimeEditable(body2, true, false);
 
     const h3_2 = document.createElement('h3');
     h3_2.classList.add('editkit-feature-col-title');
@@ -165,6 +328,7 @@ export class ColumnBlockManager {
     // Image Upload Placeholder Box
     const placeholder = document.createElement('div');
     placeholder.classList.add('editkit-feature-img-placeholder');
+    markTransient(placeholder);
     placeholder.setAttribute('contenteditable', 'false');
     placeholder.setAttribute('role', 'button');
     placeholder.setAttribute('tabindex', '0');
@@ -249,6 +413,7 @@ export class ColumnBlockManager {
         handleFile(e.dataTransfer.files[0]);
       }
     });
+    this._boundFeaturePlaceholders.add(placeholder);
 
     body2.appendChild(h3_2);
     body2.appendChild(p2);
@@ -280,13 +445,14 @@ export class ColumnBlockManager {
     container.classList.add('editkit-columns-container', 'editkit-three-up-container');
     container.setAttribute('data-editkit-block', 'columns');
     container.setAttribute('data-layout', '3-col');
-    container.setAttribute('contenteditable', 'false');
+    setRuntimeEditable(container, false);
 
     // Drag Gripper Handle
     const handle = document.createElement('div');
     handle.classList.add('editkit-columns-handle');
     handle.title = 'Drag Columns';
     handle.innerHTML = `<span></span><span></span><span></span><span></span><span></span><span></span>`;
+    markTransient(handle);
     container.appendChild(handle);
 
     // Columns Row
@@ -306,7 +472,7 @@ export class ColumnBlockManager {
 
       const header = document.createElement('div');
       header.classList.add('editkit-column-header');
-      header.setAttribute('contenteditable', 'false');
+      markTransient(header);
       const label = document.createElement('span');
       label.classList.add('editkit-column-label');
       label.textContent = `COL ${d.col}`;
@@ -319,8 +485,7 @@ export class ColumnBlockManager {
 
       const body = document.createElement('div');
       body.classList.add('editkit-column-body');
-      body.setAttribute('contenteditable', 'true');
-      body.setAttribute('spellcheck', 'false');
+      setRuntimeEditable(body, true, false);
 
       const h3 = document.createElement('h3');
       h3.classList.add('editkit-feature-col-title');
@@ -358,6 +523,8 @@ export class ColumnBlockManager {
     const controls = document.createElement('div');
     controls.classList.add('editkit-columns-controls');
     controls.setAttribute('contenteditable', 'false');
+    markTransient(controls);
+    this._boundControls.add(controls);
 
     const layouts = [
       {
@@ -424,6 +591,7 @@ export class ColumnBlockManager {
       e.stopPropagation();
       this._closeMenu();
       container.remove();
+      this.editor.emit('update', { editor: this.editor });
     });
 
     controls.appendChild(deleteBtn);
@@ -438,7 +606,7 @@ export class ColumnBlockManager {
     // Header: COL label (Left) + "+ block" pill (Right)
     const header = document.createElement('div');
     header.classList.add('editkit-column-header');
-    header.setAttribute('contenteditable', 'false');
+    markTransient(header);
 
     const label = document.createElement('span');
     label.classList.add('editkit-column-label');
@@ -456,8 +624,7 @@ export class ColumnBlockManager {
     // Body: Editable content area
     const body = document.createElement('div');
     body.classList.add('editkit-column-body');
-    body.setAttribute('contenteditable', 'true');
-    body.setAttribute('spellcheck', 'false');
+    setRuntimeEditable(body, true, false);
 
     const p = document.createElement('p');
     p.textContent = `Column ${index} content...`;

@@ -8,6 +8,7 @@
 import type { EditKitEditor } from '@editkit/core';
 import { icons } from './icons';
 import { ColorPickerPopover } from './ColorPicker';
+import { markTransient, setRuntimeEditable } from './ContentHydration';
 
 export class ButtonBlockMenu {
   readonly element: HTMLElement;
@@ -31,6 +32,35 @@ export class ButtonBlockMenu {
 
   mount(container: HTMLElement): void {
     container.appendChild(this.element);
+  }
+
+  /** Restores editing attributes and the edit affordance after HTML sanitization. */
+  hydrateBlocks(): void {
+    if (!this.editor.isEditable) return;
+
+    this.editor.contentEl.querySelectorAll<HTMLElement>('.editkit-button-block').forEach(block => {
+      setRuntimeEditable(block, false);
+      if (!block.hasAttribute('data-variant')) block.setAttribute('data-variant', 'filled');
+      if (!block.hasAttribute('data-radius')) block.setAttribute('data-radius', 'rounded');
+      if (!block.hasAttribute('data-align')) block.setAttribute('data-align', 'left');
+      if (!block.hasAttribute('data-color')) block.setAttribute('data-color', '#f59e0b');
+
+      const link = block.querySelector<HTMLElement>('.editkit-btn-element');
+      if (link) {
+        setRuntimeEditable(link, true, false);
+        link.style.setProperty('--editkit-btn-color', block.getAttribute('data-color') || '#f59e0b');
+      }
+
+      let editIcon = block.querySelector<HTMLElement>('.editkit-btn-edit-icon');
+      if (!editIcon) {
+        editIcon = document.createElement('span');
+        editIcon.classList.add('editkit-btn-edit-icon');
+        editIcon.setAttribute('title', 'Edit link URL');
+        editIcon.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`;
+        block.appendChild(editIcon);
+      }
+      markTransient(editIcon);
+    });
   }
 
   selectButton(btnWrap: HTMLElement): void {

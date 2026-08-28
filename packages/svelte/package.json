@@ -1,6 +1,6 @@
 {
   "name": "@editkit/svelte",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Svelte and SvelteKit rich text editor action with tables, color picker, and no third-party editor engine. Supports Svelte 3, 4, and 5.",
   "type": "module",
   "main": "./dist/index.cjs",

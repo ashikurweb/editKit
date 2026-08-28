@@ -1,6 +1,6 @@
 {
   "name": "@editkit/core",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "EditKit Core Engine — Zero-dependency, framework-agnostic rich text editor in pure TypeScript. Fast, extensible alternative to ProseMirror, Quill, Lexical & Slate.",
   "type": "module",
   "main": "./dist/index.cjs",

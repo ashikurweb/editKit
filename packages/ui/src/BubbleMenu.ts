@@ -8,6 +8,9 @@ import { icons } from './icons';
 import { ColorPickerPopover } from './ColorPicker';
 import { LinkPopover } from './LinkPopover';
 import { TooltipManager } from './Tooltip';
+import { closeDropdown, openDropdown } from './DropdownTransition';
+
+const BUBBLE_DROPDOWN_OPEN_CLASS = 'editkit-bubble-dropdown-wrap--open';
 
 const FONT_FAMILIES = [
   'DM Sans',
@@ -231,10 +234,10 @@ export class BubbleMenu {
       e.preventDefault();
       e.stopPropagation();
       TooltipManager.hide();
-      const isOpen = wrap.classList.contains('editkit-bubble-dropdown-wrap--open');
+      const isOpen = wrap.classList.contains(BUBBLE_DROPDOWN_OPEN_CLASS);
       this._closeAllDropdowns();
       if (!isOpen) {
-        wrap.classList.add('editkit-bubble-dropdown-wrap--open');
+        openDropdown(wrap, BUBBLE_DROPDOWN_OPEN_CLASS);
         this.activeDropdown = wrap;
       }
     });
@@ -273,7 +276,7 @@ export class BubbleMenu {
       itBtn.addEventListener('mousedown', (e) => {
         e.preventDefault();
         it.action();
-        wrap.classList.remove('editkit-bubble-dropdown-wrap--open');
+        closeDropdown(wrap, BUBBLE_DROPDOWN_OPEN_CLASS);
         this.activeDropdown = null;
         trigger.innerHTML = `${it.icon} <span class="editkit-bubble-chevron">${icons.chevronDown}</span>`;
       });
@@ -284,10 +287,10 @@ export class BubbleMenu {
       e.preventDefault();
       e.stopPropagation();
       TooltipManager.hide();
-      const isOpen = wrap.classList.contains('editkit-bubble-dropdown-wrap--open');
+      const isOpen = wrap.classList.contains(BUBBLE_DROPDOWN_OPEN_CLASS);
       this._closeAllDropdowns();
       if (!isOpen) {
-        wrap.classList.add('editkit-bubble-dropdown-wrap--open');
+        openDropdown(wrap, BUBBLE_DROPDOWN_OPEN_CLASS);
         this.activeDropdown = wrap;
       }
     });
@@ -320,7 +323,7 @@ export class BubbleMenu {
         }
       },
       () => {
-        wrap.classList.remove('editkit-bubble-dropdown-wrap--open');
+        closeDropdown(wrap, BUBBLE_DROPDOWN_OPEN_CLASS);
         this.activeDropdown = null;
       }
     );
@@ -329,10 +332,10 @@ export class BubbleMenu {
       e.preventDefault();
       e.stopPropagation();
       TooltipManager.hide();
-      const isOpen = wrap.classList.contains('editkit-bubble-dropdown-wrap--open');
+      const isOpen = wrap.classList.contains(BUBBLE_DROPDOWN_OPEN_CLASS);
       this._closeAllDropdowns();
       if (!isOpen) {
-        wrap.classList.add('editkit-bubble-dropdown-wrap--open');
+        openDropdown(wrap, BUBBLE_DROPDOWN_OPEN_CLASS);
         this.activeDropdown = wrap;
       }
     });
@@ -344,7 +347,7 @@ export class BubbleMenu {
 
   private _closeAllDropdowns(): void {
     if (this.activeDropdown) {
-      this.activeDropdown.classList.remove('editkit-bubble-dropdown-wrap--open');
+      closeDropdown(this.activeDropdown, BUBBLE_DROPDOWN_OPEN_CLASS);
       this.activeDropdown = null;
     }
   }
