@@ -51,6 +51,7 @@ export interface ToolbarFeaturesConfig {
   preview?: boolean;
   comment?: boolean;
   versionHistory?: boolean;
+  /** @deprecated The legacy + dropdown has been removed. */
   more?: boolean;
 }
 
@@ -254,12 +255,12 @@ export class EditKitToolbar {
     if (isEnabled('panel') || isEnabled('bookmark') || isEnabled('callout')) {
       group6.push(this._createPanelDropdown());
     }
-    if (isEnabled('insertElements') || isEnabled('more') || isEnabled('panel') || isEnabled('bookmark')) {
+    if (isEnabled('insertElements') || isEnabled('panel') || isEnabled('bookmark')) {
       group6.push(this._createInsertElementsDropdown());
     }
     if (group6.length > 0) sections.push(group6);
 
-    // Group 7: Secondary Utilities (Select All, Clear All, View Preview, More)
+    // Group 7: Secondary Utilities (Select All, Clear All, View Preview)
     const group7: HTMLElement[] = [];
     if (isEnabled('selectAll')) {
       group7.push(this._createBtn('typography', 'Select All', () => this.editor.commands.selectAll(), undefined, '⌘A'));
@@ -277,7 +278,6 @@ export class EditKitToolbar {
     if (isEnabled('preview', true)) {
       group7.push(this._createBtn('eye', 'View Preview', () => this.previewModal.show(), undefined, '⌘P'));
     }
-    if (isEnabled('more')) group7.push(this._createMoreDropdown());
     if (group7.length > 0) sections.push(group7);
 
     // Render sections with dividers in between
@@ -999,56 +999,6 @@ export class EditKitToolbar {
 
     wrap.appendChild(trigger);
     wrap.appendChild(symbolPicker.element);
-    return wrap;
-  }
-
-  // ── More Add: + ˅ ──
-  private _createMoreDropdown(): HTMLElement {
-    const wrap = document.createElement('div');
-    wrap.classList.add('editkit-tb-dropdown-wrap');
-
-    const trigger = document.createElement('button');
-    trigger.type = 'button';
-    trigger.classList.add('editkit-tb-btn', 'editkit-tb-btn--chevron');
-    trigger.setAttribute('data-editkit-tooltip', 'More Insert Items');
-    trigger.setAttribute('aria-label', 'More Insert Items');
-    trigger.innerHTML = `${icons.plus} <span class="editkit-tb-chevron-sm">${icons.chevronDown}</span>`;
-
-    const menu = document.createElement('div');
-    menu.classList.add('editkit-tb-dropdown-menu');
-
-    const items = [
-      { label: 'Subscript (X₂)', action: () => this.editor.commands.subscript() },
-      { label: 'Superscript (X²)', action: () => this.editor.commands.superscript() },
-      { label: 'Horizontal Divider', action: () => this.editor.commands.horizontalRule() },
-      { label: 'Clear Formatting', action: () => this.editor.commands.clearFormatting() },
-      { label: 'Callout Box', action: () => this.editor.commands.blockquote() },
-      { label: 'Table of Contents', action: () => alert('Inserted Table of Contents') },
-      { label: 'Insert Date / Time', action: () => document.execCommand('insertText', false, new Date().toLocaleDateString()) },
-    ];
-
-    for (const it of items) {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.classList.add('editkit-tb-menu-item');
-      b.textContent = it.label;
-      b.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        it.action();
-        this._closeDropdown();
-      });
-      menu.appendChild(b);
-    }
-
-    trigger.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      this._toggleDropdown(wrap);
-    });
-
-    wrap.appendChild(trigger);
-    wrap.appendChild(menu);
     return wrap;
   }
 

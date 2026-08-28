@@ -13,8 +13,6 @@ export class PreviewModal extends Modal {
   private currentDevice: PreviewDevice = 'desktop';
   private previewContentEl!: HTMLElement;
   private statsBadgeEl!: HTMLElement;
-  private copyBtn!: HTMLButtonElement;
-  private printBtn!: HTMLButtonElement;
   private deviceButtons: Map<PreviewDevice, HTMLButtonElement> = new Map();
 
   constructor(editor: EditKitEditor) {
@@ -61,26 +59,6 @@ export class PreviewModal extends Modal {
     this.statsBadgeEl.className = 'editkit-preview-stats-badge';
     headerControls.appendChild(this.statsBadgeEl);
 
-    // 3. Action Buttons (Copy HTML & Print)
-    const actionsGroup = document.createElement('div');
-    actionsGroup.className = 'editkit-preview-actions';
-
-    this.copyBtn = document.createElement('button');
-    this.copyBtn.type = 'button';
-    this.copyBtn.className = 'editkit-preview-action-btn';
-    this.copyBtn.innerHTML = `${icons.copy} <span>Copy HTML</span>`;
-    this.copyBtn.addEventListener('click', () => this._copyHTML());
-    actionsGroup.appendChild(this.copyBtn);
-
-    this.printBtn = document.createElement('button');
-    this.printBtn.type = 'button';
-    this.printBtn.className = 'editkit-preview-action-btn editkit-preview-action-btn--primary';
-    this.printBtn.innerHTML = `${icons.printer} <span>Print / PDF</span>`;
-    this.printBtn.addEventListener('click', () => this._printDocument());
-    actionsGroup.appendChild(this.printBtn);
-
-    headerControls.appendChild(actionsGroup);
-
     // Insert controls before the close button in header
     this.headerEl.insertBefore(headerControls, this.closeBtn);
 
@@ -123,64 +101,6 @@ export class PreviewModal extends Modal {
     const readTime = Math.max(1, Math.ceil(words / 200));
 
     this.statsBadgeEl.textContent = `${words} words • ${chars} chars • ${readTime} min read`;
-  }
-
-  private async _copyHTML(): Promise<void> {
-    try {
-      const html = this.editor.getHTML();
-      await navigator.clipboard.writeText(html);
-      const originalHTML = this.copyBtn.innerHTML;
-      this.copyBtn.innerHTML = `<span>✓ Copied!</span>`;
-      this.copyBtn.classList.add('editkit-preview-action-btn--success');
-      setTimeout(() => {
-        this.copyBtn.innerHTML = originalHTML;
-        this.copyBtn.classList.remove('editkit-preview-action-btn--success');
-      }, 2000);
-    } catch {
-      alert('Failed to copy HTML to clipboard.');
-    }
-  }
-
-  private _printDocument(): void {
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-      window.print();
-      return;
-    }
-    const html = this.editor.getHTML();
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Document Print Preview</title>
-          <style>
-            body {
-              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-              color: #111;
-              line-height: 1.6;
-              padding: 40px;
-              max-width: 800px;
-              margin: 0 auto;
-            }
-            table { width: 100%; border-collapse: collapse; margin: 16px 0; }
-            th, td { border: 1px solid #ccc; padding: 8px 12px; }
-            th { background: #f4f4f4; }
-            img { max-width: 100%; height: auto; }
-            blockquote { border-left: 4px solid #7c3aed; margin: 16px 0; padding: 8px 16px; background: #f9f9fb; }
-            code { background: #f1f1f1; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
-            pre { background: #f8f8f8; padding: 12px; border-radius: 6px; overflow-x: auto; }
-            hr { border: none; border-top: 1px solid #ddd; margin: 24px 0; }
-          </style>
-        </head>
-        <body>
-          ${html}
-          <script>
-            window.onload = () => { window.print(); window.close(); };
-          </script>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
   }
 
   override show(): void {
