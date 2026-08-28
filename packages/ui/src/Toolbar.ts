@@ -293,8 +293,11 @@ export class EditKitToolbar {
     }
     if (group6.length > 0) sections.push(group6);
 
-    // Group 7: Secondary Utilities (Select All, Clear All, View Preview)
+    // Group 7: Secondary Utilities (View Preview, Select All, Clear All)
     const group7: HTMLElement[] = [];
+    if (isEnabled('preview', true)) {
+      group7.push(this._createBtn('eye', 'View Preview', () => this.previewModal.show(), undefined, '⌘P'));
+    }
     if (isEnabled('selectAll')) {
       group7.push(this._createBtn('typography', 'Select All', () => this.editor.commands.selectAll(), undefined, '⌘A'));
     }
@@ -307,9 +310,6 @@ export class EditKitToolbar {
       this.clearAllBtn.disabled = true;
       this.clearAllBtn.classList.add('editkit-tb-btn--disabled');
       group7.push(this.clearAllBtn);
-    }
-    if (isEnabled('preview', true)) {
-      group7.push(this._createBtn('eye', 'View Preview', () => this.previewModal.show(), undefined, '⌘P'));
     }
     if (group7.length > 0) sections.push(group7);
 
