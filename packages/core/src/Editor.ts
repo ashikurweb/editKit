@@ -39,6 +39,21 @@ const TABLE_LAYOUT_TAGS = new Set([
   'TABLE', 'COLGROUP', 'COL', 'THEAD', 'TBODY', 'TFOOT', 'TR', 'TD', 'TH',
 ]);
 
+// UI packages may temporarily mount editing controls inside the content tree.
+// Keep those controls out of previews, saved HTML, JSON, and undo snapshots.
+const TRANSIENT_CONTENT_SELECTOR = [
+  '[data-editkit-transient]',
+  // Legacy selectors clean content produced before the transient marker existed.
+  '.editkit-table-col-resizer',
+  '.editkit-table-row-resizer',
+].join(',');
+
+function cloneSerializableContent(contentEl: HTMLElement): HTMLElement {
+  const clone = contentEl.cloneNode(true) as HTMLElement;
+  clone.querySelectorAll(TRANSIENT_CONTENT_SELECTOR).forEach(element => element.remove());
+  return clone;
+}
+
 function normalizeSafeURL(value: string, kind: 'link' | 'image'): string | null {
   const trimmed = value.trim();
   if (!trimmed) return null;
@@ -342,14 +357,15 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
 
   /** Get editor content as HTML string */
   getHTML(): string {
-    return this.contentEl.innerHTML;
+    return cloneSerializableContent(this.contentEl).innerHTML;
   }
 
   /** Get editor content as JSON document */
   getJSON(): EditorJSON {
+    const serializableContent = cloneSerializableContent(this.contentEl);
     return {
       type: 'doc',
-      content: this._parseNodesToJSON(this.contentEl),
+      content: this._parseNodesToJSON(serializableContent),
       version: 1,
     };
   }
@@ -2331,7 +2347,7 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     }
 
     this._history.push({
-      html: this.contentEl.innerHTML,
+      html: this.getHTML(),
       selection: savedSel,
       timestamp: Date.now(),
     });

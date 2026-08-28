@@ -593,6 +593,7 @@ export class TableFloatingMenu {
           const leftResizer = document.createElement('div');
           leftResizer.className = 'editkit-table-col-resizer editkit-table-col-resizer--left';
           leftResizer.setAttribute('contenteditable', 'false');
+          leftResizer.setAttribute('data-editkit-transient', '');
           leftResizer.innerHTML = `
             <span class="editkit-table-col-resizer-bar"></span>
             <span class="editkit-table-col-resizer-bar"></span>
@@ -604,6 +605,7 @@ export class TableFloatingMenu {
         const resizer = document.createElement('div');
         resizer.className = 'editkit-table-col-resizer';
         resizer.setAttribute('contenteditable', 'false');
+        resizer.setAttribute('data-editkit-transient', '');
         resizer.innerHTML = isHeader ? `
           <span class="editkit-table-col-resizer-tab"></span>
           <span class="editkit-table-col-resizer-bar"></span>
@@ -810,6 +812,7 @@ export class TableFloatingMenu {
         const resizer = document.createElement('div');
         resizer.className = 'editkit-table-row-resizer';
         resizer.setAttribute('contenteditable', 'false');
+        resizer.setAttribute('data-editkit-transient', '');
         resizer.innerHTML = '<span class="editkit-table-row-resizer-line"></span>';
 
         resizer.addEventListener('mousedown', (e: MouseEvent) => {
