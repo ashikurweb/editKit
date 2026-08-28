@@ -14,10 +14,6 @@
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
 </p>
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/ashikurweb/editKit-text-editor/master/assets/editkit-preview.png" alt="EditKit UI Preview" width="100%" />
-</p>
-
 ---
 
 ## 📦 Installation
@@ -44,6 +40,16 @@ import '@editkit/ui/styles';
 - **`ImageFloatingMenu`** — Floating image resize bar
 - **`ColorPickerPopover`** — 2D HSV color picker
 - **`EmojiPicker`** & **`SymbolPicker`**
+
+Toolbar and floating-menu instances release their listeners when the editor is destroyed. You can also call each component's idempotent `destroy()` method when managing it independently.
+
+## Customization
+
+Pass `features` to `createToolbar()` to keep the default UI while hiding individual controls, or pass typed `items` to append application-specific buttons. Items declared through core `customToolbarItems` or an extension's `defineToolbarItems()` are included automatically. Theme colors, spacing, and radii are exposed as scoped `--editkit-*` CSS variables.
+
+## Content safety
+
+The editor's initial-content and `setContent()` APIs accept trusted HTML. Sanitize untrusted HTML before it reaches those APIs and before rendering saved output.
 
 ---
 

@@ -62,11 +62,12 @@
   "license": "MIT",
   "author": "Ashikur Rahman",
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022 --external @editkit/core --external @editkit/ui --external react --external react-dom"
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022 --external @editkit/core --external @editkit/ui --external react --external react-dom",
+    "prepack": "pnpm build"
   },
   "peerDependencies": {
-    "react": ">=16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
-    "react-dom": ">=16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+    "react": ">=16.8.0 <20",
+    "react-dom": ">=16.8.0 <20"
   },
   "peerDependenciesMeta": {
     "react": {

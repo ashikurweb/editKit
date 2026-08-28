@@ -6,6 +6,7 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "style": "./src/styles/editor.css",
   "exports": {
     ".": {
       "import": {
@@ -17,11 +18,19 @@
         "default": "./dist/index.cjs"
       }
     },
-    "./styles": "./src/styles/editor.css"
+    "./styles": {
+      "types": "./src/styles/editor.d.ts",
+      "default": "./src/styles/editor.css"
+    },
+    "./styles.css": {
+      "types": "./src/styles/editor.d.ts",
+      "default": "./src/styles/editor.css"
+    }
   },
   "files": [
     "dist",
     "src/styles/editor.css",
+    "src/styles/editor.d.ts",
     "README.md",
     "LICENSE"
   ],
@@ -56,7 +65,8 @@
     "./src/styles/editor.css"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022 --external @editkit/core"
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022 --external @editkit/core",
+    "prepack": "pnpm build"
   },
   "dependencies": {
     "@editkit/core": "workspace:*"

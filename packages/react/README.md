@@ -16,10 +16,6 @@
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
 </p>
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/ashikurweb/editKit-text-editor/master/assets/editkit-preview.png" alt="EditKit React Editor Preview" width="100%" />
-</p>
-
 ---
 
 ## ⚡ Why @editkit/react?
@@ -76,9 +72,8 @@ export default function App() {
         features={{
           math: false,           // Hide LaTeX Math formula modal
           chart: false,          // Hide Chart widget
-          comment: false,        // Hide Comment button
-          versionHistory: false, // Hide Snapshot button
-          bookmark: false,       // Hide Bookmark action
+          panel: false,          // Hide callout / panel menu
+          insertElements: false, // Hide Insert Elements menu
         }}
         bubbleMenu={true}        // Floating selection bubble menu
         tableMenu={true}         // Contextual floating table actions
@@ -131,8 +126,8 @@ export function CustomEditor() {
 
 | Prop Name | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `value` | `string` | `''` | Controlled HTML content of the editor |
-| `defaultValue` | `string` | `''` | Initial uncontrolled HTML content |
+| `value` | `string` | `undefined` | Controlled HTML content of the editor |
+| `defaultValue` | `string` | `undefined` | Initial uncontrolled HTML content |
 | `onChange` | `(html: string) => void` | - | Callback triggered whenever content changes |
 | `onFocus` | `(editor: EditKitEditor) => void` | - | Callback when editor gains focus |
 | `onBlur` | `(editor: EditKitEditor) => void` | - | Callback when editor loses focus |
@@ -170,12 +165,11 @@ You can pass `features={{ [key]: boolean }}` to customize every single button on
 | `link` | `boolean` | `true` | In-place floating link preview & edit popover (`Ctrl+K`) |
 | `emoji` | `boolean` | `true` | Searchable emoji picker with category tabs |
 | `symbol` | `boolean` | `true` | Special characters & math symbols picker (`Ω`) |
-| `bookmark` | `boolean` | `true` | Bookmark / Pin action button |
+| `panel` | `boolean` | `true` | Info, warning, error, success, and note panels |
+| `insertElements` | `boolean` | `true` | Dividers, uploads, signatures, and layout blocks |
 | `selectAll` | `boolean` | `true` | Select all editor content button (`⌘A`) |
 | `clearAll` | `boolean` | `true` | Clear all content button (Cross icon, enabled only when all selected) |
-| `comment` | `boolean` | `true` | Add inline comment button |
-| `versionHistory` | `boolean` | `true` | Version snapshot history button |
-| `more` | `boolean` | `true` | More tools dropdown (`+ ˅`) |
+| `preview` | `boolean` | `true` | Responsive document preview button |
 
 ---
 
@@ -193,6 +187,8 @@ You can pass `features={{ [key]: boolean }}` to customize every single button on
   --editkit-font: 'DM Sans', sans-serif;
 }
 ```
+
+> `value`, `defaultValue`, and `content` are trusted-HTML inputs. Sanitize content from users or external systems before passing it to EditKit and before rendering saved HTML.
 
 ---
 

@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import ReactRuntime from 'react';
+import type * as React from 'react';
 import { EditKitEditor, type EditKitConfig } from '@editkit/core';
 import {
   createToolbar,
@@ -20,7 +21,15 @@ export interface UseEditKitEditorOptions extends Omit<EditKitConfig, 'element'> 
   defaultValue?: string;
 }
 
-export function useEditKitEditor(options: UseEditKitEditorOptions = {}) {
+export interface UseEditKitEditorReturn {
+  editor: EditKitEditor | null;
+  containerRef: React.MutableRefObject<HTMLDivElement | null>;
+}
+
+export function useEditKitEditor(
+  options: UseEditKitEditorOptions = {}
+): UseEditKitEditorReturn {
+  const { useEffect, useRef, useState } = ReactRuntime;
   const [editor, setEditor] = useState<EditKitEditor | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const optionsRef = useRef(options);
@@ -44,39 +53,47 @@ export function useEditKitEditor(options: UseEditKitEditorOptions = {}) {
       },
     });
 
+    const uiComponents: Array<{ destroy(): void }> = [];
     const isToolbarEnabled = optionsRef.current.showToolbar !== false;
     if (isToolbarEnabled) {
-      const tbConfig: ToolbarConfig = optionsRef.current.toolbar || {
-        features: optionsRef.current.features,
+      const tbConfig: ToolbarConfig = {
+        ...optionsRef.current.toolbar,
+        features:
+          optionsRef.current.toolbar?.features ?? optionsRef.current.features,
       };
-      if (optionsRef.current.features && !tbConfig.features) {
-        tbConfig.features = optionsRef.current.features;
-      }
       const toolbar = createToolbar(instance, tbConfig);
-      instance.root.insertBefore(toolbar.element, instance.contentEl);
+      if (!tbConfig.container) {
+        instance.root.insertBefore(toolbar.element, instance.contentEl);
+      }
+      uiComponents.push(toolbar);
     }
 
     if (optionsRef.current.bubbleMenu !== false) {
       const bubble = new BubbleMenu(instance);
       bubble.mount(instance.root);
+      uiComponents.push(bubble);
     }
 
     if (optionsRef.current.tableMenu !== false) {
       const table = new TableFloatingMenu(instance);
       table.mount(instance.root);
+      uiComponents.push(table);
     }
 
     if (optionsRef.current.imageMenu !== false) {
       const img = new ImageFloatingMenu(instance);
       img.mount(instance.root);
+      uiComponents.push(img);
     }
 
     instance.mount(containerRef.current);
     setEditor(instance);
 
     return () => {
+      for (const component of uiComponents.reverse()) {
+        component.destroy();
+      }
       instance.destroy();
-      setEditor(null);
     };
   }, []);
 

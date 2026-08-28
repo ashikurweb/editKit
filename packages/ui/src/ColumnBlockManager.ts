@@ -22,6 +22,7 @@ export class ColumnBlockManager {
   private activeMenu: HTMLElement | null = null;
   private activeColumnBody: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
+  private _isDestroyed: boolean = false;
 
   constructor(editor: EditKitEditor) {
     this.editor = editor;
@@ -29,7 +30,10 @@ export class ColumnBlockManager {
   }
 
   destroy(): void {
+    if (this._isDestroyed) return;
+    this._isDestroyed = true;
     this._unsubscribers.forEach(fn => fn());
+    this._unsubscribers = [];
     this._closeMenu();
   }
 

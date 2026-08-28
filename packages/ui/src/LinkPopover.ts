@@ -8,6 +8,18 @@ import type { EditKitEditor } from '@editkit/core';
 import { icons } from './icons';
 import { showToast } from './Toast';
 
+function normalizeLinkURL(value: string): string | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  const compact = trimmed.replace(/[\u0000-\u0020\u007f-\u009f]/g, '');
+  const scheme = compact.match(/^([a-z][a-z0-9+.-]*):/i)?.[1]?.toLowerCase();
+  if (scheme) {
+    return ['http', 'https', 'mailto', 'tel'].includes(scheme) ? trimmed : null;
+  }
+  if (/^(?:#|\/|\.\/|\.\.\/|\?)/.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+}
+
 export class LinkPopover {
   readonly element: HTMLElement;
   private editor: EditKitEditor;
@@ -18,8 +30,12 @@ export class LinkPopover {
   private inputEl!: HTMLInputElement;
   private isVisible: boolean = false;
   private justOpened: boolean = false;
-  private hideTimeout: any = null;
+  private hideTimeout: ReturnType<typeof setTimeout> | null = null;
+  private focusTimeout: ReturnType<typeof setTimeout> | null = null;
+  private justOpenedTimeout: ReturnType<typeof setTimeout> | null = null;
   private onCloseCallback?: () => void;
+  private _unsubscribers: (() => void)[] = [];
+  private _isDestroyed: boolean = false;
 
   constructor(editor: EditKitEditor, onClose?: () => void) {
     this.editor = editor;
@@ -46,17 +62,23 @@ export class LinkPopover {
   // ── 1. Preview Mode: [ 🔗 URL ↗ ] | [ ✎ Edit ] | [ 🗑 Remove ] ──
   private _renderPreviewMode(): void {
     const url = this.targetAnchor?.getAttribute('href') || 'https://';
+    const safeURL = normalizeLinkURL(url);
 
     // Link URL display with external open icon
     const linkPreview = document.createElement('a');
     linkPreview.classList.add('editkit-link-preview-url');
-    linkPreview.href = url;
+    linkPreview.href = safeURL || '#';
     linkPreview.target = '_blank';
     linkPreview.rel = 'noopener noreferrer';
     linkPreview.title = url;
 
     const displayUrl = url.replace(/^https?:\/\//i, '');
-    linkPreview.innerHTML = `${icons.link} <span>${displayUrl}</span> ${icons.externalLink}`;
+    const display = document.createElement('span');
+    display.textContent = displayUrl;
+    linkPreview.innerHTML = icons.link;
+    linkPreview.append(document.createTextNode(' '), display, document.createTextNode(' '));
+    linkPreview.insertAdjacentHTML('beforeend', icons.externalLink);
+    if (!safeURL) linkPreview.addEventListener('click', event => event.preventDefault());
 
     // Divider
     const div1 = document.createElement('div');
@@ -74,9 +96,11 @@ export class LinkPopover {
       e.stopPropagation();
       this.mode = 'edit';
       this._render();
-      setTimeout(() => {
+      if (this.focusTimeout) clearTimeout(this.focusTimeout);
+      this.focusTimeout = setTimeout(() => {
         this.inputEl.focus();
         this.inputEl.select();
+        this.focusTimeout = null;
       }, 40);
     });
 
@@ -158,7 +182,7 @@ export class LinkPopover {
 
   private _setupGlobalListeners(): void {
     // 1. Track selection range when selection changes
-    this.editor.on('selectionUpdate', () => {
+    const unsubscribeSelection = this.editor.on('selectionUpdate', () => {
       if (this.isVisible && this.mode === 'edit') return;
       const sel = window.getSelection();
       if (sel && sel.rangeCount > 0 && this.editor.contentEl.contains(sel.anchorNode)) {
@@ -174,9 +198,10 @@ export class LinkPopover {
         }
       }
     });
+    this._unsubscribers.push(unsubscribeSelection);
 
     // 2. Mouseover on links inside editor content
-    this.editor.contentEl.addEventListener('mouseover', (e: MouseEvent) => {
+    const onContentMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const anchor = (target.tagName === 'A' ? target : target.closest('a')) as HTMLAnchorElement | null;
       if (anchor && this.editor.contentEl.contains(anchor)) {
@@ -184,10 +209,11 @@ export class LinkPopover {
         this.targetAnchor = anchor;
         this.showPreview(anchor);
       }
-    });
+    };
+    this.editor.contentEl.addEventListener('mouseover', onContentMouseOver);
 
     // Mouseleave handler with grace delay
-    this.editor.contentEl.addEventListener('mouseout', (e: MouseEvent) => {
+    const onContentMouseOut = (e: MouseEvent) => {
       const related = e.relatedTarget as Node | null;
       if (this.element.contains(related)) return;
 
@@ -196,36 +222,50 @@ export class LinkPopover {
           this.hide();
         }, 300);
       }
-    });
+    };
+    this.editor.contentEl.addEventListener('mouseout', onContentMouseOut);
 
-    this.element.addEventListener('mouseenter', () => {
+    const onPopoverMouseEnter = () => {
       if (this.hideTimeout) clearTimeout(this.hideTimeout);
-    });
+    };
+    this.element.addEventListener('mouseenter', onPopoverMouseEnter);
 
-    this.element.addEventListener('mouseleave', () => {
+    const onPopoverMouseLeave = () => {
       if (this.isVisible && this.mode === 'preview') {
         this.hideTimeout = setTimeout(() => {
           this.hide();
         }, 200);
       }
-    });
+    };
+    this.element.addEventListener('mouseleave', onPopoverMouseLeave);
 
     // Close on click outside
-    document.addEventListener('mousedown', (e: MouseEvent) => {
+    const onDocumentMouseDown = (e: MouseEvent) => {
       if (!this.isVisible || this.justOpened) return;
       const target = e.target as Node;
       if (!this.element.contains(target)) {
         this.hide();
       }
-    });
+    };
+    document.addEventListener('mousedown', onDocumentMouseDown);
 
     // Close on Escape
-    document.addEventListener('keydown', (e: KeyboardEvent) => {
+    const onDocumentKeyDown = (e: KeyboardEvent) => {
       if (!this.isVisible) return;
       if (e.key === 'Escape') {
         this.hide();
       }
-    });
+    };
+    document.addEventListener('keydown', onDocumentKeyDown);
+
+    this._unsubscribers.push(
+      () => this.editor.contentEl.removeEventListener('mouseover', onContentMouseOver),
+      () => this.editor.contentEl.removeEventListener('mouseout', onContentMouseOut),
+      () => this.element.removeEventListener('mouseenter', onPopoverMouseEnter),
+      () => this.element.removeEventListener('mouseleave', onPopoverMouseLeave),
+      () => document.removeEventListener('mousedown', onDocumentMouseDown),
+      () => document.removeEventListener('keydown', onDocumentKeyDown),
+    );
   }
 
   showPreview(anchor: HTMLAnchorElement): void {
@@ -257,9 +297,11 @@ export class LinkPopover {
 
     this._mountAndPosition(rect);
 
-    setTimeout(() => {
+    if (this.focusTimeout) clearTimeout(this.focusTimeout);
+    this.focusTimeout = setTimeout(() => {
       this.inputEl?.focus();
       this.inputEl?.select();
+      this.focusTimeout = null;
     }, 40);
   }
 
@@ -303,8 +345,10 @@ export class LinkPopover {
 
   private _mountAndPosition(rect: DOMRect): void {
     this.justOpened = true;
-    setTimeout(() => {
+    if (this.justOpenedTimeout) clearTimeout(this.justOpenedTimeout);
+    this.justOpenedTimeout = setTimeout(() => {
       this.justOpened = false;
+      this.justOpenedTimeout = null;
     }, 150);
 
     if (!this.element.parentElement) {
@@ -335,14 +379,18 @@ export class LinkPopover {
       return;
     }
 
-    let url = rawUrl;
-    if (!/^https?:\/\//i.test(url) && !url.startsWith('mailto:') && !url.startsWith('tel:') && !url.startsWith('#')) {
-      url = `https://${url}`;
+    const url = normalizeLinkURL(rawUrl);
+    if (!url) {
+      this.inputEl.setCustomValidity('Use a safe http(s), mailto, tel, or relative URL.');
+      this.inputEl.reportValidity();
+      return;
     }
+    this.inputEl.setCustomValidity('');
 
     if (this.targetAnchor && this.targetAnchor.isConnected) {
       this.targetAnchor.setAttribute('href', url);
       this.targetAnchor.setAttribute('target', '_blank');
+      this.targetAnchor.setAttribute('rel', 'noopener noreferrer');
       this.editor.emit('update', { editor: this.editor });
     } else {
       this._restoreSelection();
@@ -388,5 +436,22 @@ export class LinkPopover {
       sel.removeAllRanges();
       sel.addRange(this.savedRange);
     }
+  }
+
+  destroy(): void {
+    if (this._isDestroyed) return;
+    this._isDestroyed = true;
+    if (this.hideTimeout) clearTimeout(this.hideTimeout);
+    if (this.focusTimeout) clearTimeout(this.focusTimeout);
+    if (this.justOpenedTimeout) clearTimeout(this.justOpenedTimeout);
+    this.hideTimeout = null;
+    this.focusTimeout = null;
+    this.justOpenedTimeout = null;
+    this._unsubscribers.forEach(unsubscribe => unsubscribe());
+    this._unsubscribers = [];
+    this.savedRange = null;
+    this.targetAnchor = null;
+    this.isVisible = false;
+    this.element.remove();
   }
 }

@@ -27,6 +27,7 @@ export class Modal {
   protected editor: EditKitEditor;
   protected options: ModalOptions;
   private _isMounted: boolean = false;
+  protected _isDestroyed: boolean = false;
   private _keydownHandler: (e: KeyboardEvent) => void;
 
   constructor(editor: EditKitEditor, options: ModalOptions = {}) {
@@ -106,6 +107,7 @@ export class Modal {
   }
 
   show(): void {
+    if (this._isDestroyed) return;
     const theme = (this.editor as any).getTheme?.() || (this.editor as any)._config?.theme || 'dark';
     this.overlayEl.setAttribute('data-editkit-theme', theme);
     this.overlayEl.setAttribute('data-editkit', '');
@@ -132,7 +134,10 @@ export class Modal {
   }
 
   destroy(): void {
+    if (this._isDestroyed) return;
+    this._isDestroyed = true;
     document.removeEventListener('keydown', this._keydownHandler);
     this.overlayEl.remove();
+    this._isMounted = false;
   }
 }

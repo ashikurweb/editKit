@@ -5,6 +5,7 @@
 
 import { EventEmitter } from './events';
 import { ExtensionManager, Extension } from './Extension';
+import type { CustomToolbarItem } from './Extension';
 import type {
   EditKitConfig,
   EditKitEvents,
@@ -37,6 +38,28 @@ const BLOCK_TAGS = new Set([
 const TABLE_LAYOUT_TAGS = new Set([
   'TABLE', 'COLGROUP', 'COL', 'THEAD', 'TBODY', 'TFOOT', 'TR', 'TD', 'TH',
 ]);
+
+function normalizeSafeURL(value: string, kind: 'link' | 'image'): string | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+
+  const compact = trimmed.replace(/[\u0000-\u0020\u007f-\u009f]/g, '');
+  const scheme = compact.match(/^([a-z][a-z0-9+.-]*):/i)?.[1]?.toLowerCase();
+  if (!scheme) return trimmed;
+
+  if (kind === 'link') {
+    return ['http', 'https', 'mailto', 'tel'].includes(scheme) ? trimmed : null;
+  }
+
+  if (['http', 'https', 'blob'].includes(scheme)) return trimmed;
+  if (
+    scheme === 'data' &&
+    /^data:image\/(?:png|jpe?g|gif|webp|avif);base64,/i.test(compact)
+  ) {
+    return trimmed;
+  }
+  return null;
+}
 
 // ── Mark ↔ tag mapping ──────────────────────────────────────
 const MARK_TAG_MAP: Record<string, string> = {
@@ -205,6 +228,7 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
   private _isMounted: boolean = false;
   private _historyDebounce: ReturnType<typeof setTimeout> | null = null;
   private _selectionChangeHandler: (() => void) | null = null;
+  private _isDestroyed: boolean = false;
   private _lastActiveTableCell: TableCellInfo | null = null;
   private _lastActiveTable: HTMLTableElement | null = null;
   private _lastActiveCell: HTMLTableCellElement | null = null;
@@ -296,6 +320,12 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
 
   /** Destroy the editor and clean up */
   destroy(): void {
+    if (this._isDestroyed) return;
+    this._isDestroyed = true;
+    if (this._historyDebounce) {
+      clearTimeout(this._historyDebounce);
+      this._historyDebounce = null;
+    }
     this.emit('destroy', { editor: this });
     this.extensionManager.emitDestroy();
     if (this._selectionChangeHandler) {
@@ -329,7 +359,18 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     return (this.contentEl.innerText || '').trim();
   }
 
-  /** Set editor content from HTML string */
+  /** Toolbar items supplied directly or by registered extensions. */
+  getToolbarItems(): CustomToolbarItem[] {
+    return [
+      ...(this._config.customToolbarItems || []),
+      ...this.extensionManager.getAllToolbarItems(),
+    ];
+  }
+
+  /**
+   * Set content from trusted application HTML.
+   * Sanitize untrusted/user-supplied HTML before calling this method.
+   */
   setContent(html: string, emitUpdate: boolean = true): void {
     this.contentEl.innerHTML = html || '<p><br></p>';
     this._saveHistory();
@@ -1105,6 +1146,16 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     const sel = window.getSelection();
     if (!sel || sel.rangeCount === 0) return;
 
+    const savedSelection: SavedSelection | null = this.contentEl.contains(sel.anchorNode) &&
+      this.contentEl.contains(sel.focusNode)
+      ? {
+          anchorPath: getNodePath(this.contentEl, sel.anchorNode!),
+          anchorOffset: sel.anchorOffset,
+          focusPath: getNodePath(this.contentEl, sel.focusNode!),
+          focusOffset: sel.focusOffset,
+        }
+      : null;
+
     const blocks = getSelectedBlocks(this.contentEl);
     if (blocks.length === 0) return;
 
@@ -1125,6 +1176,10 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
       }
     }
 
+    // Replacing a block element makes browsers move the selection to the
+    // editor root. Restore the equivalent text range so toolbar state stays
+    // in sync with the newly selected heading/paragraph.
+    this._restoreSelection(savedSelection);
     this._restoreFocusToContent();
     this._saveHistory();
     this._emitUpdate();
@@ -1974,9 +2029,11 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
   // ═══════════════════════════════════════════
 
   private _insertImage(opts: { src: string; alt?: string; title?: string; width?: string; height?: string }): void {
+    const safeSrc = normalizeSafeURL(opts.src, 'image');
+    if (!safeSrc) return;
     this._ensureFocus();
     const img = document.createElement('img');
-    img.src = opts.src;
+    img.src = safeSrc;
     if (opts.alt) img.alt = opts.alt;
     if (opts.title) img.title = opts.title;
     img.classList.add('editkit-image');
@@ -2005,6 +2062,8 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
   }
 
   private _setLink(opts: { url: string; target?: string }): void {
+    const safeURL = normalizeSafeURL(opts.url, 'link');
+    if (!safeURL) return;
     this._ensureFocus();
     const sel = window.getSelection();
     if (!sel || sel.rangeCount === 0) return;
@@ -2012,15 +2071,21 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     const range = sel.getRangeAt(0);
     if (range.collapsed) {
       const a = document.createElement('a');
-      a.href = opts.url;
-      a.textContent = opts.url;
+      a.href = safeURL;
+      a.textContent = safeURL;
       if (opts.target) a.target = opts.target;
+      if (opts.target === '_blank') a.rel = 'noopener noreferrer';
       range.insertNode(a);
     } else {
-      document.execCommand('createLink', false, opts.url);
+      document.execCommand('createLink', false, safeURL);
       if (opts.target) {
         const parentA = this._findAncestor(sel.anchorNode, 'A');
-        if (parentA) parentA.setAttribute('target', opts.target);
+        if (parentA) {
+          parentA.setAttribute('target', opts.target);
+          if (opts.target === '_blank') {
+            parentA.setAttribute('rel', 'noopener noreferrer');
+          }
+        }
       }
     }
 
@@ -2088,7 +2153,7 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
   }
 
   private _renderMath(latex: string): string {
-    let html = latex;
+    let html = this._escapeHTML(latex);
     html = html.replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, '<span class="editkit-math-frac"><span class="editkit-math-num">$1</span><span class="editkit-math-den">$2</span></span>');
     html = html.replace(/\\sqrt\s*\{([^{}]+)\}/g, '<span class="editkit-math-sqrt"><span class="editkit-math-sqrt-sym">√</span><span class="editkit-math-sqrt-body">$1</span></span>');
     html = html.replace(/\\int/g, '<span class="editkit-math-symbol">∫</span>');
@@ -2450,7 +2515,9 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
     const temp = document.createElement('div');
     temp.innerHTML = html;
 
-    temp.querySelectorAll('script, style, link, meta, iframe, object, embed').forEach(el => el.remove());
+    temp.querySelectorAll(
+      'script, style, link, meta, base, iframe, object, embed, form, input, button, textarea, select, option, template, svg, foreignObject'
+    ).forEach(el => el.remove());
 
     const allElements = temp.querySelectorAll('*');
     allElements.forEach(el => {
@@ -2478,6 +2545,8 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
           }
         } else if (
           attrName.startsWith('on') ||
+          attrName === 'srcdoc' ||
+          attrName === 'srcset' ||
           attrName === 'bgcolor' ||
           attrName === 'color' ||
           attrName === 'background' ||
@@ -2490,15 +2559,41 @@ export class EditKitEditor extends EventEmitter<EditKitEvents> {
         }
       });
 
-      if (el.tagName === 'A') {
-        const href = el.getAttribute('href') || '';
-        if (href.startsWith('javascript:') || href.startsWith('data:')) {
-          el.removeAttribute('href');
+      const urlAttributes = ['href', 'src', 'xlink:href', 'action', 'formaction', 'poster'];
+      for (const attrName of urlAttributes) {
+        const value = el.getAttribute(attrName);
+        if (value !== null && this._isUnsafePastedURL(value, el, attrName)) {
+          el.removeAttribute(attrName);
         }
+      }
+
+      if (el.tagName === 'A' && el.getAttribute('target')?.toLowerCase() === '_blank') {
+        const rel = new Set((el.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
+        rel.add('noopener');
+        rel.add('noreferrer');
+        el.setAttribute('rel', Array.from(rel).join(' '));
       }
     });
 
     return temp.innerHTML;
+  }
+
+  private _isUnsafePastedURL(value: string, el: Element, attrName: string): boolean {
+    // Browsers ignore ASCII control characters/whitespace while parsing a URL
+    // scheme, so normalize them before validating mixed-case payloads.
+    const normalized = value
+      .replace(/[\u0000-\u0020\u007f-\u009f]/g, '')
+      .toLowerCase();
+
+    if (/^(?:javascript|vbscript):/.test(normalized)) return true;
+    if (normalized.startsWith('data:')) {
+      return !(
+        el.tagName === 'IMG' &&
+        attrName === 'src' &&
+        /^data:image\/(?:png|jpe?g|gif|webp|avif);base64,/i.test(normalized)
+      );
+    }
+    return false;
   }
 
   private _escapeHTML(text: string): string {

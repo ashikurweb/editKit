@@ -59,7 +59,8 @@
   "license": "MIT",
   "author": "Ashikur Rahman",
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022 --external @editkit/core --external @editkit/ui --external vue"
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022 --external @editkit/core --external @editkit/ui --external vue",
+    "prepack": "pnpm build"
   },
   "peerDependencies": {
     "vue": "^3.0.0"

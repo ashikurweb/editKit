@@ -8,7 +8,10 @@ export { EditKitEditor } from './EditKitEditor';
 export type { EditKitEditorProps } from './EditKitEditor';
 
 export { useEditKitEditor } from './useEditKitEditor';
-export type { UseEditKitEditorOptions } from './useEditKitEditor';
+export type {
+  UseEditKitEditorOptions,
+  UseEditKitEditorReturn,
+} from './useEditKitEditor';
 
 export type {
   ToolbarConfig,

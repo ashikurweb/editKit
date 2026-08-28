@@ -6,6 +6,7 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./types/index.d.ts",
+  "style": "./src/styles.css",
   "exports": {
     ".": {
       "import": {
@@ -47,7 +48,14 @@
         "default": "./dist/svelte.cjs"
       }
     },
-    "./styles": "./src/styles.css",
+    "./styles": {
+      "types": "./types/styles.d.ts",
+      "default": "./src/styles.css"
+    },
+    "./styles.css": {
+      "types": "./types/styles.d.ts",
+      "default": "./src/styles.css"
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -105,7 +113,11 @@
     "dev": "turbo run dev",
     "build": "turbo run build && pnpm run build:package",
     "build:package": "tsup src/index.ts src/react.ts src/vue.ts src/svelte.ts --format esm,cjs --sourcemap --clean --target es2022 --external @editkit/core --external @editkit/ui --external @editkit/react --external @editkit/vue --external @editkit/svelte --external react --external react-dom --external vue --external svelte",
+    "prepack": "pnpm build",
+    "test": "pnpm verify",
+    "test:package": "node scripts/package-smoke.mjs",
     "typecheck": "tsc --noEmit --project tsconfig.json",
+    "verify": "pnpm typecheck && pnpm build && pnpm test:package",
     "playground": "pnpm --filter @editkit/playground dev",
     "clean": "turbo run clean"
   },

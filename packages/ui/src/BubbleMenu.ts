@@ -44,6 +44,7 @@ export class BubbleMenu {
   private sizeDisplay!: HTMLElement;
   private activeDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
+  private _isDestroyed: boolean = false;
 
   constructor(editor: EditKitEditor) {
     this.editor = editor;
@@ -67,14 +68,17 @@ export class BubbleMenu {
         }
       }, 150);
     });
-    this._unsubscribers.push(unsubBlur);
+    const unsubDestroy = this.editor.on('destroy', () => this.destroy());
+    this._unsubscribers.push(unsubBlur, unsubDestroy);
 
     // Close open dropdowns when clicking outside bubble menu
-    document.addEventListener('mousedown', (e) => {
+    const onDocumentMouseDown = (e: MouseEvent) => {
       if (!this.element.contains(e.target as Node)) {
         this._closeAllDropdowns();
       }
-    });
+    };
+    document.addEventListener('mousedown', onDocumentMouseDown);
+    this._unsubscribers.push(() => document.removeEventListener('mousedown', onDocumentMouseDown));
   }
 
   mount(container: HTMLElement): void {
@@ -82,7 +86,11 @@ export class BubbleMenu {
   }
 
   destroy(): void {
+    if (this._isDestroyed) return;
+    this._isDestroyed = true;
     this._unsubscribers.forEach(fn => fn());
+    this._unsubscribers = [];
+    this.linkPopover.destroy();
     this.element.remove();
   }
 

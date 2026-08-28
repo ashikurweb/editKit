@@ -16,10 +16,6 @@
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
 </p>
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/ashikurweb/editKit-text-editor/master/assets/editkit-preview.png" alt="EditKit Vue Editor Preview" width="100%" />
-</p>
-
 ---
 
 ## ⚡ Why @editkit/vue?
@@ -121,11 +117,17 @@ const { editor } = useEditKitEditor(editorEl, {
 
 | Prop Name | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `v-model` (`modelValue`) | `string` | `''` | Two-way bound HTML content |
-| `defaultValue` | `string` | `''` | Initial uncontrolled HTML content |
+| `v-model` (`modelValue`) | `string` | `undefined` | Two-way bound HTML content |
+| `defaultValue` | `string` | `undefined` | Initial uncontrolled HTML content |
 | `theme` | `'light' \| 'dark' \| 'system'` | `'dark'` | Theme appearance |
 | `placeholder` | `string` | `'Write something...'` | Empty editor placeholder text |
 | `editable` | `boolean` | `true` | Read-only mode toggle |
+| `autofocus` | `boolean` | `false` | Focus the editor after mounting |
+| `defaultFontFamily` | `string` | `'DM Sans'` | Initial editor font family |
+| `defaultFontSize` | `number` | `14` | Initial editor font size in pixels |
+| `historyDepth` | `number` | `100` | Maximum undo history entries |
+| `extensions` | `Extension[]` | `[]` | Core extensions to register |
+| `customToolbarItems` | `CustomToolbarItem[]` | `[]` | Typed controls appended to the toolbar |
 | `showToolbar` | `boolean` | `true` | Show or hide the top formatting toolbar |
 | `bubbleMenu` | `boolean` | `true` | Enable floating selection bubble toolbar |
 | `tableMenu` | `boolean` | `true` | Enable contextual table action floating menu |
@@ -155,12 +157,11 @@ const { editor } = useEditKitEditor(editorEl, {
 | `link` | `boolean` | `true` | In-place floating link preview & editor popover (`Ctrl+K`) |
 | `emoji` | `boolean` | `true` | Searchable emoji picker with category tabs |
 | `symbol` | `boolean` | `true` | Special characters & math symbols picker (`Ω`) |
-| `bookmark` | `boolean` | `true` | Bookmark / Pin action button |
+| `panel` | `boolean` | `true` | Info, warning, error, success, and note panels |
+| `insertElements` | `boolean` | `true` | Dividers, uploads, signatures, and layout blocks |
 | `selectAll` | `boolean` | `true` | Select all editor content (`⌘A`) |
 | `clearAll` | `boolean` | `true` | Clear all content button (Cross icon, enabled only when all selected) |
-| `comment` | `boolean` | `true` | Add inline comment button |
-| `versionHistory` | `boolean` | `true` | Version snapshot history button |
-| `more` | `boolean` | `true` | More tools dropdown (`+ ˅`) |
+| `preview` | `boolean` | `true` | Responsive document preview button |
 
 ---
 
@@ -178,6 +179,8 @@ const { editor } = useEditKitEditor(editorEl, {
   --editkit-font: 'DM Sans', sans-serif;
 }
 ```
+
+> `v-model`, `defaultValue`, and composable `content` are trusted-HTML inputs. Sanitize content from users or external systems before passing it to EditKit and before rendering saved HTML.
 
 ---
 

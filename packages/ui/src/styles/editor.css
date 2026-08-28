@@ -65,6 +65,67 @@
   --editkit-radius-pill: 9999px;
 }
 
+/* Inserted chart block */
+.editkit-content .editkit-chart-block {
+  width: min(100%, 620px);
+  margin: 1.25em 0;
+  padding: 18px 20px 16px;
+  border: 1px solid var(--editkit-border);
+  border-radius: 12px;
+  background: var(--editkit-card-bg);
+  color: var(--editkit-text);
+}
+
+.editkit-chart-title {
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.editkit-chart-plot {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  height: 180px;
+  padding-top: 22px;
+  border-bottom: 1px solid var(--editkit-divider);
+}
+
+.editkit-chart-column {
+  display: grid;
+  grid-template-rows: 18px 1fr 22px;
+  align-items: end;
+  justify-items: center;
+  flex: 1 1 0;
+  height: 100%;
+  min-width: 0;
+}
+
+.editkit-chart-value,
+.editkit-chart-label {
+  color: var(--editkit-text-muted);
+  font-size: 11px;
+  line-height: 1;
+}
+
+.editkit-chart-track {
+  display: flex;
+  align-items: flex-end;
+  width: min(34px, 72%);
+  height: 100%;
+  overflow: hidden;
+  border-radius: 6px 6px 0 0;
+  background: var(--editkit-surface-hover);
+}
+
+.editkit-chart-bar {
+  display: block;
+  width: 100%;
+  min-height: 2px;
+  border-radius: 6px 6px 0 0;
+  background: var(--editkit-primary);
+}
+
 [data-editkit-theme="light"] {
   /* ── Clean White Surfaces ── */
   --editkit-bg: #f8fafc;
@@ -7947,4 +8008,14 @@ body.editkit-row-resizing * {
   .editkit-preview-device-btn {
     transition: none;
   }
+}
+
+/* Keep closed, absolutely-positioned pickers out of mobile page overflow. */
+.editkit-tb-dropdown-wrap:not(.editkit-tb-dropdown-wrap--open) > .editkit-tb-dropdown-menu,
+.editkit-tb-dropdown-wrap:not(.editkit-tb-dropdown-wrap--open) > .editkit-emoji-picker,
+.editkit-tb-dropdown-wrap:not(.editkit-tb-dropdown-wrap--open) > .editkit-symbol-picker,
+.editkit-tb-dropdown-wrap:not(.editkit-tb-dropdown-wrap--open) > .editkit-color-picker,
+.editkit-bubble-dropdown-wrap:not(.editkit-bubble-dropdown-wrap--open) > .editkit-bubble-dropdown-menu,
+.editkit-bubble-dropdown-wrap:not(.editkit-bubble-dropdown-wrap--open) > .editkit-color-picker {
+  display: none;
 }

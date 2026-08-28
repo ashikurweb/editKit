@@ -319,7 +319,7 @@ export class MathModal extends Modal {
       if (!mathmlHtml.includes('<math')) {
         mathmlHtml = `<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">${mathmlHtml}</math>`;
       }
-      this.previewEl.innerHTML = mathmlHtml;
+      this.previewEl.innerHTML = sanitizeMathML(mathmlHtml);
     } else {
       this.previewEl.innerHTML = formatMathFormula(raw);
     }
@@ -333,7 +333,7 @@ export class MathModal extends Modal {
     }
 
     const rendered = this.currentMode === 'mathml'
-      ? (raw.includes('<math') ? raw : `<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">${raw}</math>`)
+      ? sanitizeMathML(raw.includes('<math') ? raw : `<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">${raw}</math>`)
       : formatMathFormula(raw);
 
     if (this.targetEl && this.targetEl.isConnected) {
@@ -361,7 +361,12 @@ export class MathModal extends Modal {
 
 /** Formats TeX / LaTeX formula into rich mathematical HTML */
 export function formatMathFormula(latex: string): string {
-  let html = latex;
+  let html = latex
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 
   // 1. Fractions: \frac{a}{b}
   html = html.replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, (_m, num, den) => {
@@ -422,4 +427,35 @@ export function formatMathFormula(latex: string): string {
   html = html.replace(/\\(sin|cos|tan|log|ln|exp)/g, '<span class="editkit-math-func">$1</span>');
 
   return `<span class="editkit-math-rendered">${html}</span>`;
+}
+
+function sanitizeMathML(input: string): string {
+  const container = document.createElement('div');
+  container.innerHTML = input;
+
+  const allowedTags = new Set([
+    'math', 'mrow', 'mi', 'mn', 'mo', 'mtext', 'mspace', 'ms',
+    'mfrac', 'msqrt', 'mroot', 'msub', 'msup', 'msubsup',
+    'munder', 'mover', 'munderover', 'mtable', 'mtr', 'mtd',
+    'mfenced', 'menclose', 'semantics', 'annotation',
+  ]);
+  const allowedAttributes = new Set([
+    'xmlns', 'display', 'mathvariant', 'mathsize', 'mathcolor',
+    'mathbackground', 'displaystyle', 'scriptlevel', 'columnalign',
+    'rowalign', 'linethickness', 'notation', 'open', 'close', 'separators',
+  ]);
+
+  for (const element of Array.from(container.querySelectorAll('*'))) {
+    if (!allowedTags.has(element.localName.toLowerCase())) {
+      element.replaceWith(document.createTextNode(element.textContent || ''));
+      continue;
+    }
+    for (const attribute of Array.from(element.attributes)) {
+      if (!allowedAttributes.has(attribute.name.toLowerCase())) {
+        element.removeAttribute(attribute.name);
+      }
+    }
+  }
+
+  return container.innerHTML;
 }

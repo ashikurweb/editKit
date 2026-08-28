@@ -52,7 +52,10 @@ export interface TableCellInfo {
 export interface EditKitConfig {
   /** Container element or selector to mount the editor into */
   element?: HTMLElement | string;
-  /** Initial HTML content */
+  /**
+   * Initial HTML content. This is treated as trusted application HTML.
+   * Sanitize untrusted/user-supplied HTML before passing it to EditKit.
+   */
   content?: string;
   /** Whether the editor is editable (default: true) */
   editable?: boolean;

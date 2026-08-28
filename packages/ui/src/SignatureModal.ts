@@ -39,6 +39,7 @@ export class SignatureModal extends Modal {
   private clearBtn!: HTMLButtonElement;
   private swatches: HTMLButtonElement[] = [];
   private sizeButtons: HTMLButtonElement[] = [];
+  private _globalUnsubscribers: (() => void)[] = [];
 
   constructor(editor: EditKitEditor) {
     super(editor, {
@@ -292,14 +293,20 @@ export class SignatureModal extends Modal {
       startDraw(getPos(e));
     });
 
-    window.addEventListener('mousemove', (e) => {
+    const onWindowMouseMove = (e: MouseEvent) => {
       if (!this.isDrawing) return;
       drawMove(getPos(e));
-    });
+    };
+    window.addEventListener('mousemove', onWindowMouseMove);
 
-    window.addEventListener('mouseup', () => {
+    const onWindowMouseUp = () => {
       if (this.isDrawing) endDraw();
-    });
+    };
+    window.addEventListener('mouseup', onWindowMouseUp);
+    this._globalUnsubscribers.push(
+      () => window.removeEventListener('mousemove', onWindowMouseMove),
+      () => window.removeEventListener('mouseup', onWindowMouseUp),
+    );
 
     // Touch listeners
     this.canvasEl.addEventListener('touchstart', (e) => {
@@ -518,5 +525,15 @@ export class SignatureModal extends Modal {
 
     super.show();
     this._clear();
+  }
+
+  override destroy(): void {
+    if (this._isDestroyed) return;
+    this.isDrawing = false;
+    this.currentStroke = null;
+    this.savedRange = null;
+    this._globalUnsubscribers.forEach(unsubscribe => unsubscribe());
+    this._globalUnsubscribers = [];
+    super.destroy();
   }
 }

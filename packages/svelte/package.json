@@ -55,7 +55,8 @@
   "license": "MIT",
   "author": "Ashikur Rahman",
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022 --external @editkit/core --external @editkit/ui --external svelte"
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022 --external @editkit/core --external @editkit/ui --external svelte",
+    "prepack": "pnpm build"
   },
   "peerDependencies": {
     "svelte": "^3.0.0 || ^4.0.0 || ^5.0.0"

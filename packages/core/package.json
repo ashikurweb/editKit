@@ -53,7 +53,8 @@
   "license": "MIT",
   "author": "Ashikur Rahman",
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022"
+    "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022",
+    "prepack": "pnpm build"
   },
   "devDependencies": {
     "typescript": "^5.8.3"

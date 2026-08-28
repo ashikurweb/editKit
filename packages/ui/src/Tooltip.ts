@@ -6,12 +6,14 @@
 
 export class TooltipManager {
   private static instance: TooltipManager | null = null;
+  private static consumers: number = 0;
   private tooltipEl!: HTMLElement;
   private textEl!: HTMLElement;
   private shortcutEl!: HTMLElement;
   private activeTarget: HTMLElement | null = null;
   private showTimeout: number | null = null;
   private hideTimeout: number | null = null;
+  private unsubscribers: (() => void)[] = [];
 
   private constructor() {
     this._createDOM();
@@ -22,7 +24,18 @@ export class TooltipManager {
     if (!TooltipManager.instance) {
       TooltipManager.instance = new TooltipManager();
     }
+    TooltipManager.consumers += 1;
     return TooltipManager.instance;
+  }
+
+  public static release(): void {
+    if (TooltipManager.consumers > 0) {
+      TooltipManager.consumers -= 1;
+    }
+    if (TooltipManager.consumers === 0 && TooltipManager.instance) {
+      TooltipManager.instance._destroy();
+      TooltipManager.instance = null;
+    }
   }
 
   private _createDOM(): void {
@@ -51,15 +64,16 @@ export class TooltipManager {
 
   private _bindEvents(): void {
     // Use mouseenter/mouseleave via delegation on capture phase
-    document.addEventListener('mouseover', (e) => {
+    const onMouseOver = (e: MouseEvent) => {
       const target = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-editkit-tooltip]');
       if (target) {
         this._cancelHide();
         this._scheduleShow(target);
       }
-    }, true);
+    };
+    document.addEventListener('mouseover', onMouseOver, true);
 
-    document.addEventListener('mouseout', (e) => {
+    const onMouseOut = (e: MouseEvent) => {
       const target = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-editkit-tooltip]');
       if (target && this.activeTarget === target) {
         const related = e.relatedTarget as HTMLElement | null;
@@ -68,23 +82,37 @@ export class TooltipManager {
           this._scheduleHide();
         }
       }
-    }, true);
+    };
+    document.addEventListener('mouseout', onMouseOut, true);
 
-    document.addEventListener('mousedown', () => {
+    const onMouseDown = () => {
       this._hide();
-    }, true);
+    };
+    document.addEventListener('mousedown', onMouseDown, true);
 
-    document.addEventListener('click', () => {
+    const onClick = () => {
       this._hide();
-    }, true);
+    };
+    document.addEventListener('click', onClick, true);
 
-    window.addEventListener('scroll', () => {
+    const onScroll = () => {
       if (this.activeTarget) this._hide();
-    }, true);
+    };
+    window.addEventListener('scroll', onScroll, true);
 
-    window.addEventListener('resize', () => {
+    const onResize = () => {
       if (this.activeTarget) this._hide();
-    });
+    };
+    window.addEventListener('resize', onResize);
+
+    this.unsubscribers.push(
+      () => document.removeEventListener('mouseover', onMouseOver, true),
+      () => document.removeEventListener('mouseout', onMouseOut, true),
+      () => document.removeEventListener('mousedown', onMouseDown, true),
+      () => document.removeEventListener('click', onClick, true),
+      () => window.removeEventListener('scroll', onScroll, true),
+      () => window.removeEventListener('resize', onResize),
+    );
   }
 
   private _isAnyDropdownOrModalOpen(): boolean {
@@ -213,5 +241,14 @@ export class TooltipManager {
       clearTimeout(this.showTimeout);
       this.showTimeout = null;
     }
+  }
+
+  private _destroy(): void {
+    this._clearShowTimer();
+    this._cancelHide();
+    this.activeTarget = null;
+    this.unsubscribers.forEach(unsubscribe => unsubscribe());
+    this.unsubscribers = [];
+    this.tooltipEl.remove();
   }
 }

@@ -133,6 +133,7 @@ body {
 .editkit-editor-card {
   width: 100%;
   max-width: 1160px;
+  min-width: 0;
 }
 
 /* Bottom Bar inside Editor Card */
@@ -191,6 +192,7 @@ body {
 .editkit-dev-section {
   width: 100%;
   max-width: 1060px;
+  min-width: 0;
   margin-top: 48px;
 }
 
@@ -205,6 +207,7 @@ body {
   border: 1px solid var(--editkit-border);
   border-radius: var(--editkit-radius-card);
   padding: 20px;
+  min-width: 0;
 }
 
 .editkit-dev-card h3 {

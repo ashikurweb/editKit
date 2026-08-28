@@ -1,7 +1,7 @@
 # EditKit Text Editor — Rich Text / WYSIWYG Editor for React, Vue, Svelte & TypeScript
 
 <p align="center">
-  <strong>An open-source, framework-agnostic rich text editor for modern web applications</strong>
+  <strong>An open-source, framework-agnostic rich text editor with a complete, customizable UI</strong>
 </p>
 
 <p align="center">
@@ -19,27 +19,11 @@
   <a href="#installation">Installation</a>
 </p>
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/ashikurweb/editKit-text-editor/master/assets/editkit-preview.png" alt="EditKit Rich Text Editor Preview" width="100%" style="border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.4);" />
-</p>
-
----
-
 ## Overview
 
-**EditKit Text Editor (`editkit-text-editor`)** is an open-source, extensible rich text and WYSIWYG editor built in TypeScript. It has official integrations for **React and Next.js**, **Vue and Nuxt**, **Svelte and SvelteKit**, and **vanilla JavaScript** without relying on ProseMirror, Lexical, Slate, Quill, or another editor engine. Angular can use the framework-agnostic API, while Laravel works through Blade/Vite or Inertia React/Vue.
+EditKit is a TypeScript rich-text editor with a first-party toolbar, selection bubble menu, contextual table controls, image controls, responsive document preview, tables, color tools, and dark/light themes. The default factory and framework integrations mount the same maintained UI. Feature flags, CSS variables, editor commands, extensions, and custom toolbar items let an application adapt that UI without forking it.
 
-Use the all-in-one `editkit-text-editor` npm package for the simplest setup, or install the smaller `@editkit/*` packages individually for a modular integration.
-
-Crafted with high-end modern aesthetics, it delivers:
-- ⚡ **Blazing Fast Performance**: Zero-bundle overhead, lightweight and instant startup.
-- 🎨 **Sleek Modern UI**: Premium dark & light theme built with pure CSS variables.
-- 📊 **First-Class Interactive Tables**: 6×6 visual hover grid, dynamic rows/cols manipulation, and cell coloring.
-- 🌈 **2D HSV Custom Color Picker**: Full palette swatches + 2D saturation/brightness spectrum and hue slider.
-- 🫧 **Contextual Floating Menus**: Smart text selection bubble toolbar, floating table controls, and image resizer.
-- 🔌 **Modular Architecture**: Dedicated official packages for **React**, **Vue 3**, **Svelte**, and **Vanilla JS**.
-
----
+Official entry points cover React/Next.js, Vue/Nuxt, Svelte/SvelteKit, and vanilla JavaScript. Angular uses the framework-agnostic browser API; Laravel can use that API through Vite or a React/Vue adapter through Inertia.
 
 ## Installation
 
@@ -47,151 +31,76 @@ Crafted with high-end modern aesthetics, it delivers:
 npm install editkit-text-editor
 ```
 
+Import the stylesheet once in your application entry, layout, or global CSS entry. Without it, the editor works but does not have the standard EditKit appearance.
+
 ```ts
-import {
-  EditKitEditor,
-  createToolbar,
-  BubbleMenu,
-  TableFloatingMenu,
-  ImageFloatingMenu,
-} from 'editkit-text-editor';
+import { createEditKit } from 'editkit-text-editor';
 import 'editkit-text-editor/styles';
 
-const editor = new EditKitEditor({
+const editkit = createEditKit({
+  element: '#editor',
   content: '<h1>Hello EditKit</h1><p>Start writing...</p>',
+  theme: 'dark',
   placeholder: 'Write something amazing...',
+  onUpdate: (editor) => {
+    console.log(editor.getHTML());
+  },
 });
 
-const toolbar = createToolbar(editor);
-editor.root.insertBefore(toolbar.element, editor.contentEl);
-
-new BubbleMenu(editor).mount(editor.root);
-new TableFloatingMenu(editor).mount(editor.root);
-new ImageFloatingMenu(editor).mount(editor.root);
-editor.mount(document.querySelector('#editor')!);
+// Later, when the page/view is torn down:
+// editkit.destroy();
 ```
 
-### Package options
-
-| Use case | Install | Import from |
-| :--- | :--- | :--- |
-| All-in-one / Vanilla JS | `editkit-text-editor` | `editkit-text-editor` |
-| React / Next.js | `editkit-text-editor` | `editkit-text-editor/react` |
-| Vue / Nuxt | `editkit-text-editor` | `editkit-text-editor/vue` |
-| Svelte / SvelteKit | `editkit-text-editor` | `editkit-text-editor/svelte` |
-| Angular | `editkit-text-editor` | `editkit-text-editor` (core API) |
-| Laravel Blade / Vite | `editkit-text-editor` | `editkit-text-editor` (browser bundle) |
-| Laravel Inertia | `editkit-text-editor` | React or Vue subpath |
-| Modular core | `@editkit/core @editkit/ui` | `@editkit/core`, `@editkit/ui` |
-
----
-
-## Compatibility and supported versions
-
-| Framework / Environment | Minimum Version | Supported Range | Package to Install |
-| :--- | :--- | :--- | :--- |
-| **Node.js** | `>= 18.0.0` | `18.x`, `20.x`, `22.x+` | - |
-| **React** | **16.8+** | `^16.8.0 \|\| ^17.0.0 \|\| ^18.0.0 \|\| ^19.0.0` | `editkit-text-editor/react` |
-| **Vue** | **3.0+** | `>= 3.0.0` (Vue 3.0 through Vue 3.5+) | `editkit-text-editor/vue` |
-| **Svelte** | **3.0+** | `^3.0.0 \|\| ^4.0.0 \|\| ^5.0.0` (Runes) | `editkit-text-editor/svelte` |
-| **Vanilla JS / TS** | **Any** | All modern browsers (Chrome, Safari, Firefox, Edge) | `editkit-text-editor` |
-| **Angular** | **Modern Angular** | Framework-agnostic manual integration | `editkit-text-editor` |
-| **Laravel** | **Vite / Inertia** | Blade with JavaScript, Inertia React, or Inertia Vue | `editkit-text-editor` |
-
----
-
-## Setup by framework
-
-### 1. ⚛️ React / Next.js / Laravel Inertia React
-
-```bash
-# npm (React and React DOM are peer dependencies)
-npm install editkit-text-editor react react-dom
-
-# pnpm
-pnpm add editkit-text-editor react react-dom
-
-# yarn
-yarn add editkit-text-editor react react-dom
+```html
+<div id="editor"></div>
 ```
 
-#### Component Usage (`<EditKitEditor />`):
+`createEditKit()` mounts the default toolbar, bubble menu, table menu, and image menu. Its return value exposes those UI instances and the core `editor`, plus one idempotent `destroy()` method for complete cleanup.
+
+## Package entry points
+
+| Use case | Import |
+| :--- | :--- |
+| Complete UI / vanilla / Angular / Laravel Blade | `editkit-text-editor` |
+| React / Next.js / Laravel Inertia React | `editkit-text-editor/react` |
+| Vue 3 / Nuxt / Laravel Inertia Vue | `editkit-text-editor/vue` |
+| Svelte / SvelteKit | `editkit-text-editor/svelte` |
+| Default stylesheet | `editkit-text-editor/styles` |
+| Modular editor engine | `@editkit/core` |
+| Modular visual components and stylesheet | `@editkit/ui`, `@editkit/ui/styles` |
+
+The editor mounts DOM, so create it in a browser/client lifecycle. Package entry points can be imported by SSR builds, but mounting must wait until the browser is available.
+
+## Framework setup
+
+### React and Next.js
+
+Install React and React DOM alongside the all-in-one package, then use the React subpath. In a Next.js App Router project, keep the component in a client module.
 
 ```tsx
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { EditKitEditor } from 'editkit-text-editor/react';
 import 'editkit-text-editor/styles';
 
-export default function App() {
-  const [content, setContent] = useState('<h1>Hello EditKit</h1><p>Start writing...</p>');
+export default function EditorPage() {
+  const [content, setContent] = useState('<p>Hello from React.</p>');
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <EditKitEditor
-        value={content}
-        onChange={setContent}
-        theme="dark" // 'dark' | 'light' | 'system'
-        placeholder="Type something amazing..."
-        // Granularly toggle any feature on/off:
-        features={{
-          math: false,           // Hide LaTeX Math formula modal
-          chart: false,          // Hide Chart widget
-          comment: false,        // Hide Comment button
-          versionHistory: false, // Hide Snapshot button
-          bookmark: false,       // Hide Bookmark / Pin
-        }}
-        bubbleMenu={true}        // Floating selection bubble menu
-        tableMenu={true}         // Contextual floating table actions
-        imageMenu={true}         // Floating image resize bar
-      />
-    </div>
+    <EditKitEditor
+      value={content}
+      onChange={setContent}
+      theme="dark"
+      features={{ panel: true, insertElements: true, math: false }}
+    />
   );
 }
 ```
 
-#### Hook Usage (`useEditKitEditor`):
+The component and `useEditKitEditor()` hook destroy the editor and all mounted UI when React unmounts them.
 
-```tsx
-import React from 'react';
-import { useEditKitEditor } from 'editkit-text-editor/react';
-import 'editkit-text-editor/styles';
-
-export function CustomEditor() {
-  const { editor, containerRef } = useEditKitEditor({
-    content: '<p>Custom headless integration</p>',
-    theme: 'dark',
-    features: {
-      chart: false,
-    },
-  });
-
-  return (
-    <div>
-      <div className="custom-actions">
-        <button onClick={() => editor?.commands.bold()}>Bold</button>
-        <button onClick={() => editor?.commands.italic()}>Italic</button>
-      </div>
-      <div ref={containerRef} />
-    </div>
-  );
-}
-```
-
----
-
-### 2. 🟢 Vue 3 / Nuxt 3 / Laravel Inertia Vue
-
-```bash
-# npm
-npm install editkit-text-editor vue
-
-# pnpm
-pnpm add editkit-text-editor vue
-```
-
-#### Component Usage (`<EditKitEditor />` with `v-model`):
+### Vue 3 and Nuxt
 
 ```vue
 <script setup lang="ts">
@@ -199,141 +108,51 @@ import { ref } from 'vue';
 import { EditKitEditor } from 'editkit-text-editor/vue';
 import 'editkit-text-editor/styles';
 
-const content = ref('<p>Hello from Vue 3 and EditKit!</p>');
+const content = ref('<p>Hello from Vue.</p>');
 </script>
 
 <template>
-  <div class="editor-wrapper">
+  <ClientOnly>
     <EditKitEditor
       v-model="content"
       theme="dark"
-      placeholder="Start typing in Vue..."
-      :features="{
-        math: false,
-        chart: false,
-        table: true,
-        emoji: true,
-      }"
-      :bubble-menu="true"
-      :table-menu="true"
-      :image-menu="true"
+      :features="{ panel: true, insertElements: true, math: false }"
     />
-  </div>
+  </ClientOnly>
 </template>
 ```
 
-#### Composable Usage (`useEditKitEditor`):
+`ClientOnly` is a Nuxt component; omit it in a client-rendered Vue application. The component and `useEditKitEditor()` composable clean up automatically on unmount.
 
-```vue
-<script setup lang="ts">
-import { ref } from 'vue';
-import { useEditKitEditor } from 'editkit-text-editor/vue';
-import 'editkit-text-editor/styles';
-
-const editorEl = ref<HTMLElement | null>(null);
-const { editor } = useEditKitEditor(editorEl, {
-  content: '<p>Composable based editor</p>',
-  theme: 'dark',
-});
-</script>
-
-<template>
-  <div>
-    <button @click="editor?.commands.bold()">Bold</button>
-    <div ref="editorEl" />
-  </div>
-</template>
-```
-
----
-
-### 3. 🟠 Svelte / SvelteKit (Svelte 3, 4, 5)
-
-```bash
-# npm
-npm install editkit-text-editor svelte
-
-# pnpm
-pnpm add editkit-text-editor svelte
-```
-
-#### Svelte Action Usage (`use:editkit`):
+### Svelte and SvelteKit
 
 ```svelte
 <script lang="ts">
   import { editkit } from 'editkit-text-editor/svelte';
   import 'editkit-text-editor/styles';
 
-  let content = '<p>Hello from Svelte!</p>';
+  let content = '<p>Hello from Svelte.</p>';
 </script>
 
 <div
   use:editkit={{
     content,
     theme: 'dark',
-    placeholder: 'Write with EditKit in Svelte...',
-    features: {
-      chart: false,
-      math: false,
-    },
-    onChange: (html) => {
-      content = html;
-    }
+    features: { panel: true, insertElements: true, math: false },
+    onChange: (html) => (content = html),
   }}
 />
 ```
 
----
+Svelte invokes the action's cleanup when the element is removed.
 
-### 4. 🍦 Vanilla JavaScript / TypeScript
+### Angular
 
-```bash
-npm install editkit-text-editor
-```
-
-```ts
-import { EditKitEditor, createToolbar, BubbleMenu, TableFloatingMenu, ImageFloatingMenu } from 'editkit-text-editor';
-import 'editkit-text-editor/styles';
-
-// 1. Initialize core editor
-const editor = new EditKitEditor({
-  theme: 'dark', // 'dark' | 'light' | 'system'
-  defaultFontFamily: 'DM Sans',
-  defaultFontSize: 14,
-  placeholder: 'Start writing...',
-  content: '<p>Welcome to EditKit!</p>',
-  onUpdate: (ed) => {
-    console.log('HTML:', ed.getHTML());
-  },
-});
-
-// 2. Attach Toolbar (with custom feature toggles)
-const toolbar = createToolbar(editor, {
-  features: {
-    chart: false,
-    math: false,
-  },
-});
-editor.root.insertBefore(toolbar.element, editor.contentEl);
-
-// 3. Attach Floating Menus
-new BubbleMenu(editor).mount(editor.root);
-new TableFloatingMenu(editor).mount(editor.root);
-new ImageFloatingMenu(editor).mount(editor.root);
-
-// 4. Mount into container element
-editor.mount(document.getElementById('editor')!);
-```
-
----
-
-### 5. Angular
-
-Angular uses the same framework-agnostic API; there is no separate Angular wrapper package.
+There is no separate Angular adapter. Mount the complete browser UI in `ngAfterViewInit()` and destroy it in `ngOnDestroy()`.
 
 ```ts
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
-import { EditKitEditor, createToolbar } from 'editkit-text-editor';
+import { createEditKit, type EditKitInstance } from 'editkit-text-editor';
 import 'editkit-text-editor/styles';
 
 @Component({
@@ -343,40 +162,37 @@ import 'editkit-text-editor/styles';
 })
 export class EditorComponent implements AfterViewInit, OnDestroy {
   @ViewChild('editorHost', { static: true }) editorHost!: ElementRef<HTMLDivElement>;
-  private editor?: EditKitEditor;
+  private editkit?: EditKitInstance;
 
   ngAfterViewInit(): void {
-    this.editor = new EditKitEditor({ content: '<p>Hello from Angular!</p>' });
-    const toolbar = createToolbar(this.editor);
-    this.editor.root.insertBefore(toolbar.element, this.editor.contentEl);
-    this.editor.mount(this.editorHost.nativeElement);
+    this.editkit = createEditKit({
+      element: this.editorHost.nativeElement,
+      content: '<p>Hello from Angular.</p>',
+    });
   }
 
   ngOnDestroy(): void {
-    this.editor?.destroy();
+    this.editkit?.destroy();
   }
 }
 ```
 
----
+### Laravel Blade, Vite, and Inertia
 
-### 6. Laravel Blade, Vite, and Inertia
-
-EditKit runs in the browser rather than PHP. Use the React or Vue setup above for Laravel Inertia, or mount the vanilla editor from a Vite entry for Blade:
+EditKit runs in the browser, not in PHP. Use the React or Vue entry point for Inertia, or mount the complete UI from a Vite entry for Blade.
 
 ```ts
 // resources/js/editor.ts
-import { EditKitEditor, createToolbar } from 'editkit-text-editor';
+import { createEditKit } from 'editkit-text-editor';
 import 'editkit-text-editor/styles';
 
 const host = document.querySelector<HTMLElement>('#editor');
+const editkit = host
+  ? createEditKit({ element: host, content: '<p>Hello from Laravel.</p>' })
+  : null;
 
-if (host) {
-  const editor = new EditKitEditor({ content: '<p>Hello from Laravel!</p>' });
-  const toolbar = createToolbar(editor);
-  editor.root.insertBefore(toolbar.element, editor.contentEl);
-  editor.mount(host);
-}
+// Prevent duplicate listeners during Vite hot updates.
+import.meta.hot?.dispose(() => editkit?.destroy());
 ```
 
 ```blade
@@ -384,94 +200,153 @@ if (host) {
 @vite('resources/js/editor.ts')
 ```
 
----
+## Configuration
 
-## 🎛️ Feature & Toolbar Configuration Props
+`createEditKit(options)` accepts all core editor options plus these complete-UI options:
 
-When configuring the toolbar via `features` (in React/Vue/Svelte or Vanilla), you can toggle any button or tool individually:
-
-| Feature Key | Type | Default | Description |
+| Option | Type | Default | Purpose |
 | :--- | :--- | :--- | :--- |
-| `history` | `boolean` | `true` | Undo & Redo button group |
-| `block` | `boolean` | `true` | Paragraph & Headings dropdown (Heading 1 to 6) |
-| `fontFamily` | `boolean` | `true` | Font family picker (DM Sans, Inter, Geist, etc.) |
-| `fontSize` | `boolean` | `true` | Font size stepper (`- 14 +`) |
-| `bold` | `boolean` | `true` | Bold formatting button (`B`) |
-| `format` | `boolean` | `true` | Extra formats (Italic, Underline, Strikethrough, Code, Sub/Superscript) |
-| `color` | `boolean` | `true` | Text color & background highlight color popover (`A ˅`) |
-| `align` | `boolean` | `true` | Alignment dropdown (Left, Center, Right, Justify) |
-| `lists` | `boolean` | `true` | Bullet, Numbered, Task lists, Indent/Outdent & Line Height |
-| `image` | `boolean` | `true` | Image dropzone upload & URL modal |
-| `table` | `boolean` | `true` | Interactive 6x6 visual hover grid table inserter |
-| `chart` | `boolean` | `true` | Insert Chart widget |
-| `math` | `boolean` | `true` | LaTeX Math & Equation editor modal |
-| `link` | `boolean` | `true` | In-place floating link preview & editor popover |
-| `emoji` | `boolean` | `true` | Searchable emoji picker with category tabs |
-| `symbol` | `boolean` | `true` | Special characters & math symbols picker |
-| `bookmark` | `boolean` | `true` | Pin / Bookmark action |
-| `selectAll` | `boolean` | `true` | Select all editor content (`⌘A`) |
-| `clearAll` | `boolean` | `true` | Clear all content button (Cross icon, enabled only when all selected) |
-| `comment` | `boolean` | `true` | Add comment button |
-| `versionHistory` | `boolean` | `true` | Version snapshot history button |
-| `more` | `boolean` | `true` | More tools dropdown (`+ ˅`) |
+| `element` | `HTMLElement \| string` | required | Host element or selector |
+| `showToolbar` | `boolean` | `true` | Mount the standard toolbar |
+| `features` | `ToolbarFeaturesConfig` | all enabled | Toggle standard toolbar controls |
+| `toolbar` | `ToolbarConfig` | `{}` | Advanced toolbar configuration |
+| `bubbleMenu` | `boolean` | `true` | Mount the selection bubble menu |
+| `tableMenu` | `boolean` | `true` | Mount contextual table controls |
+| `imageMenu` | `boolean` | `true` | Mount contextual image controls |
 
----
+Core options include `content`, `editable`, `theme`, `placeholder`, `autofocus`, default font settings, history depth, extensions, custom toolbar items, and lifecycle callbacks.
 
-## 🎨 CSS Variable Theming
+### Toolbar feature flags
 
-EditKit is styled using standard, cleanly scoped CSS variables. You can easily override colors, radii, and surfaces in plain CSS:
+Omitted flags default to `true`.
+
+| Flag | Controls |
+| :--- | :--- |
+| `history`, `undo`, `redo` | History controls; `history: false` hides both undo and redo |
+| `block`, `fontFamily`, `fontSize` | Block type and typography controls |
+| `bold`, `format`, `color` | Inline formatting and colors |
+| `align`, `lists` | Alignment, line height, lists, and indentation |
+| `image`, `table`, `chart`, `math`, `link`, `emoji`, `symbol` | Media and rich-content tools |
+| `panel` | Info, warning, error, success, and note panel menu |
+| `insertElements` | Standalone insert menu for dividers, uploads, signatures, editorial elements, blocks, and patterns |
+| `selectAll`, `clearAll`, `preview` | Selection, clear-content, and document-preview controls |
+
+`panel` and `insertElements` are separate flags. Disabling one does not implicitly disable the other.
+
+```ts
+const editkit = createEditKit({
+  element: '#editor',
+  features: {
+    chart: false,
+    math: false,
+    panel: true,
+    insertElements: true,
+  },
+});
+```
+
+## Customization
+
+### Keep the default UI and change its theme
+
+Scope CSS overrides to your editor wrapper. The standard stylesheet remains the base, so controls and responsive behavior keep their default design.
+
+```html
+<div class="brand-editor"><div id="editor"></div></div>
+```
 
 ```css
-[data-editkit],
-[data-editkit-theme="dark"] {
-  --editkit-bg: #0c0d10;
-  --editkit-card-bg: #141519;
-  --editkit-toolbar-bg: #18191e;
-  --editkit-border: #23252f;
-  --editkit-border-focus: #7c3aed;
-  --editkit-primary: #7c3aed;
-  --editkit-font: 'DM Sans', sans-serif;
+.brand-editor [data-editkit] {
+  --editkit-bg: #0b1020;
+  --editkit-card-bg: #111827;
+  --editkit-toolbar-bg: #172033;
+  --editkit-content-bg: #101827;
+  --editkit-border: #334155;
+  --editkit-border-focus: #22c55e;
+  --editkit-primary: #22c55e;
+  --editkit-font: Inter, sans-serif;
+  --editkit-radius-card: 14px;
+  --editkit-radius-btn: 5px;
 }
 ```
 
----
+### Add an application-specific toolbar item
 
-## Frequently asked questions
+`customToolbarItems` keeps the standard toolbar and appends typed application controls. An extension can also return the same item shape from `defineToolbarItems()`.
 
-### What is EditKit Text Editor?
-
-EditKit Text Editor is an open-source rich text/WYSIWYG editor written in TypeScript. The `editkit-text-editor` package provides a vanilla JavaScript editor plus dedicated integrations for React, Next.js, Vue, Nuxt, Svelte, and SvelteKit. Angular uses the core API directly; Laravel uses the browser package through Vite or an Inertia frontend.
-
-### Is EditKit an alternative to TipTap, Quill, Lexical, Slate, or ProseMirror?
-
-Yes. EditKit provides its own editor engine, toolbar, tables, floating menus, image controls, color picker, and theming without depending on those editor frameworks.
-
-### Can I build a headless or custom toolbar editor?
-
-Yes. Use the core editor commands directly, call `useEditKitEditor` in React, use the Vue composable, or configure individual toolbar features.
-
-### Is it free for commercial projects?
-
-Yes. EditKit Text Editor is open source under the MIT License.
-
----
-
-## 💻 Local Playground & Development
-
-To run the interactive live playground locally:
-
-```bash
-# 1. Install dependencies
-pnpm install
-
-# 2. Start Playground dev server
-pnpm playground
-
-# Runs at http://localhost:5173
+```ts
+const editkit = createEditKit({
+  element: '#editor',
+  customToolbarItems: [
+    {
+      id: 'save-document',
+      label: 'Save',
+      tooltip: 'Save document',
+      group: 'right',
+      onClick: (editor) => saveDocument(editor.getHTML()),
+    },
+  ],
+});
 ```
 
----
+### Replace the standard toolbar
 
-## 📄 License
+For a fully application-owned toolbar, disable the standard toolbar and call core commands from your own controls.
+
+```ts
+const editkit = createEditKit({ element: '#editor', showToolbar: false });
+
+document.querySelector('#bold')?.addEventListener('click', () => {
+  editkit.editor.commands.bold();
+});
+```
+
+## Content safety
+
+`content`, `value`, `defaultValue`, `modelValue`, and `editor.setContent()` are trusted-HTML APIs. EditKit does not sanitize arbitrary HTML supplied through those APIs. Sanitize content from users, APIs, databases, Markdown converters, or other untrusted sources before passing it to the editor, and apply the same policy when rendering saved HTML elsewhere.
+
+```ts
+import DOMPurify from 'dompurify';
+
+const editkit = createEditKit({
+  element: '#editor',
+  content: DOMPurify.sanitize(untrustedHTML),
+});
+```
+
+`dompurify` is an example and is not bundled with EditKit. Configure any sanitizer according to the HTML elements and attributes your application permits.
+
+## Lifecycle and output
+
+- Call `destroy()` for every manually created `createEditKit()` instance.
+- React, Vue, and Svelte integrations perform their own unmount cleanup.
+- `editor.getHTML()` returns HTML, `getText()` returns plain text, and `getJSON()` returns EditKit's document representation.
+- Controlled framework values should be updated through their documented binding (`value`, `v-model`, or the Svelte action options).
+
+## Modular installation
+
+Applications that want to assemble the editor engine and UI separately can install the scoped packages:
+
+```bash
+npm install @editkit/core @editkit/ui
+```
+
+```ts
+import { EditKitEditor } from '@editkit/core';
+import { createToolbar } from '@editkit/ui';
+import '@editkit/ui/styles';
+```
+
+See each package README for manual lifecycle guidance.
+
+## Development
+
+```bash
+pnpm install
+pnpm verify
+pnpm playground
+```
+
+## License
 
 MIT © [Ashikur Rahman](https://github.com/ashikurweb) · [Source code](https://github.com/ashikurweb/editKit-text-editor) · [npm package](https://www.npmjs.com/package/editkit-text-editor)

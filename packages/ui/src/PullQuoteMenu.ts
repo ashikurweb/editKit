@@ -11,6 +11,7 @@ export class PullQuoteMenu {
   private editor: EditKitEditor;
   private activeQuote: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
+  private _isDestroyed: boolean = false;
 
   constructor(editor: EditKitEditor) {
     this.editor = editor;
@@ -150,15 +151,17 @@ export class PullQuoteMenu {
 
     const onScroll = () => this._updatePosition();
     this.editor.contentEl.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', () => this._updatePosition());
-    window.addEventListener('scroll', () => this._updatePosition(), true);
+    const onWindowResize = () => this._updatePosition();
+    const onWindowScroll = () => this._updatePosition();
+    window.addEventListener('resize', onWindowResize);
+    window.addEventListener('scroll', onWindowScroll, true);
     document.addEventListener('mousedown', onContentClick);
     document.addEventListener('keydown', onKeydown);
 
     this._unsubscribers.push(
       () => this.editor.contentEl.removeEventListener('scroll', onScroll),
-      () => window.removeEventListener('resize', () => this._updatePosition()),
-      () => window.removeEventListener('scroll', () => this._updatePosition(), true),
+      () => window.removeEventListener('resize', onWindowResize),
+      () => window.removeEventListener('scroll', onWindowScroll, true),
       () => document.removeEventListener('mousedown', onContentClick),
       () => document.removeEventListener('keydown', onKeydown),
     );
@@ -178,7 +181,10 @@ export class PullQuoteMenu {
   }
 
   destroy(): void {
+    if (this._isDestroyed) return;
+    this._isDestroyed = true;
     this._unsubscribers.forEach(u => u());
+    this._unsubscribers = [];
     this.element.remove();
   }
 }

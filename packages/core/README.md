@@ -1,75 +1,41 @@
-# EditKit Core Rich Text Editor — `@editkit/core`
+# EditKit Core — `@editkit/core`
 
-<p align="center">
-  <strong>A zero-dependency, framework-agnostic TypeScript rich text editor engine</strong>
-</p>
+Framework-neutral TypeScript editor engine used by EditKit. It has no runtime dependencies and does not include the standard toolbar styles or UI components.
 
-`@editkit/core` is the headless editor engine behind [EditKit Text Editor](https://www.npmjs.com/package/editkit-text-editor), an open-source WYSIWYG editor for vanilla JavaScript, React, Vue, and Svelte.
-
-<p align="center">
-  <a href="https://www.npmjs.com/package/@editkit/core"><img src="https://img.shields.io/npm/v/@editkit/core?logo=npm" alt="@editkit/core npm version" /></a>
-  <a href="https://www.npmjs.com/package/@editkit/core"><img src="https://img.shields.io/npm/dm/@editkit/core?logo=npm" alt="@editkit/core monthly downloads" /></a>
-  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript Ready" />
-  <img src="https://img.shields.io/badge/Dependencies-0%20External-8b5cf6" alt="Zero Dependencies" />
-  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
-</p>
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/ashikurweb/editKit-text-editor/master/assets/editkit-preview.png" alt="EditKit Core Editor Preview" width="100%" />
-</p>
-
----
-
-## 📦 Installation
+## Install
 
 ```bash
-npm install @editkit/core @editkit/ui
-# or
-pnpm add @editkit/core @editkit/ui
+npm install @editkit/core
 ```
-
-For the all-in-one package, install `editkit-text-editor` and import the same APIs from `editkit-text-editor`.
-
----
-
-## 🚀 Quick Start
 
 ```ts
 import { EditKitEditor } from '@editkit/core';
-import { createToolbar, BubbleMenu, TableFloatingMenu, ImageFloatingMenu } from '@editkit/ui';
-import '@editkit/ui/styles';
 
 const editor = new EditKitEditor({
-  theme: 'dark',
-  placeholder: 'Start typing...',
-  content: '<p>Hello from EditKit Core!</p>',
-  onUpdate: (ed) => console.log('HTML:', ed.getHTML()),
+  content: '<p>Hello from EditKit.</p>',
+  onUpdate: current => console.log(current.getHTML()),
 });
 
-const toolbar = createToolbar(editor);
-editor.root.insertBefore(toolbar.element, editor.contentEl);
+editor.mount(document.querySelector('#editor')!);
 
-new BubbleMenu(editor).mount(editor.root);
-new TableFloatingMenu(editor).mount(editor.root);
-new ImageFloatingMenu(editor).mount(editor.root);
-
-editor.mount(document.getElementById('editor')!);
+// Run during application teardown.
+editor.destroy();
 ```
 
----
+Use `editkit-text-editor` when you want the complete default UI, or combine this package with `@editkit/ui` to build a custom layout.
 
-## 📖 Commands API Reference
+## Core API
 
-- `editor.commands.bold()` / `italic()` / `underline()` / `strikethrough()` / `code()`
-- `editor.commands.heading(1)` through `heading(6)`
-- `editor.commands.bulletList()` / `orderedList()` / `taskList()`
-- `editor.commands.alignLeft()` / `alignCenter()` / `alignRight()` / `alignJustify()`
-- `editor.commands.insertTable({ rows: 3, cols: 3, withHeaderRow: true })`
-- `editor.commands.setTextColor('#ff0000')` / `setHighlight('#ffff00')`
-- `editor.getHTML()` / `getJSON()` / `getText()` / `setContent(html)`
+- Formatting: `bold()`, `italic()`, `underline()`, `strikethrough()`, and `code()`
+- Blocks: `paragraph()`, `heading(1..6)`, lists, quotes, panels, and dividers
+- Media: images, links, tables, and math blocks
+- State: `getHTML()`, `getText()`, `getJSON()`, `setContent()`, `undo()`, and `redo()`
+- Extensions: commands, keyboard shortcuts, lifecycle hooks, and toolbar item definitions
 
----
+## Content safety
 
-## 📄 License
+`content` and `setContent()` accept trusted application HTML. Sanitize HTML received from users, APIs, databases, or converters before passing it to the editor, and sanitize it according to your policy before rendering it elsewhere. Clipboard HTML is filtered by EditKit, but that does not turn the trusted-content APIs into a general-purpose sanitizer.
+
+## License
 
 MIT © [Ashikur Rahman](https://github.com/ashikurweb)

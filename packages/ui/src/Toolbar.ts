@@ -3,7 +3,12 @@
 // Exact match for the design in the screenshots
 // ============================================================
 
-import type { EditKitEditor, BulletListStyle, NumberedListStyle } from '@editkit/core';
+import type {
+  EditKitEditor,
+  BulletListStyle,
+  NumberedListStyle,
+  CustomToolbarItem,
+} from '@editkit/core';
 import { icons } from './icons';
 import { ColorPickerPopover } from './ColorPicker';
 import { EmojiPicker } from './EmojiPicker';
@@ -49,7 +54,9 @@ export interface ToolbarFeaturesConfig {
   selectAll?: boolean;
   clearAll?: boolean;
   preview?: boolean;
+  /** @deprecated Reserved for a future collaboration plugin; no button is rendered. */
   comment?: boolean;
+  /** @deprecated Reserved for a future history plugin; no button is rendered. */
   versionHistory?: boolean;
   /** @deprecated The legacy + dropdown has been removed. */
   more?: boolean;
@@ -58,6 +65,8 @@ export interface ToolbarFeaturesConfig {
 export interface ToolbarConfig {
   container?: HTMLElement;
   features?: ToolbarFeaturesConfig;
+  /** Additional buttons supplied directly to this toolbar instance. */
+  items?: CustomToolbarItem[];
 }
 
 const FONT_FAMILIES = [
@@ -105,6 +114,7 @@ export class EditKitToolbar {
   private previewModal: PreviewModal;
   private openDropdown: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
+  private _isDestroyed: boolean = false;
 
   // Active state trackers
   private undoBtn?: HTMLButtonElement;
@@ -118,6 +128,10 @@ export class EditKitToolbar {
   private alignIconSpan?: HTMLElement;
   private _currentAlign: string = 'left';
   private clearAllBtn?: HTMLButtonElement;
+  private customButtonStates: Array<{
+    button: HTMLButtonElement;
+    item: CustomToolbarItem;
+  }> = [];
 
   constructor(editor: EditKitEditor, config: ToolbarConfig = {}) {
     this.editor = editor;
@@ -154,7 +168,8 @@ export class EditKitToolbar {
     const unsub1 = editor.on('selectionUpdate', () => this._syncStates());
     const unsub2 = editor.on('update', () => this._syncStates());
     const unsub3 = editor.on('openLinkPopover', () => this.linkPopover.show());
-    this._unsubscribers.push(unsub1, unsub2, unsub3);
+    const unsubDestroy = editor.on('destroy', () => this.destroy());
+    this._unsubscribers.push(unsub1, unsub2, unsub3, unsubDestroy);
 
     // Global outside click for dropdowns
     const outsideClick = (e: MouseEvent) => {
@@ -175,7 +190,24 @@ export class EditKitToolbar {
   }
 
   destroy(): void {
+    if (this._isDestroyed) return;
+    this._isDestroyed = true;
     this._unsubscribers.forEach(fn => fn());
+    this._unsubscribers = [];
+    this.imageModal.destroy();
+    this.linkPopover.destroy();
+    this.mathModal.destroy();
+    this.dividerModal.destroy();
+    this.signatureModal.destroy();
+    this.decDividerModal.destroy();
+    this.decDividerMenu.destroy();
+    this.secHeadingMenu.destroy();
+    this.pullQuoteMenu.destroy();
+    this.buttonBlockMenu.destroy();
+    this.faqManager.destroy();
+    this.columnBlockManager.destroy();
+    this.previewModal.destroy();
+    TooltipManager.release();
     this.element.remove();
   }
 
@@ -247,15 +279,16 @@ export class EditKitToolbar {
     const group6: HTMLElement[] = [];
     if (isEnabled('image')) group6.push(this._createImageButton());
     if (isEnabled('table')) group6.push(this._createTableGridDropdown());
-    if (isEnabled('chart')) group6.push(this._createBtn('chart', 'Insert Chart', () => this._insertChartMock()));
+    if (isEnabled('chart')) group6.push(this._createBtn('chart', 'Insert Chart', () => this._insertChart()));
     if (isEnabled('math')) group6.push(this._createMathDropdown());
     if (isEnabled('link')) group6.push(this._createLinkButton());
     if (isEnabled('emoji')) group6.push(this._createEmojiDropdown());
     if (isEnabled('symbol')) group6.push(this._createSymbolDropdown());
-    if (isEnabled('panel') || isEnabled('bookmark') || isEnabled('callout')) {
+    const showPanel = f.panel ?? f.callout ?? f.bookmark ?? true;
+    if (showPanel) {
       group6.push(this._createPanelDropdown());
     }
-    if (isEnabled('insertElements') || isEnabled('panel') || isEnabled('bookmark')) {
+    if (isEnabled('insertElements')) {
       group6.push(this._createInsertElementsDropdown());
     }
     if (group6.length > 0) sections.push(group6);
@@ -279,6 +312,14 @@ export class EditKitToolbar {
       group7.push(this._createBtn('eye', 'View Preview', () => this.previewModal.show(), undefined, '⌘P'));
     }
     if (group7.length > 0) sections.push(group7);
+
+    const customItems = [
+      ...this.editor.getToolbarItems(),
+      ...(this.config.items || []),
+    ];
+    if (customItems.length > 0) {
+      sections.push(customItems.map(item => this._createCustomToolbarItem(item)));
+    }
 
     // Render sections with dividers in between
     sections.forEach((section, idx) => {
@@ -316,6 +357,70 @@ export class EditKitToolbar {
     const d = document.createElement('div');
     d.classList.add('editkit-tb-divider');
     return d;
+  }
+
+  private _createCustomToolbarItem(item: CustomToolbarItem): HTMLElement {
+    const createButton = (label: string, icon?: string): HTMLButtonElement => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.classList.add(icon ? 'editkit-tb-btn' : 'editkit-tb-pill-btn');
+      button.setAttribute('aria-label', label);
+      button.setAttribute('data-editkit-tooltip', item.tooltip || label);
+      button.setAttribute('data-editkit-custom-item', item.id);
+      if (icon) button.innerHTML = icon;
+      else button.textContent = label;
+      this.customButtonStates.push({ button, item });
+      return button;
+    };
+
+    if (item.dropdown?.length) {
+      const wrap = document.createElement('div');
+      wrap.classList.add('editkit-tb-dropdown-wrap');
+      const trigger = createButton(item.label, item.icon);
+      const menu = document.createElement('div');
+      menu.classList.add('editkit-tb-dropdown-menu');
+
+      for (const entry of item.dropdown) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.classList.add('editkit-tb-menu-item');
+        button.setAttribute('data-editkit-custom-item', entry.id);
+        if (entry.icon) {
+          const icon = document.createElement('span');
+          icon.classList.add('editkit-tb-menu-prefix');
+          icon.innerHTML = entry.icon;
+          button.appendChild(icon);
+        }
+        const label = document.createElement('span');
+        label.classList.add('editkit-tb-menu-label');
+        label.textContent = entry.label;
+        button.appendChild(label);
+        button.addEventListener('mousedown', event => {
+          event.preventDefault();
+          entry.onClick?.(this.editor);
+          this._closeDropdown();
+          this._syncStates();
+        });
+        menu.appendChild(button);
+      }
+
+      trigger.addEventListener('mousedown', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!trigger.disabled) this._toggleDropdown(wrap);
+      });
+      wrap.append(trigger, menu);
+      return wrap;
+    }
+
+    const button = createButton(item.label, item.icon);
+    button.addEventListener('mousedown', event => {
+      event.preventDefault();
+      if (button.disabled) return;
+      item.onClick?.(this.editor);
+      this._syncStates();
+    });
+    return button;
   }
 
   // ── 1. Block Selector Dropdown: ¶ Normal ˅ ──
@@ -404,6 +509,8 @@ export class EditKitToolbar {
     const trigger = document.createElement('button');
     trigger.type = 'button';
     trigger.classList.add('editkit-tb-pill-btn', 'editkit-tb-pill-btn--font');
+    trigger.setAttribute('data-editkit-tooltip', 'Font Family');
+    trigger.setAttribute('aria-label', 'Font Family');
 
     this.fontLabel = document.createElement('span');
     this.fontLabel.classList.add('editkit-tb-pill-text');
@@ -1002,14 +1109,52 @@ export class EditKitToolbar {
     return wrap;
   }
 
-  // ── Mocks ──
-  private _insertChartMock(): void {
-    alert('Chart & Poll Widget Inserted.');
-  }
+  private _insertChart(): void {
+    const chart = document.createElement('figure');
+    chart.classList.add('editkit-chart-block');
+    chart.setAttribute('data-editkit-chart', 'bar');
+    chart.setAttribute('contenteditable', 'false');
+    chart.setAttribute('role', 'img');
+    chart.setAttribute('aria-label', 'Bar chart: Q1 42, Q2 68, Q3 54, Q4 82');
 
-  private _insertMathMock(): void {
-    const formula = prompt('Enter Math/LaTeX formula:', 'E = mc^2');
-    if (formula) document.execCommand('insertText', false, `[Math: ${formula}]`);
+    const title = document.createElement('figcaption');
+    title.classList.add('editkit-chart-title');
+    title.textContent = 'Quarterly performance';
+
+    const plot = document.createElement('div');
+    plot.classList.add('editkit-chart-plot');
+    const values = [
+      { label: 'Q1', value: 42 },
+      { label: 'Q2', value: 68 },
+      { label: 'Q3', value: 54 },
+      { label: 'Q4', value: 82 },
+    ];
+
+    for (const item of values) {
+      const column = document.createElement('div');
+      column.classList.add('editkit-chart-column');
+
+      const value = document.createElement('span');
+      value.classList.add('editkit-chart-value');
+      value.textContent = String(item.value);
+
+      const track = document.createElement('span');
+      track.classList.add('editkit-chart-track');
+      const bar = document.createElement('span');
+      bar.classList.add('editkit-chart-bar');
+      bar.style.height = `${item.value}%`;
+      track.appendChild(bar);
+
+      const label = document.createElement('span');
+      label.classList.add('editkit-chart-label');
+      label.textContent = item.label;
+
+      column.append(value, track, label);
+      plot.appendChild(column);
+    }
+
+    chart.append(title, plot);
+    this.editor.insertBlockNode(chart);
   }
 
   // ── Callout / Alert Panels Dropdown (Info, Warning, Error, Success, Note) ──
@@ -1710,11 +1855,6 @@ export class EditKitToolbar {
     }, 20);
   }
 
-  private _addCommentMock(): void {
-    const comment = prompt('Add a comment:');
-    if (comment) alert(`Comment added: "${comment}"`);
-  }
-
   private _openDividerModal(): void {
     this.dividerModal.show();
   }
@@ -1839,6 +1979,16 @@ export class EditKitToolbar {
       const isAll = this._isAllContentSelected();
       this.clearAllBtn.disabled = !isAll;
       this.clearAllBtn.classList.toggle('editkit-tb-btn--disabled', !isAll);
+    }
+
+    for (const { button, item } of this.customButtonStates) {
+      const isDisabled = item.isDisabled?.(this.editor) ?? false;
+      button.disabled = isDisabled;
+      button.classList.toggle('editkit-tb-btn--disabled', isDisabled);
+      button.classList.toggle(
+        'editkit-tb-btn--active',
+        item.isActive?.(this.editor) ?? false
+      );
     }
   }
 

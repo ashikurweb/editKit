@@ -22,6 +22,10 @@ export class ImageModal extends Modal {
   private stagedImages: StagedImage[] = [];
   private isUploading: boolean = false;
   private onInsertCallback: ImageInsertCallback | null = null;
+  private pasteHandler: ((e: ClipboardEvent) => void) | null = null;
+  private uploadInterval: ReturnType<typeof setInterval> | null = null;
+  private uploadCompletionTimeout: ReturnType<typeof setTimeout> | null = null;
+  private focusTimeout: ReturnType<typeof setTimeout> | null = null;
 
   constructor(editor: EditKitEditor) {
     super(editor, {
@@ -49,7 +53,7 @@ export class ImageModal extends Modal {
 
   private _setupImageListeners(): void {
     // Support direct clipboard paste when modal is open
-    document.addEventListener('paste', (e: ClipboardEvent) => {
+    this.pasteHandler = (e: ClipboardEvent) => {
       if (!this.isOpen() || this.isUploading) return;
 
       if (this.currentView === 'url' && document.activeElement?.tagName === 'INPUT') {
@@ -81,7 +85,8 @@ export class ImageModal extends Modal {
           this.hide();
         }
       }
-    });
+    };
+    document.addEventListener('paste', this.pasteHandler);
   }
 
   private _handleInsertImage(src: string, alt: string = 'Inserted image'): void {
@@ -293,7 +298,7 @@ export class ImageModal extends Modal {
     const text = btn.querySelector('.editkit-img-upload-text') as HTMLElement;
 
     let progress = 0;
-    const interval = setInterval(() => {
+    this.uploadInterval = setInterval(() => {
       progress += Math.floor(Math.random() * 8) + 4;
       if (progress > 100) progress = 100;
 
@@ -301,8 +306,11 @@ export class ImageModal extends Modal {
       if (text) text.textContent = `Uploading ${progress}%`;
 
       if (progress >= 100) {
-        clearInterval(interval);
-        setTimeout(() => {
+        if (this.uploadInterval) clearInterval(this.uploadInterval);
+        this.uploadInterval = null;
+        this.uploadCompletionTimeout = setTimeout(() => {
+          this.uploadCompletionTimeout = null;
+          if (this._isDestroyed) return;
           for (const item of this.stagedImages) {
             this._handleInsertImage(item.dataUrl, item.alt || item.name);
           }
@@ -390,10 +398,18 @@ export class ImageModal extends Modal {
     const handleInsert = () => {
       const src = urlInput.value.trim();
       const alt = altInput.value.trim() || 'Inserted image';
-      if (src) {
+      const compact = src.replace(/[\u0000-\u0020\u007f-\u009f]/g, '');
+      const scheme = compact.match(/^([a-z][a-z0-9+.-]*):/i)?.[1]?.toLowerCase();
+      const safeScheme = !scheme || ['http', 'https', 'blob'].includes(scheme);
+      if (src && safeScheme) {
+        urlInput.setCustomValidity('');
         this._handleInsertImage(src, alt);
         this.hide();
       } else {
+        if (src) {
+          urlInput.setCustomValidity('Use a safe http(s), blob, or relative image URL.');
+          urlInput.reportValidity();
+        }
         urlInput.focus();
       }
     };
@@ -417,8 +433,29 @@ export class ImageModal extends Modal {
 
     this.bodyEl.appendChild(form);
 
-    setTimeout(() => {
+    if (this.focusTimeout) clearTimeout(this.focusTimeout);
+    this.focusTimeout = setTimeout(() => {
+      this.focusTimeout = null;
+      if (this._isDestroyed) return;
       urlInput.focus();
     }, 50);
+  }
+
+  override destroy(): void {
+    if (this._isDestroyed) return;
+    if (this.pasteHandler) {
+      document.removeEventListener('paste', this.pasteHandler);
+      this.pasteHandler = null;
+    }
+    if (this.uploadInterval) clearInterval(this.uploadInterval);
+    if (this.uploadCompletionTimeout) clearTimeout(this.uploadCompletionTimeout);
+    if (this.focusTimeout) clearTimeout(this.focusTimeout);
+    this.uploadInterval = null;
+    this.uploadCompletionTimeout = null;
+    this.focusTimeout = null;
+    this.isUploading = false;
+    this.stagedImages = [];
+    this.onInsertCallback = null;
+    super.destroy();
   }
 }

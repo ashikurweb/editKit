@@ -3,3 +3,7 @@ packages:
   - 'apps/*'
 allowBuilds:
   esbuild: true
+
+overrides:
+  'tsup>esbuild': 0.28.1
+  'bundle-require>esbuild': 0.28.1

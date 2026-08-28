@@ -57,6 +57,8 @@ export class TableFloatingMenu {
   private resizeTargetCell: HTMLElement | null = null;
 
   private _unsubscribers: (() => void)[] = [];
+  private _activeDragCleanups: Set<() => void> = new Set();
+  private _isDestroyed: boolean = false;
 
   constructor(editor: EditKitEditor) {
     this.editor = editor;
@@ -147,6 +149,7 @@ export class TableFloatingMenu {
     this.element.appendChild(this.resizeGuideLineH);
 
     this._setupEventListeners();
+    this._unsubscribers.push(this.editor.on('destroy', () => this.destroy()));
   }
 
   mount(container: HTMLElement): void {
@@ -154,7 +157,17 @@ export class TableFloatingMenu {
   }
 
   destroy(): void {
+    if (this._isDestroyed) return;
+    this._isDestroyed = true;
+    if (this.hideTimeout) {
+      clearTimeout(this.hideTimeout);
+      this.hideTimeout = null;
+    }
+    [...this._activeDragCleanups].forEach(cleanup => cleanup());
+    this._activeDragCleanups.clear();
+    document.body.classList.remove('editkit-col-resizing', 'editkit-row-resizing', 'editkit-table-resizing');
     this._unsubscribers.forEach(fn => fn());
+    this._unsubscribers = [];
     this.cellColorModal.destroy();
     this.tableBorderModal.destroy();
     this.tableAlignModal.destroy();
@@ -673,15 +686,21 @@ export class TableFloatingMenu {
       this._updatePositionsOnly();
     };
 
+    const cleanupDragListeners = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      this._activeDragCleanups.delete(cleanupDragListeners);
+    };
+
     const onMouseUp = () => {
       if (this.isResizing) {
         this.isResizing = false;
         this.resizeGuideLine.style.display = 'none';
         document.body.classList.remove('editkit-col-resizing');
 
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
+        cleanupDragListeners();
 
+        if (this._isDestroyed) return;
         (this.editor as any)._saveHistory?.();
         (this.editor as any)._emitUpdate?.();
 
@@ -689,6 +708,7 @@ export class TableFloatingMenu {
       }
     };
 
+    this._activeDragCleanups.add(cleanupDragListeners);
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   }
@@ -748,14 +768,20 @@ export class TableFloatingMenu {
       this._updatePositionsOnly();
     };
 
+    const cleanupDragListeners = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      this._activeDragCleanups.delete(cleanupDragListeners);
+    };
+
     const onMouseUp = () => {
       if (this.isCornerResizing) {
         this.isCornerResizing = false;
         document.body.classList.remove('editkit-table-resizing');
 
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
+        cleanupDragListeners();
 
+        if (this._isDestroyed) return;
         (this.editor as any)._saveHistory?.();
         (this.editor as any)._emitUpdate?.();
 
@@ -763,6 +789,7 @@ export class TableFloatingMenu {
       }
     };
 
+    this._activeDragCleanups.add(cleanupDragListeners);
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   }
@@ -830,15 +857,21 @@ export class TableFloatingMenu {
       this._updatePositionsOnly();
     };
 
+    const cleanupDragListeners = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      this._activeDragCleanups.delete(cleanupDragListeners);
+    };
+
     const onMouseUp = () => {
       if (this.isRowResizing) {
         this.isRowResizing = false;
         this.resizeGuideLineH.style.display = 'none';
         document.body.classList.remove('editkit-row-resizing');
 
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
+        cleanupDragListeners();
 
+        if (this._isDestroyed) return;
         (this.editor as any)._saveHistory?.();
         (this.editor as any)._emitUpdate?.();
 
@@ -846,6 +879,7 @@ export class TableFloatingMenu {
       }
     };
 
+    this._activeDragCleanups.add(cleanupDragListeners);
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   }

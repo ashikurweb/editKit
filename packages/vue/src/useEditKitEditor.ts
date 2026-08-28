@@ -29,6 +29,7 @@ export function useEditKitEditor(
   options: UseEditKitEditorOptions = {}
 ): UseEditKitEditorReturn {
   const editor = shallowRef<EditKitEditor | null>(null);
+  const uiComponents: Array<{ destroy(): void }> = [];
 
   onMounted(() => {
     if (!containerRef.value) return;
@@ -50,29 +51,33 @@ export function useEditKitEditor(
 
     const isToolbarEnabled = options.showToolbar !== false;
     if (isToolbarEnabled) {
-      const tbConfig: ToolbarConfig = options.toolbar || {
-        features: options.features,
+      const tbConfig: ToolbarConfig = {
+        ...options.toolbar,
+        features: options.toolbar?.features ?? options.features,
       };
-      if (options.features && !tbConfig.features) {
-        tbConfig.features = options.features;
-      }
       const toolbar = createToolbar(instance, tbConfig);
-      instance.root.insertBefore(toolbar.element, instance.contentEl);
+      if (!tbConfig.container) {
+        instance.root.insertBefore(toolbar.element, instance.contentEl);
+      }
+      uiComponents.push(toolbar);
     }
 
     if (options.bubbleMenu !== false) {
       const bubble = new BubbleMenu(instance);
       bubble.mount(instance.root);
+      uiComponents.push(bubble);
     }
 
     if (options.tableMenu !== false) {
       const table = new TableFloatingMenu(instance);
       table.mount(instance.root);
+      uiComponents.push(table);
     }
 
     if (options.imageMenu !== false) {
       const img = new ImageFloatingMenu(instance);
       img.mount(instance.root);
+      uiComponents.push(img);
     }
 
     instance.mount(containerRef.value);
@@ -80,6 +85,10 @@ export function useEditKitEditor(
   });
 
   onBeforeUnmount(() => {
+    for (const component of uiComponents.reverse()) {
+      component.destroy();
+    }
+    uiComponents.length = 0;
     if (editor.value) {
       editor.value.destroy();
       editor.value = null;

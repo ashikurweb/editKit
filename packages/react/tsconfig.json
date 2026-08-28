@@ -3,7 +3,9 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
-    "jsx": "react-jsx"
+    "jsx": "react",
+    "jsxFactory": "ReactRuntime.createElement",
+    "jsxFragmentFactory": "ReactRuntime.Fragment"
   },
   "include": ["src/**/*"]
 }

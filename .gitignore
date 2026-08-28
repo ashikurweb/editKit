@@ -36,6 +36,7 @@ Thumbs.db
 # Testing & Coverage
 coverage
 .nyc_output
+.playwright-mcp/
 
 # Build Outputs & Bundles
 *.tsbuildinfo

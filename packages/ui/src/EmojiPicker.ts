@@ -929,6 +929,7 @@ export class EmojiPicker {
 
   private searchQuery: string = '';
   private recentEmojis: EmojiItem[] = [];
+  private savedEditorRange: Range | null = null;
 
   constructor(editor: EditKitEditor, onSelect?: (emoji: string) => void) {
     this.editor = editor;
@@ -1171,14 +1172,42 @@ export class EmojiPicker {
 
   private _selectEmoji(item: EmojiItem): void {
     this._saveRecent(item);
+    this._restoreEditorSelection();
     document.execCommand('insertText', false, item.char);
+    this.savedEditorRange = null;
     this.onSelect?.(item.char);
   }
 
   focusSearch(): void {
+    this._saveEditorSelection();
     setTimeout(() => {
       this.searchInput.focus();
       this.searchInput.select();
     }, 40);
+  }
+
+  private _saveEditorSelection(): void {
+    this.savedEditorRange = null;
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    if (this.editor.contentEl.contains(range.commonAncestorContainer)) {
+      this.savedEditorRange = range.cloneRange();
+    }
+  }
+
+  private _restoreEditorSelection(): void {
+    const range = this.savedEditorRange;
+    if (!range || !range.commonAncestorContainer.isConnected ||
+      !this.editor.contentEl.contains(range.commonAncestorContainer)) {
+      this.editor.focus('end');
+      return;
+    }
+
+    this.editor.contentEl.focus({ preventScroll: true });
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
   }
 }

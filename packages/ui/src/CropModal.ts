@@ -30,6 +30,7 @@ export class CropModal extends Modal {
 
   // Active ratio buttons map
   private ratioBtns: Map<AspectRatioPreset, HTMLButtonElement> = new Map();
+  private _globalUnsubscribers: (() => void)[] = [];
 
   constructor(editor: EditKitEditor) {
     super(editor, {
@@ -298,7 +299,7 @@ export class CropModal extends Modal {
       }
     });
 
-    window.addEventListener('mousemove', (e: MouseEvent) => {
+    const onWindowMouseMove = (e: MouseEvent) => {
       if (!activeHandle && !isMovingBox) return;
 
       const pRect = this.previewImgEl.getBoundingClientRect();
@@ -336,12 +337,18 @@ export class CropModal extends Modal {
       }
 
       this._renderCropBox();
-    });
+    };
+    window.addEventListener('mousemove', onWindowMouseMove);
 
-    window.addEventListener('mouseup', () => {
+    const onWindowMouseUp = () => {
       activeHandle = null;
       isMovingBox = false;
-    });
+    };
+    window.addEventListener('mouseup', onWindowMouseUp);
+    this._globalUnsubscribers.push(
+      () => window.removeEventListener('mousemove', onWindowMouseMove),
+      () => window.removeEventListener('mouseup', onWindowMouseUp),
+    );
   }
 
   private _updateRatioBtns(): void {
@@ -458,5 +465,13 @@ export class CropModal extends Modal {
       }, 50);
     };
     tmp.src = img.src;
+  }
+
+  override destroy(): void {
+    if (this._isDestroyed) return;
+    this.targetImg = null;
+    this._globalUnsubscribers.forEach(unsubscribe => unsubscribe());
+    this._globalUnsubscribers = [];
+    super.destroy();
   }
 }

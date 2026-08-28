@@ -1,4 +1,5 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
+import ReactRuntime from 'react';
+import type * as React from 'react';
 import type { EditKitEditor as EditKitEditorType } from '@editkit/core';
 import { useEditKitEditor, type UseEditKitEditorOptions } from './useEditKitEditor';
 
@@ -8,7 +9,9 @@ export interface EditKitEditorProps extends UseEditKitEditorOptions {
   onChange?: (html: string) => void;
 }
 
-export const EditKitEditor = forwardRef<EditKitEditorType, EditKitEditorProps>(
+export const EditKitEditor: React.ForwardRefExoticComponent<
+  EditKitEditorProps & React.RefAttributes<EditKitEditorType>
+> = ReactRuntime.forwardRef<EditKitEditorType, EditKitEditorProps>(
   (
     {
       className = '',
@@ -27,7 +30,11 @@ export const EditKitEditor = forwardRef<EditKitEditorType, EditKitEditorProps>(
       },
     });
 
-    useImperativeHandle(ref, () => editor as EditKitEditorType, [editor]);
+    ReactRuntime.useImperativeHandle(
+      ref,
+      () => editor as EditKitEditorType,
+      [editor]
+    );
 
     return (
       <div

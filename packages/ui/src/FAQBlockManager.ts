@@ -9,6 +9,7 @@ export class FAQBlockManager {
   private editor: EditKitEditor;
   private activeBlock: HTMLElement | null = null;
   private _unsubscribers: (() => void)[] = [];
+  private _isDestroyed: boolean = false;
 
   constructor(editor: EditKitEditor) {
     this.editor = editor;
@@ -186,6 +187,9 @@ export class FAQBlockManager {
   }
 
   destroy(): void {
+    if (this._isDestroyed) return;
+    this._isDestroyed = true;
     this._unsubscribers.forEach(u => u());
+    this._unsubscribers = [];
   }
 }

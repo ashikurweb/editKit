@@ -1,5 +1,9 @@
 import { defineComponent, ref, shallowRef, onMounted, onBeforeUnmount, watch, h, type PropType } from 'vue';
-import { EditKitEditor as EditKitEditorCore } from '@editkit/core';
+import {
+  EditKitEditor as EditKitEditorCore,
+  type Extension,
+  type CustomToolbarItem,
+} from '@editkit/core';
 import {
   createToolbar,
   BubbleMenu,
@@ -13,8 +17,8 @@ export const EditKitEditor = defineComponent({
   name: 'EditKitEditor',
   props: {
     modelValue: {
-      type: String,
-      default: '',
+      type: String as PropType<string | undefined>,
+      default: undefined,
     },
     defaultValue: {
       type: String,
@@ -31,6 +35,30 @@ export const EditKitEditor = defineComponent({
     editable: {
       type: Boolean,
       default: true,
+    },
+    autofocus: {
+      type: Boolean,
+      default: false,
+    },
+    defaultFontFamily: {
+      type: String,
+      default: 'DM Sans',
+    },
+    defaultFontSize: {
+      type: Number,
+      default: 14,
+    },
+    historyDepth: {
+      type: Number,
+      default: 100,
+    },
+    extensions: {
+      type: Array as PropType<Extension[]>,
+      default: () => [],
+    },
+    customToolbarItems: {
+      type: Array as PropType<CustomToolbarItem[]>,
+      default: () => [],
     },
     showToolbar: {
       type: Boolean,
@@ -65,17 +93,29 @@ export const EditKitEditor = defineComponent({
   setup(props, { emit, expose }) {
     const containerRef = ref<HTMLDivElement | null>(null);
     const editor = shallowRef<EditKitEditorCore | null>(null);
+    const uiComponents: Array<{ destroy(): void }> = [];
 
     onMounted(() => {
       if (!containerRef.value) return;
 
-      const initialContent = props.modelValue || props.defaultValue || '';
+      const initialContent =
+        props.modelValue !== undefined
+          ? props.modelValue
+          : props.defaultValue !== undefined
+          ? props.defaultValue
+          : '';
 
       const instance = new EditKitEditorCore({
         content: initialContent,
         placeholder: props.placeholder,
         theme: props.theme,
         editable: props.editable,
+        autofocus: props.autofocus,
+        defaultFontFamily: props.defaultFontFamily,
+        defaultFontSize: props.defaultFontSize,
+        historyDepth: props.historyDepth,
+        extensions: props.extensions,
+        customToolbarItems: props.customToolbarItems,
         onUpdate: (ed) => {
           const html = ed.getHTML();
           emit('update:modelValue', html);
@@ -86,29 +126,33 @@ export const EditKitEditor = defineComponent({
       });
 
       if (props.showToolbar) {
-        const tbConfig: ToolbarConfig = props.toolbar || {
-          features: props.features,
+        const tbConfig: ToolbarConfig = {
+          ...props.toolbar,
+          features: props.toolbar?.features ?? props.features,
         };
-        if (props.features && !tbConfig.features) {
-          tbConfig.features = props.features;
-        }
         const toolbar = createToolbar(instance, tbConfig);
-        instance.root.insertBefore(toolbar.element, instance.contentEl);
+        if (!tbConfig.container) {
+          instance.root.insertBefore(toolbar.element, instance.contentEl);
+        }
+        uiComponents.push(toolbar);
       }
 
       if (props.bubbleMenu) {
         const bubble = new BubbleMenu(instance);
         bubble.mount(instance.root);
+        uiComponents.push(bubble);
       }
 
       if (props.tableMenu) {
         const table = new TableFloatingMenu(instance);
         table.mount(instance.root);
+        uiComponents.push(table);
       }
 
       if (props.imageMenu) {
         const img = new ImageFloatingMenu(instance);
         img.mount(instance.root);
+        uiComponents.push(img);
       }
 
       instance.mount(containerRef.value);
@@ -117,6 +161,10 @@ export const EditKitEditor = defineComponent({
 
     onBeforeUnmount(() => {
       if (editor.value) {
+        for (const component of uiComponents.reverse()) {
+          component.destroy();
+        }
+        uiComponents.length = 0;
         editor.value.destroy();
         editor.value = null;
       }

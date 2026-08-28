@@ -31,30 +31,36 @@ export function editkit(node: HTMLElement, options: SvelteEditKitOptions = {}) {
     },
   });
 
+  const uiComponents: Array<{ destroy(): void }> = [];
+
   if (options.showToolbar !== false) {
-    const tbConfig: ToolbarConfig = options.toolbar || {
-      features: options.features,
+    const tbConfig: ToolbarConfig = {
+      ...options.toolbar,
+      features: options.toolbar?.features ?? options.features,
     };
-    if (options.features && !tbConfig.features) {
-      tbConfig.features = options.features;
-    }
     const toolbar = createToolbar(instance, tbConfig);
-    instance.root.insertBefore(toolbar.element, instance.contentEl);
+    if (!tbConfig.container) {
+      instance.root.insertBefore(toolbar.element, instance.contentEl);
+    }
+    uiComponents.push(toolbar);
   }
 
   if (options.bubbleMenu !== false) {
     const bubble = new BubbleMenu(instance);
     bubble.mount(instance.root);
+    uiComponents.push(bubble);
   }
 
   if (options.tableMenu !== false) {
     const table = new TableFloatingMenu(instance);
     table.mount(instance.root);
+    uiComponents.push(table);
   }
 
   if (options.imageMenu !== false) {
     const img = new ImageFloatingMenu(instance);
     img.mount(instance.root);
+    uiComponents.push(img);
   }
 
   instance.mount(node);
@@ -73,6 +79,9 @@ export function editkit(node: HTMLElement, options: SvelteEditKitOptions = {}) {
       options = newOptions;
     },
     destroy() {
+      for (const component of uiComponents.reverse()) {
+        component.destroy();
+      }
       instance.destroy();
     },
     getEditor: () => instance,

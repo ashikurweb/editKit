@@ -16,10 +16,6 @@
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
 </p>
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/ashikurweb/editKit-text-editor/master/assets/editkit-preview.png" alt="EditKit Svelte Editor Preview" width="100%" />
-</p>
-
 ---
 
 ## ⚡ Why @editkit/svelte?
@@ -92,6 +88,8 @@ All-in-one alternative: `npm install editkit-text-editor svelte`, then import fr
 | `imageMenu` | `boolean` | `true` | Enable floating image resizer menu |
 | `features` | `ToolbarFeaturesConfig` | `{}` | Granular toolbar button toggles |
 | `onChange` | `(html: string) => void` | - | Callback on content change |
+
+`content` is a trusted-HTML input. Sanitize content from users or external systems before passing it to EditKit and before rendering saved HTML.
 
 ---
 

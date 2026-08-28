@@ -11,6 +11,8 @@ export class ImageFloatingMenu {
   private cropModal: CropModal;
   private _unsubscribers: (() => void)[] = [];
   private currentRotation: number = 0;
+  private _isDestroyed: boolean = false;
+  private _activeDragCleanup: (() => void) | null = null;
 
   constructor(editor: EditKitEditor) {
     this.editor = editor;
@@ -35,6 +37,7 @@ export class ImageFloatingMenu {
     this.element.appendChild(this.resizerBox);
 
     this._setupListeners();
+    this._unsubscribers.push(this.editor.on('destroy', () => this.destroy()));
   }
 
   mount(container: HTMLElement): void {
@@ -42,7 +45,13 @@ export class ImageFloatingMenu {
   }
 
   destroy(): void {
+    if (this._isDestroyed) return;
+    this._isDestroyed = true;
+    this._activeDragCleanup?.();
+    this._activeDragCleanup = null;
     this._unsubscribers.forEach(fn => fn());
+    this._unsubscribers = [];
+    this.cropModal.destroy();
     this.element.remove();
   }
 
@@ -88,16 +97,18 @@ export class ImageFloatingMenu {
 
     document.addEventListener('mousedown', onDocClick);
     document.addEventListener('keydown', onKeydown);
-    window.addEventListener('resize', () => this._updatePosition());
-    window.addEventListener('scroll', () => this._updatePosition(), true);
+    const onWindowResize = () => this._updatePosition();
+    const onWindowScroll = () => this._updatePosition();
+    window.addEventListener('resize', onWindowResize);
+    window.addEventListener('scroll', onWindowScroll, true);
 
     this._unsubscribers.push(
       () => this.editor.contentEl.removeEventListener('scroll', onScroll),
       () => this.element.removeEventListener('wheel', onWheel),
       () => document.removeEventListener('mousedown', onDocClick),
       () => document.removeEventListener('keydown', onKeydown),
-      () => window.removeEventListener('resize', () => this._updatePosition()),
-      () => window.removeEventListener('scroll', () => this._updatePosition(), true),
+      () => window.removeEventListener('resize', onWindowResize),
+      () => window.removeEventListener('scroll', onWindowScroll, true),
     );
   }
 
@@ -248,12 +259,22 @@ export class ImageFloatingMenu {
         this._updatePosition();
       };
 
-      const onMouseUp = () => {
+      const cleanupDragListeners = () => {
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
+        if (this._activeDragCleanup === cleanupDragListeners) {
+          this._activeDragCleanup = null;
+        }
+      };
+
+      const onMouseUp = () => {
+        cleanupDragListeners();
+        if (this._isDestroyed) return;
         this.editor.emit('update', { editor: this.editor });
       };
 
+      this._activeDragCleanup?.();
+      this._activeDragCleanup = cleanupDragListeners;
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
     });
