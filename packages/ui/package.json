@@ -1,6 +1,6 @@
 {
   "name": "@editkit/ui",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "EditKit UI Components — Modern Toolbar, Floating Bubble Menu, Table Menu, 2D Color Picker & Pure CSS Theme Engine.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -66,6 +66,7 @@
   ],
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022 --external @editkit/core",
+    "prepublishOnly": "node ../../scripts/ensure-pnpm-publish.mjs",
     "prepack": "pnpm build"
   },
   "dependencies": {

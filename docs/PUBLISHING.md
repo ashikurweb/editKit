@@ -60,6 +60,8 @@ npm whoami
 ```
 *(This will print your logged-in username).*
 
+For an access-token release, configure the token for the npm registry before running the publish commands. Never commit the token or paste it into project files.
+
 ### Step 3: Run the build & typecheck
 ```bash
 pnpm verify
@@ -73,6 +75,9 @@ pnpm publish --access public
 
 > [!TIP]
 > The first command publishes the scoped packages in dependency order. The second explicitly publishes the root `editkit-text-editor` package last. The private playground is never selected.
+
+> [!IMPORTANT]
+> Always publish this workspace with `pnpm publish`, never plain `npm publish`. pnpm replaces internal `workspace:*` references with the release version before uploading; the repository blocks plain npm publishing to prevent an uninstallable release.
 
 ---
 
@@ -88,8 +93,8 @@ Decide on your version bump (SemVer: `Major.Minor.Patch`):
 
 Update the `"version"` field in the six public package manifests: the root package plus `core`, `ui`, `react`, `vue`, and `svelte`. Keep the private playground package on its independent version. For example:
 ```bash
-# Example: update the six public packages to 1.0.8 without creating Git tags
-pnpm --filter editkit-text-editor --filter @editkit/core --filter @editkit/ui --filter @editkit/react --filter @editkit/vue --filter @editkit/svelte exec npm version 1.0.8 --no-git-tag-version
+# Example: update the six public packages to 1.0.9 without creating Git tags
+pnpm --filter editkit-text-editor --filter @editkit/core --filter @editkit/ui --filter @editkit/react --filter @editkit/vue --filter @editkit/svelte exec npm version 1.0.9 --no-git-tag-version
 ```
 
 Do not use an unfiltered recursive version command: it also changes the private playground version.

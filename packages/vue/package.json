@@ -1,6 +1,6 @@
 {
   "name": "@editkit/vue",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Vue 3 and Nuxt rich text editor with components, composables, tables, and no third-party editor engine. A TypeScript alternative to TipTap and Quill.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -62,6 +62,7 @@
   "author": "Ashikur Rahman",
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022 --external @editkit/core --external @editkit/ui --external vue",
+    "prepublishOnly": "node ../../scripts/ensure-pnpm-publish.mjs",
     "prepack": "pnpm build"
   },
   "peerDependencies": {

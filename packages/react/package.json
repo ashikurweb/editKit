@@ -1,6 +1,6 @@
 {
   "name": "@editkit/react",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "React and Next.js rich text editor with tables, color picker, bubble menu, and no third-party editor engine. A TypeScript alternative to TipTap, Quill, Lexical, and Slate.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -64,6 +64,7 @@
   "author": "Ashikur Rahman",
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022 --external @editkit/core --external @editkit/ui --external react --external react-dom",
+    "prepublishOnly": "node ../../scripts/ensure-pnpm-publish.mjs",
     "prepack": "pnpm build"
   },
   "peerDependencies": {

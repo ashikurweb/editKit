@@ -1,6 +1,6 @@
 {
   "name": "@editkit/svelte",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Svelte and SvelteKit rich text editor action with tables, color picker, and no third-party editor engine. Supports Svelte 3, 4, and 5.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -57,6 +57,7 @@
   "author": "Ashikur Rahman",
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean --target es2022 --external @editkit/core --external @editkit/ui --external svelte",
+    "prepublishOnly": "node ../../scripts/ensure-pnpm-publish.mjs",
     "prepack": "pnpm build"
   },
   "peerDependencies": {
