@@ -1,6 +1,6 @@
 {
   "name": "@editkit/react",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "React and Next.js rich text editor with tables, color picker, bubble menu, and no third-party editor engine. A TypeScript alternative to TipTap, Quill, Lexical, and Slate.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -52,11 +52,12 @@
     "notion-style-editor",
     "table-editor",
     "nextjs-editor",
+    "nextjs-rich-text-editor",
+    "next.js",
+    "laravel-inertia-react",
     "react-19",
     "contenteditable",
-    "zero-dependencies",
     "headless-editor",
-    "markdown-editor",
     "document-editor"
   ],
   "license": "MIT",

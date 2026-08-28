@@ -4,6 +4,25 @@ import { readFile } from 'node:fs/promises';
 
 const require = createRequire(import.meta.url);
 
+const publicPackageFiles = [
+  '../package.json',
+  '../packages/core/package.json',
+  '../packages/ui/package.json',
+  '../packages/react/package.json',
+  '../packages/vue/package.json',
+  '../packages/svelte/package.json',
+];
+
+const publicPackages = await Promise.all(
+  publicPackageFiles.map(async file => JSON.parse(await readFile(new URL(file, import.meta.url), 'utf8'))),
+);
+const publicVersions = new Set(publicPackages.map(pkg => pkg.version));
+assert.equal(
+  publicVersions.size,
+  1,
+  `Public package versions must match: ${publicPackages.map(pkg => `${pkg.name}@${pkg.version}`).join(', ')}`,
+);
+
 const entries = [
   { esm: '../dist/index.js', cjs: '../dist/index.cjs', exports: ['EditKitEditor', 'createEditKit', 'createToolbar', 'BubbleMenu'] },
   { esm: '../dist/react.js', cjs: '../dist/react.cjs', exports: ['EditKitEditor', 'useEditKitEditor'] },
@@ -32,4 +51,4 @@ for (const file of [
   await readFile(new URL(file, import.meta.url), 'utf8');
 }
 
-console.log('Package smoke checks passed for ESM, CommonJS, framework entries, and styles.');
+console.log(`Package smoke checks passed for v${publicPackages[0].version}, ESM, CommonJS, framework entries, and styles.`);

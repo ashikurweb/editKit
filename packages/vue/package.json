@@ -1,6 +1,6 @@
 {
   "name": "@editkit/vue",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Vue 3 and Nuxt rich text editor with components, composables, tables, and no third-party editor engine. A TypeScript alternative to TipTap and Quill.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -49,12 +49,14 @@
     "wysiwyg-editor",
     "nuxt",
     "nuxt3",
+    "nuxt-editor",
+    "nuxt-rich-text-editor",
+    "laravel-inertia-vue",
     "tiptap-vue",
     "quill-vue",
     "notion-style-editor",
     "table-editor",
-    "contenteditable",
-    "zero-dependencies"
+    "contenteditable"
   ],
   "license": "MIT",
   "author": "Ashikur Rahman",

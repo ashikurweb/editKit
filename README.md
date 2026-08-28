@@ -1,7 +1,7 @@
-# EditKit Text Editor — Rich Text / WYSIWYG Editor for React, Vue, Svelte & TypeScript
+# EditKit Text Editor — TypeScript Rich Text & WYSIWYG Editor
 
 <p align="center">
-  <strong>An open-source, framework-agnostic rich text editor with a complete, customizable UI</strong>
+  <strong>Open-source rich text editor for React, Next.js, Vue, Nuxt, Svelte, SvelteKit, Angular, Laravel, and JavaScript</strong>
 </p>
 
 <p align="center">
@@ -9,23 +9,49 @@
   <a href="https://www.npmjs.com/package/editkit-text-editor"><img src="https://img.shields.io/npm/dm/editkit-text-editor?logo=npm" alt="editkit-text-editor monthly downloads" /></a>
   <a href="https://github.com/ashikurweb/editKit-text-editor/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/editkit-text-editor" alt="MIT license" /></a>
   <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript rich text editor" />
-  <img src="https://img.shields.io/badge/React%20%7C%20Vue%20%7C%20Svelte%20%7C%20Vanilla-6366f1" alt="React Vue Svelte and vanilla JavaScript support" />
+  <img src="https://img.shields.io/badge/React%20%7C%20Vue%20%7C%20Svelte%20%7C%20Angular%20%7C%20Laravel-6366f1" alt="React Vue Svelte Angular and Laravel rich text editor support" />
 </p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/editkit-text-editor">npm</a> ·
   <a href="https://github.com/ashikurweb/editKit-text-editor">GitHub</a> ·
   <a href="https://github.com/ashikurweb/editKit-text-editor/issues">Issues</a> ·
-  <a href="#installation">Installation</a>
+  <a href="#install-editkit-text-editor">Installation</a>
 </p>
 
 ## Overview
 
-EditKit is a TypeScript rich-text editor with a first-party toolbar, selection bubble menu, contextual table controls, image controls, responsive document preview, tables, color tools, and dark/light themes. The default factory and framework integrations mount the same maintained UI. Feature flags, CSS variables, editor commands, extensions, and custom toolbar items let an application adapt that UI without forking it.
+`editkit-text-editor` is an open-source TypeScript rich text and WYSIWYG editor npm package for React, Next.js, Vue 3, Nuxt, Svelte, SvelteKit, Angular, Laravel, and vanilla JavaScript. It includes a complete customizable UI, interactive tables, image tools, an HTML editor output API, and dark/light themes.
+
+The default factory and framework integrations mount the same maintained editor UI. Feature flags, CSS variables, commands, extensions, and custom toolbar items let an application customize it without maintaining a fork.
 
 Official entry points cover React/Next.js, Vue/Nuxt, Svelte/SvelteKit, and vanilla JavaScript. Angular uses the framework-agnostic browser API; Laravel can use that API through Vite or a React/Vue adapter through Inertia.
 
-## Installation
+## Rich text editor features
+
+- Complete WYSIWYG toolbar, selection bubble menu, document preview, and HTML output
+- Interactive tables with row, column, cell, resize, and contextual-menu tools
+- Images, links, colors, lists, emoji, symbols, charts, math, panels, and content blocks
+- TypeScript types, ESM and CommonJS builds, SSR-safe imports, and responsive layouts
+- React, Next.js, Vue, Nuxt, Svelte, SvelteKit, Angular, Laravel Vite, and vanilla JavaScript support
+- No third-party editor engine; the core editing engine and UI are maintained in this repository
+
+## Install EditKit Text Editor
+
+Choose the integration for your framework. Each option provides the same default UI and imports the stylesheet from `editkit-text-editor/styles`.
+
+React, Vue, and Svelte are normally already installed in projects created with their official framework tools; the commands below make those peer requirements explicit.
+
+| Framework | Install | JavaScript / TypeScript import |
+| :--- | :--- | :--- |
+| Vanilla JavaScript or TypeScript | `npm install editkit-text-editor` | `editkit-text-editor` |
+| React, Next.js, or Laravel Inertia React | `npm install editkit-text-editor react react-dom` | `editkit-text-editor/react` |
+| Vue 3, Nuxt, or Laravel Inertia Vue | `npm install editkit-text-editor vue` | `editkit-text-editor/vue` |
+| Svelte or SvelteKit | `npm install editkit-text-editor svelte` | `editkit-text-editor/svelte` |
+| Angular | `npm install editkit-text-editor` | `editkit-text-editor` |
+| Laravel Blade with Vite | `npm install editkit-text-editor` | `editkit-text-editor` |
+
+### Vanilla JavaScript and TypeScript quick start
 
 ```bash
 npm install editkit-text-editor
@@ -181,12 +207,12 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
 EditKit runs in the browser, not in PHP. Use the React or Vue entry point for Inertia, or mount the complete UI from a Vite entry for Blade.
 
-```ts
-// resources/js/editor.ts
+```js
+// resources/js/app.js
 import { createEditKit } from 'editkit-text-editor';
 import 'editkit-text-editor/styles';
 
-const host = document.querySelector<HTMLElement>('#editor');
+const host = document.querySelector('#editor');
 const editkit = host
   ? createEditKit({ element: host, content: '<p>Hello from Laravel.</p>' })
   : null;
@@ -197,7 +223,7 @@ import.meta.hot?.dispose(() => editkit?.destroy());
 
 ```blade
 <div id="editor"></div>
-@vite('resources/js/editor.ts')
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 ```
 
 ## Configuration

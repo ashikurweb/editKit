@@ -1,6 +1,6 @@
 {
   "name": "@editkit/svelte",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Svelte and SvelteKit rich text editor action with tables, color picker, and no third-party editor engine. Supports Svelte 3, 4, and 5.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -48,9 +48,10 @@
     "wysiwyg",
     "wysiwyg-editor",
     "sveltekit",
+    "sveltekit-editor",
+    "sveltekit-rich-text-editor",
     "table-editor",
-    "contenteditable",
-    "zero-dependencies"
+    "contenteditable"
   ],
   "license": "MIT",
   "author": "Ashikur Rahman",

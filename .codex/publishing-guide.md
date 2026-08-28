@@ -39,14 +39,8 @@ EditKit uses scoped package names:
 3. Create an organization named **`editkit`** (choose the free tier).
 4. Now you can publish any `@editkit/*` package directly.
 
-### Option B: Using your personal username scope
-If `editkit` org is taken or you prefer your username (e.g. `@ashikur`):
-Update the `"name"` in each `package.json`:
-- `@ashikur/editkit-core`
-- `@ashikur/editkit-ui`
-- `@ashikur/editkit-react`
-- `@ashikur/editkit-vue`
-- `@ashikur/editkit-svelte`
+### Option B: Migrating to another scope
+Changing the npm scope is a package migration, not only a `name` edit. Update every internal dependency, source import, build external, README example, and consumer migration note before publishing under another scope.
 
 ---
 
@@ -68,17 +62,17 @@ npm whoami
 
 ### Step 3: Run the build & typecheck
 ```bash
-npm run build
-pnpm -r exec tsc --noEmit
+pnpm verify
 ```
 
-### Step 4: Publish all packages simultaneously
+### Step 4: Publish in dependency order
 ```bash
-pnpm -r publish --access public
+pnpm --filter @editkit/core --filter @editkit/ui --filter @editkit/react --filter @editkit/vue --filter @editkit/svelte -r publish --access public
+pnpm publish --access public
 ```
 
 > [!TIP]
-> The `-r` flag tells pnpm to recursively publish all workspace packages in dependency order (`core` ➔ `ui` ➔ framework integrations ➔ `editkit-text-editor`). The private playground is skipped.
+> The first command publishes the scoped packages in dependency order. The second explicitly publishes the root `editkit-text-editor` package last. The private playground is never selected.
 
 ---
 
@@ -92,20 +86,23 @@ Decide on your version bump (SemVer: `Major.Minor.Patch`):
 - **Minor** (`1.0.0` ➔ `1.1.0`): New features (new toolbar buttons, props)
 - **Major** (`1.0.0` ➔ `2.0.0`): Breaking architectural changes
 
-You can update the `"version"` field in all `package.json` files or run:
+Update the `"version"` field in the six public package manifests: the root package plus `core`, `ui`, `react`, `vue`, and `svelte`. Keep the private playground package on its independent version. For example:
 ```bash
-# Example: update all packages to 1.0.1
-pnpm -r exec npm version 1.0.1 --no-git-tag-version
+# Example: update the six public packages to 1.0.7 without creating Git tags
+pnpm --filter editkit-text-editor --filter @editkit/core --filter @editkit/ui --filter @editkit/react --filter @editkit/vue --filter @editkit/svelte exec npm version 1.0.7 --no-git-tag-version
 ```
+
+Do not use an unfiltered recursive version command: it also changes the private playground version.
 
 ### Step 2: Rebuild the project
 ```bash
-npm run build
+pnpm verify
 ```
 
 ### Step 3: Publish the new version
 ```bash
-pnpm -r publish --access public
+pnpm --filter @editkit/core --filter @editkit/ui --filter @editkit/react --filter @editkit/vue --filter @editkit/svelte -r publish --access public
+pnpm publish --access public
 ```
 
 ---
@@ -114,8 +111,6 @@ pnpm -r publish --access public
 
 ```
 editKit-text-editor
-├── assets/
-│   └── editkit-preview.png     # Screenshot shown in README.md
 ├── packages/
 │   ├── core/                   # @editkit/core (TypeScript editor engine)
 │   ├── ui/                     # @editkit/ui (Toolbar, Modals, Menus, CSS)
@@ -142,8 +137,8 @@ editKit-text-editor
 | Task | Command |
 | :--- | :--- |
 | **Start Local Playground** | `pnpm playground` |
-| **Build all packages** | `npm run build` |
-| **Check TypeScript types** | `pnpm -r exec tsc --noEmit` |
+| **Verify release** | `pnpm verify` |
 | **Clean build caches** | `npm run clean` |
 | **Check NPM Login** | `npm whoami` |
-| **Publish to npm** | `pnpm -r publish --access public` |
+| **Publish scoped packages** | `pnpm --filter @editkit/core --filter @editkit/ui --filter @editkit/react --filter @editkit/vue --filter @editkit/svelte -r publish --access public` |
+| **Publish root package last** | `pnpm publish --access public` |

@@ -155,7 +155,7 @@ function init() {
     <div class="editkit-bottom-right">
       <a href="#feature" class="editkit-footer-link">💡 Suggest a Feature</a>
       <a href="#bug" class="editkit-footer-link">🐞 Report a Bug</a>
-      <span class="editkit-version-badge">v1.0.6</span>
+      <span class="editkit-version-badge">v1.0.7</span>
     </div>
   `;
   editor.root.appendChild(bottomBar);

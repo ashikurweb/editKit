@@ -10,7 +10,7 @@
   <a href="https://www.npmjs.com/package/@editkit/vue"><img src="https://img.shields.io/npm/v/@editkit/vue?logo=npm" alt="@editkit/vue npm version" /></a>
   <a href="https://www.npmjs.com/package/@editkit/vue"><img src="https://img.shields.io/npm/dm/@editkit/vue?logo=npm" alt="@editkit/vue monthly downloads" /></a>
   <img src="https://img.shields.io/badge/Vue-3.x-42b883?logo=vuedotjs&logoColor=white" alt="Vue 3 Support" />
-  <img src="https://img.shields.io/badge/Nuxt-3.x-00dc82?logo=nuxt.js&logoColor=white" alt="Nuxt 3 Ready" />
+  <img src="https://img.shields.io/badge/Nuxt-3%20%7C%204-00dc82?logo=nuxt.js&logoColor=white" alt="Nuxt 3 and Nuxt 4 ready" />
   <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Editor%20Engine-First%20Party-8b5cf6" alt="No third-party editor engine" />
   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License" />
