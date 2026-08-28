@@ -168,6 +168,7 @@
   --editkit-shadow-popup: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
   --editkit-shadow-floating: 0 4px 12px rgba(0, 0, 0, 0.06);
   --editkit-shadow-card: 0 8px 30px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.08);
+  --editkit-divider-slider-track: var(--editkit-border-hover);
 }
 
 /* ==========================================================================
@@ -665,7 +666,7 @@
 .editkit-tb-submenu .editkit-tb-menu-item.editkit-tb-menu-item--active,
 .editkit-tb-submenu--lh .editkit-tb-menu-item.editkit-tb-menu-item--active {
   background: var(--editkit-surface-active) !important;
-  color: #ffffff !important;
+  color: var(--editkit-text) !important;
   font-weight: 600;
 }
 
@@ -1383,6 +1384,90 @@
   text-overflow: ellipsis;
 }
 
+/* Light theme: picker inputs, navigation, content and preview stay readable. */
+[data-editkit-theme="light"] .editkit-emoji-search-wrap,
+[data-editkit-theme="light"] .editkit-sym-search-wrap {
+  background: var(--editkit-content-bg);
+  border-color: var(--editkit-border);
+}
+
+[data-editkit-theme="light"] .editkit-emoji-search-icon,
+[data-editkit-theme="light"] .editkit-sym-search-icon,
+[data-editkit-theme="light"] .editkit-emoji-section-header,
+[data-editkit-theme="light"] .editkit-sym-section-header,
+[data-editkit-theme="light"] .editkit-sym-section-count,
+[data-editkit-theme="light"] .editkit-sym-footer-sub {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-emoji-search-input,
+[data-editkit-theme="light"] .editkit-sym-search-input,
+[data-editkit-theme="light"] .editkit-emoji-footer-title,
+[data-editkit-theme="light"] .editkit-sym-footer-name,
+[data-editkit-theme="light"] .editkit-sym-item-btn {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-emoji-search-input::placeholder,
+[data-editkit-theme="light"] .editkit-sym-search-input::placeholder,
+[data-editkit-theme="light"] .editkit-emoji-empty,
+[data-editkit-theme="light"] .editkit-sym-empty {
+  color: var(--editkit-placeholder);
+}
+
+[data-editkit-theme="light"] .editkit-emoji-nav,
+[data-editkit-theme="light"] .editkit-sym-nav-outer,
+[data-editkit-theme="light"] .editkit-emoji-footer,
+[data-editkit-theme="light"] .editkit-sym-footer {
+  border-color: var(--editkit-divider);
+}
+
+[data-editkit-theme="light"] .editkit-emoji-nav-btn:hover,
+[data-editkit-theme="light"] .editkit-sym-nav-arrow:hover,
+[data-editkit-theme="light"] .editkit-sym-item-btn:hover {
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-emoji-content::-webkit-scrollbar-thumb,
+[data-editkit-theme="light"] .editkit-sym-content::-webkit-scrollbar-thumb {
+  background: var(--editkit-border-hover);
+}
+
+[data-editkit-theme="light"] .editkit-sym-search-badge,
+[data-editkit-theme="light"] .editkit-sym-nav-arrow,
+[data-editkit-theme="light"] .editkit-sym-tab-count,
+[data-editkit-theme="light"] .editkit-sym-footer-box {
+  background: var(--editkit-surface-hover);
+  border-color: var(--editkit-border);
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-sym-nav-tab {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-sym-nav-tab:hover,
+[data-editkit-theme="light"] .editkit-sym-nav-tab--active {
+  background: var(--editkit-primary-light);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-sym-nav-tab--active::after {
+  background: var(--editkit-primary);
+  box-shadow: none;
+}
+
+[data-editkit-theme="light"] .editkit-sym-nav-tab--active .editkit-sym-tab-count {
+  background: var(--editkit-surface-active);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-sym-recent-well {
+  background: var(--editkit-content-bg);
+  border-color: var(--editkit-border);
+}
+
 /* ==========================================================================
    05. COLOR PICKER POPOVER (100% EDITKIT MATCH)
    ========================================================================== */
@@ -1625,6 +1710,43 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
   transform: translate(-50%, -50%);
   pointer-events: none;
+}
+
+/* Light theme: use neutral surfaces for color-picker chrome. */
+[data-editkit-theme="light"] .editkit-color-tabs {
+  background: var(--editkit-surface-hover);
+  border-color: var(--editkit-border);
+}
+
+[data-editkit-theme="light"] .editkit-color-tab--active {
+  background: var(--editkit-card-bg);
+  color: var(--editkit-text);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+}
+
+[data-editkit-theme="light"] .editkit-color-tab-pill {
+  background: var(--editkit-surface-active);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-color-hex-box {
+  background: var(--editkit-content-bg);
+}
+
+[data-editkit-theme="light"] .editkit-color-hex-text {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-color-swatch-btn {
+  border-color: rgba(24, 24, 27, 0.14);
+}
+
+[data-editkit-theme="light"] .editkit-color-swatch-btn:hover {
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+}
+
+[data-editkit-theme="light"] .editkit-color-swatch-btn--active {
+  box-shadow: 0 0 0 2px var(--editkit-primary);
 }
 
 /* ==========================================================================
@@ -2254,6 +2376,74 @@
   background: #3b82f6;
   color: #ffffff;
   transform: scale(1.2);
+}
+
+/* Light theme: keep contextual table controls consistent with the editor UI. */
+[data-editkit-theme="light"] .editkit-table-pill-btn,
+[data-editkit-theme="light"] .editkit-table-corner-grip,
+[data-editkit-theme="light"] .editkit-table-header-caret,
+[data-editkit-theme="light"] .editkit-table-corner-resizer {
+  background: var(--editkit-popup-bg);
+  border-color: var(--editkit-popup-border);
+  color: var(--editkit-text);
+  box-shadow: var(--editkit-shadow-floating);
+}
+
+[data-editkit-theme="light"] .editkit-table-pill-btn:hover,
+[data-editkit-theme="light"] .editkit-table-corner-grip:hover,
+[data-editkit-theme="light"] .editkit-table-header-caret:hover {
+  background: var(--editkit-surface-hover);
+  border-color: var(--editkit-border-hover);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-table-col-bullet:hover,
+[data-editkit-theme="light"] .editkit-table-row-bullet:hover {
+  background: var(--editkit-surface-elevated);
+  border-color: var(--editkit-border-hover);
+  box-shadow: var(--editkit-shadow-floating);
+}
+
+[data-editkit-theme="light"] .editkit-bullet-plus {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-table-dropdown-menu {
+  background: var(--editkit-popup-bg);
+  border-color: var(--editkit-popup-border);
+  box-shadow: var(--editkit-shadow-popup);
+  scrollbar-color: var(--editkit-border-hover) transparent;
+}
+
+[data-editkit-theme="light"] .editkit-table-dropdown-menu::-webkit-scrollbar-thumb {
+  background: var(--editkit-border-hover);
+}
+
+[data-editkit-theme="light"] .editkit-table-dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-table-dropdown-item:not(.editkit-table-dropdown-item--danger) {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-table-dropdown-item:not(.editkit-table-dropdown-item--danger):hover {
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-table-col-resizer-bar {
+  background: rgba(24, 24, 27, 0.24);
+}
+
+[data-editkit-theme="light"] .editkit-table-col-resizer-tab {
+  background: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-table-corner-resizer:hover {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #ffffff;
 }
 
 body.editkit-table-resizing,
@@ -3178,6 +3368,99 @@ body.editkit-row-resizing * {
   background: #585d73;
 }
 
+/* Light theme: keep every image-dialog surface consistent with the editor. */
+[data-editkit-theme="light"] .editkit-modal-title,
+[data-editkit-theme="light"] .editkit-img-dropzone-title,
+[data-editkit-theme="light"] .editkit-img-count-text,
+[data-editkit-theme="light"] .editkit-img-staged-name,
+[data-editkit-theme="light"] .editkit-img-form-label {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-modal-close {
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-modal-close:hover {
+  background: var(--editkit-surface-active);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-img-dropzone {
+  background: var(--editkit-content-bg);
+  border-color: var(--editkit-border-hover);
+}
+
+[data-editkit-theme="light"] .editkit-img-dropzone:hover,
+[data-editkit-theme="light"] .editkit-img-dropzone--dragover {
+  background: var(--editkit-primary-light);
+  border-color: var(--editkit-primary);
+}
+
+[data-editkit-theme="light"] .editkit-img-icon-badge {
+  background: var(--editkit-surface-active);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-img-dropzone-subtitle,
+[data-editkit-theme="light"] .editkit-img-or-divider,
+[data-editkit-theme="light"] .editkit-img-clear-all-btn,
+[data-editkit-theme="light"] .editkit-img-staged-alt {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-img-clear-all-btn:hover {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-img-staged-card {
+  background: var(--editkit-content-bg);
+  border-color: var(--editkit-border);
+}
+
+[data-editkit-theme="light"] .editkit-img-staged-thumb {
+  background: var(--editkit-surface-hover);
+  border-color: var(--editkit-border);
+}
+
+[data-editkit-theme="light"] .editkit-img-staged-alt::placeholder,
+[data-editkit-theme="light"] .editkit-img-input::placeholder {
+  color: var(--editkit-placeholder);
+}
+
+[data-editkit-theme="light"] .editkit-img-staged-del {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-img-staged-del:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+[data-editkit-theme="light"] .editkit-img-url-btn,
+[data-editkit-theme="light"] .editkit-img-upload-btn {
+  background: var(--editkit-surface-elevated);
+  border: 1px solid var(--editkit-border);
+  color: var(--editkit-text);
+  box-shadow: var(--editkit-shadow-floating);
+}
+
+[data-editkit-theme="light"] .editkit-img-input {
+  background: var(--editkit-content-bg);
+  border-color: var(--editkit-border);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-img-submit-btn {
+  background: var(--editkit-primary);
+  color: #ffffff;
+}
+
+[data-editkit-theme="light"] .editkit-img-submit-btn:hover {
+  background: var(--editkit-primary-hover);
+}
+
 /* Math / Equation Modal Styles (Exact Match to Screenshots) */
 .editkit-equation-modal {
   max-width: 460px;
@@ -3413,6 +3696,82 @@ body.editkit-row-resizing * {
   background: #f1f5f9;
 }
 
+/* Light theme: equation composer follows the same modal design tokens. */
+[data-editkit-theme="light"] .editkit-equation-modal {
+  background: var(--editkit-popup-bg);
+  border-color: var(--editkit-popup-border);
+  box-shadow: var(--editkit-shadow-popup);
+}
+
+[data-editkit-theme="light"] .editkit-eq-mode-toggle,
+[data-editkit-theme="light"] .editkit-eq-sym-btn,
+[data-editkit-theme="light"] .editkit-eq-kbd {
+  background: var(--editkit-surface-hover);
+  border-color: var(--editkit-border);
+}
+
+[data-editkit-theme="light"] .editkit-eq-mode-btn,
+[data-editkit-theme="light"] .editkit-eq-trash-btn,
+[data-editkit-theme="light"] .editkit-eq-label,
+[data-editkit-theme="light"] .editkit-eq-kbd,
+[data-editkit-theme="light"] .editkit-eq-kbd-label {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-eq-mode-btn--active {
+  background: var(--editkit-primary);
+  color: #ffffff;
+}
+
+[data-editkit-theme="light"] .editkit-eq-sym-btn {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-eq-sym-btn:hover {
+  background: var(--editkit-surface-active);
+  border-color: var(--editkit-border-hover);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-eq-textarea,
+[data-editkit-theme="light"] .editkit-eq-preview-box {
+  background: var(--editkit-content-bg);
+  border-color: var(--editkit-border);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-eq-textarea:focus {
+  border-color: var(--editkit-border-focus);
+}
+
+[data-editkit-theme="light"] .editkit-eq-textarea::placeholder,
+[data-editkit-theme="light"] .editkit-eq-placeholder {
+  color: var(--editkit-placeholder);
+}
+
+[data-editkit-theme="light"] .editkit-eq-cancel-btn {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-eq-cancel-btn:hover {
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-eq-trash-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+[data-editkit-theme="light"] .editkit-eq-save-btn {
+  background: var(--editkit-primary);
+  color: #ffffff;
+}
+
+[data-editkit-theme="light"] .editkit-eq-save-btn:hover {
+  background: var(--editkit-primary-hover);
+}
+
 /* ==========================================================================
    10. GLOBAL TOAST NOTIFICATIONS (Warning / Success / Error / Info)
    ========================================================================== */
@@ -3474,6 +3833,31 @@ body.editkit-row-resizing * {
 
 .editkit-toast--info .editkit-toast-icon {
   color: #a78bfa;
+}
+
+[data-editkit-theme="light"] .editkit-toast {
+  background: var(--editkit-popup-bg);
+  box-shadow: var(--editkit-shadow-popup);
+}
+
+[data-editkit-theme="light"] .editkit-toast--warning {
+  background: #fffbeb;
+  color: #92400e;
+}
+
+[data-editkit-theme="light"] .editkit-toast--success {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+[data-editkit-theme="light"] .editkit-toast--error {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+[data-editkit-theme="light"] .editkit-toast--info {
+  background: #eef2ff;
+  color: #4338ca;
 }
 
 .editkit-toast-icon {
@@ -4590,6 +4974,35 @@ body.editkit-row-resizing * {
   border: 2px solid #3b4252;
   border-radius: 10px;
   padding: 3px;
+}
+
+/* Light theme: selected-image actions use the same neutral popup chrome. */
+[data-editkit-theme="light"] .editkit-image-floating-toolbar {
+  background: var(--editkit-popup-bg);
+  border-color: var(--editkit-popup-border);
+  box-shadow: var(--editkit-shadow-popup);
+}
+
+[data-editkit-theme="light"] .editkit-img-tb-btn {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-img-tb-btn:hover {
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-img-tb-btn--pill {
+  color: #c2410c;
+}
+
+[data-editkit-theme="light"] .editkit-img-tb-btn--danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+[data-editkit-theme="light"] .editkit-img-tb-divider {
+  background: var(--editkit-divider);
 }
 
 /* ==========================================================================
@@ -7688,6 +8101,652 @@ body.editkit-row-resizing * {
   text-align: center;
   outline: none;
   cursor: text;
+}
+
+/* ==========================================================================
+   COMPLETE LIGHT-THEME COMPATIBILITY FOR LEGACY COMPONENT CHROME
+   ========================================================================== */
+
+/* Toolbar, bubble menus and link editing */
+[data-editkit-theme="light"] .editkit-tb-emoji-btn:hover {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-tb-dropdown-menu--font,
+[data-editkit-theme="light"] .editkit-bubble-dropdown-menu--font {
+  scrollbar-color: var(--editkit-border-hover) transparent;
+}
+
+[data-editkit-theme="light"] .editkit-tb-dropdown-menu--font::-webkit-scrollbar-thumb,
+[data-editkit-theme="light"] .editkit-bubble-dropdown-menu--font::-webkit-scrollbar-thumb {
+  background: var(--editkit-border-hover);
+}
+
+[data-editkit-theme="light"] .editkit-bubble-dropdown-menu,
+[data-editkit-theme="light"] .editkit-link-popover {
+  box-shadow: var(--editkit-shadow-popup);
+}
+
+[data-editkit-theme="light"] .editkit-link-input {
+  background: var(--editkit-content-bg);
+  border-color: var(--editkit-border);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-link-input:focus {
+  border-color: var(--editkit-border-focus);
+}
+
+[data-editkit-theme="light"] .editkit-link-input::placeholder {
+  color: var(--editkit-placeholder);
+}
+
+[data-editkit-theme="light"] .editkit-link-cancel-btn {
+  border-color: var(--editkit-border);
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-link-cancel-btn:hover {
+  background: var(--editkit-surface-hover);
+  border-color: var(--editkit-border-hover);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-link-popover-divider,
+[data-editkit-theme="light"] .editkit-link-action-btn {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-link-popover-divider {
+  background: var(--editkit-divider);
+}
+
+[data-editkit-theme="light"] .editkit-link-action-btn:hover {
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-link-preview-url {
+  color: #2563eb;
+}
+
+[data-editkit-theme="light"] .editkit-link-preview-url:hover {
+  color: #1d4ed8;
+}
+
+[data-editkit-theme="light"] .editkit-link-action-btn--unlink:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+[data-editkit-theme="light"] .editkit-img-staged-del:hover,
+[data-editkit-theme="light"] .editkit-dec-div-tb-btn--danger:hover,
+[data-editkit-theme="light"] .editkit-sec-head-tb-btn--danger:hover,
+[data-editkit-theme="light"] .editkit-pq-tb-btn--danger:hover,
+[data-editkit-theme="light"] .editkit-btn-tb-btn--danger:hover,
+[data-editkit-theme="light"] .editkit-faq-item-delete:hover,
+[data-editkit-theme="light"] .editkit-columns-ctrl-btn--delete:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+/* Generic and table-specific modal controls */
+[data-editkit-theme="light"] .editkit-modal,
+[data-editkit-theme="light"] .editkit-table-modal {
+  background: var(--editkit-popup-bg);
+  border-color: var(--editkit-popup-border);
+  box-shadow: var(--editkit-shadow-popup);
+}
+
+[data-editkit-theme="light"] .editkit-tm-section-title,
+[data-editkit-theme="light"] .editkit-tm-hex-label {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-tm-size-btn,
+[data-editkit-theme="light"] .editkit-tm-align-card {
+  background: var(--editkit-surface-hover);
+  border-color: var(--editkit-border);
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-tm-size-btn:hover,
+[data-editkit-theme="light"] .editkit-tm-align-card:hover {
+  background: var(--editkit-surface-active);
+  border-color: var(--editkit-border-hover);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-tm-size-btn--active,
+[data-editkit-theme="light"] .editkit-tm-size-btn--active:hover,
+[data-editkit-theme="light"] .editkit-tm-align-card--active,
+[data-editkit-theme="light"] .editkit-tm-align-card--active:hover {
+  background: var(--editkit-primary-light);
+  border-color: var(--editkit-primary);
+  color: var(--editkit-primary-hover);
+}
+
+[data-editkit-theme="light"] .editkit-tm-hex-input {
+  background: var(--editkit-content-bg);
+  border-color: var(--editkit-border);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-tm-preview-box,
+[data-editkit-theme="light"] .editkit-tm-satval-wrap,
+[data-editkit-theme="light"] .editkit-tm-canvas-wrap {
+  border-color: var(--editkit-border);
+}
+
+[data-editkit-theme="light"] .editkit-tm-swatch--active {
+  outline-color: var(--editkit-primary);
+  box-shadow: 0 0 0 1px var(--editkit-card-bg);
+}
+
+[data-editkit-theme="light"] .editkit-tm-apply-btn {
+  background: var(--editkit-primary);
+  color: #ffffff;
+  box-shadow: var(--editkit-shadow-floating);
+}
+
+[data-editkit-theme="light"] .editkit-tm-apply-btn:hover {
+  background: var(--editkit-primary-hover);
+  box-shadow: var(--editkit-shadow-popup);
+}
+
+/* Rendered equation blocks */
+[data-editkit-theme="light"] .editkit-content .editkit-math-block,
+[data-editkit-theme="light"] .editkit-content .editkit-math-inline {
+  background: var(--editkit-surface-hover);
+  border-color: var(--editkit-border);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-content .editkit-math-block:hover,
+[data-editkit-theme="light"] .editkit-content .editkit-math-inline:hover {
+  background: var(--editkit-primary-light);
+  border-color: var(--editkit-primary);
+  color: var(--editkit-text);
+}
+
+/* Divider modal */
+[data-editkit-theme="light"] .editkit-divider-modal,
+[data-editkit-theme="light"] .editkit-signature-modal,
+[data-editkit-theme="light"] .editkit-crop-modal,
+[data-editkit-theme="light"] .editkit-dec-divider-modal {
+  box-shadow: var(--editkit-shadow-popup);
+}
+
+[data-editkit-theme="light"] .editkit-divider-modal .editkit-modal-header,
+[data-editkit-theme="light"] .editkit-signature-modal .editkit-modal-header,
+[data-editkit-theme="light"] .editkit-dvm-footer,
+[data-editkit-theme="light"] .editkit-sig-footer,
+[data-editkit-theme="light"] .editkit-crop-footer {
+  border-color: var(--editkit-divider);
+}
+
+[data-editkit-theme="light"] .editkit-divider-modal-tag,
+[data-editkit-theme="light"] .editkit-dvm-title,
+[data-editkit-theme="light"] .editkit-dvm-meta,
+[data-editkit-theme="light"] .editkit-dvm-style-name,
+[data-editkit-theme="light"] .editkit-dvm-width-pill,
+[data-editkit-theme="light"] .editkit-dvm-thick-unit,
+[data-editkit-theme="light"] .editkit-dvm-ticks,
+[data-editkit-theme="light"] .editkit-dvm-cancel-btn {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-dvm-style-card:hover,
+[data-editkit-theme="light"] .editkit-dvm-width-pill:hover {
+  border-color: var(--editkit-border-hover);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-dvm-thick-badge,
+[data-editkit-theme="light"] .editkit-dvm-preview-box {
+  background: var(--editkit-content-bg);
+  border-color: var(--editkit-border);
+  color: var(--editkit-text);
+  box-shadow: var(--editkit-shadow-floating);
+}
+
+[data-editkit-theme="light"] .editkit-dvm-thick-num,
+[data-editkit-theme="light"] .editkit-dvm-cancel-btn:hover {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-dvm-insert-btn {
+  background: var(--editkit-primary);
+  color: #ffffff;
+}
+
+/* Signature modal */
+[data-editkit-theme="light"] .editkit-signature-modal .editkit-modal-title,
+[data-editkit-theme="light"] .editkit-sig-name-input {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-signature-modal .editkit-modal-close,
+[data-editkit-theme="light"] .editkit-sig-upload-btn,
+[data-editkit-theme="light"] .editkit-sig-name-wrap {
+  background: var(--editkit-surface-hover);
+  border-color: var(--editkit-border);
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-signature-modal .editkit-modal-close:hover,
+[data-editkit-theme="light"] .editkit-sig-upload-btn:hover {
+  background: var(--editkit-surface-active);
+  border-color: var(--editkit-border-hover);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-sig-modal-tag,
+[data-editkit-theme="light"] .editkit-sig-name-label,
+[data-editkit-theme="light"] .editkit-sig-control-label,
+[data-editkit-theme="light"] .editkit-sig-cancel-btn {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-sig-size-btn--active {
+  background: var(--editkit-primary);
+}
+
+[data-editkit-theme="light"] .editkit-sig-size-btn--active .editkit-sig-dot {
+  background: #ffffff;
+}
+
+[data-editkit-theme="light"] .editkit-sig-canvas-wrap {
+  border: 1px solid var(--editkit-border);
+  box-shadow: var(--editkit-shadow-floating);
+}
+
+[data-editkit-theme="light"] .editkit-sig-cancel-btn:hover {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-sig-insert-btn {
+  background: var(--editkit-primary);
+  color: #ffffff;
+}
+
+/* Crop modal and ALT editor */
+[data-editkit-theme="light"] .editkit-crop-preview-pane {
+  background-color: #f8fafc;
+  border-color: var(--editkit-border);
+  background-image:
+    linear-gradient(45deg, #e2e8f0 25%, transparent 25%),
+    linear-gradient(-45deg, #e2e8f0 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e2e8f0 75%),
+    linear-gradient(-45deg, transparent 75%, #e2e8f0 75%);
+}
+
+[data-editkit-theme="light"] .editkit-crop-title,
+[data-editkit-theme="light"] .editkit-crop-info-val {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-crop-close-btn,
+[data-editkit-theme="light"] .editkit-crop-ratio-btn,
+[data-editkit-theme="light"] .editkit-crop-info-card,
+[data-editkit-theme="light"] .editkit-crop-cancel-btn {
+  background: var(--editkit-surface-hover);
+  border-color: var(--editkit-border);
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-crop-close-btn:hover,
+[data-editkit-theme="light"] .editkit-crop-ratio-btn:hover,
+[data-editkit-theme="light"] .editkit-crop-cancel-btn:hover {
+  background: var(--editkit-surface-active);
+  border-color: var(--editkit-border-hover);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-crop-subtitle,
+[data-editkit-theme="light"] .editkit-crop-label,
+[data-editkit-theme="light"] .editkit-crop-info-label,
+[data-editkit-theme="light"] .editkit-crop-reset-btn,
+[data-editkit-theme="light"] .editkit-alt-title {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-crop-ratio-btn--active,
+[data-editkit-theme="light"] .editkit-crop-ratio-btn--active:hover {
+  background: var(--editkit-primary-light);
+  border-color: var(--editkit-primary);
+  color: var(--editkit-primary-hover);
+}
+
+[data-editkit-theme="light"] .editkit-crop-reset-btn:hover {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-crop-apply-btn,
+[data-editkit-theme="light"] .editkit-alt-save-btn {
+  background: var(--editkit-primary);
+  color: #ffffff;
+}
+
+[data-editkit-theme="light"] .editkit-alt-popover {
+  box-shadow: var(--editkit-shadow-popup);
+}
+
+[data-editkit-theme="light"] .editkit-alt-input {
+  background: var(--editkit-content-bg);
+  border-color: var(--editkit-border);
+  color: var(--editkit-text);
+}
+
+/* Decorative divider modal, content and contextual toolbar */
+[data-editkit-theme="light"] .editkit-dec-dvm-sub,
+[data-editkit-theme="light"] .editkit-dec-dvm-search-icon,
+[data-editkit-theme="light"] .editkit-dec-dvm-cat-header,
+[data-editkit-theme="light"] .editkit-dec-dvm-cat-count,
+[data-editkit-theme="light"] .editkit-dec-dvm-cat-arrow,
+[data-editkit-theme="light"] .editkit-dec-dvm-card-name,
+[data-editkit-theme="light"] .editkit-dvm-prev-label {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-dec-dvm-search-input,
+[data-editkit-theme="light"] .editkit-dec-dvm-card-preview,
+[data-editkit-theme="light"] .editkit-dvm-prev-sym {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-dec-dvm-list {
+  scrollbar-color: var(--editkit-border-hover) transparent;
+}
+
+[data-editkit-theme="light"] .editkit-dec-dvm-list::-webkit-scrollbar-thumb {
+  background: var(--editkit-border-hover);
+}
+
+[data-editkit-theme="light"] .editkit-dec-dvm-card:hover {
+  border-color: var(--editkit-border-hover);
+}
+
+[data-editkit-theme="light"] .editkit-dec-dvm-card--active {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.03)), var(--editkit-card-bg);
+}
+
+[data-editkit-theme="light"] .editkit-content .editkit-decorative-divider:hover,
+[data-editkit-theme="light"] .editkit-content .editkit-section-heading:hover,
+[data-editkit-theme="light"] .editkit-content .editkit-pull-quote:hover,
+[data-editkit-theme="light"] .editkit-content .editkit-button-block:hover {
+  background: var(--editkit-surface-hover);
+}
+
+[data-editkit-theme="light"] .editkit-dec-div-line,
+[data-editkit-theme="light"] .editkit-pq-line {
+  background: var(--editkit-border-hover);
+}
+
+[data-editkit-theme="light"] .editkit-dec-div-line--dashed,
+[data-editkit-theme="light"] .editkit-dec-div-line--dotted {
+  border-color: var(--editkit-border-hover);
+}
+
+[data-editkit-theme="light"] .editkit-dec-div-label,
+[data-editkit-theme="light"] .editkit-dec-div--ornament,
+[data-editkit-theme="light"] .editkit-dec-div--asterism,
+[data-editkit-theme="light"] .editkit-dec-div-symbol,
+[data-editkit-theme="light"] .editkit-pq-quote,
+[data-editkit-theme="light"] .editkit-pq-attribution {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-dec-div-label:focus {
+  background: var(--editkit-primary-light);
+  color: var(--editkit-text);
+}
+
+/* Shared floating menus for inserted components */
+[data-editkit-theme="light"] .editkit-dec-div-floating-menu,
+[data-editkit-theme="light"] .editkit-sec-head-floating-menu,
+[data-editkit-theme="light"] .editkit-pq-floating-menu,
+[data-editkit-theme="light"] .editkit-btn-floating-menu,
+[data-editkit-theme="light"] .editkit-btn-align-dropdown,
+[data-editkit-theme="light"] .editkit-btn-edit-popover {
+  background: var(--editkit-popup-bg);
+  border-color: var(--editkit-popup-border);
+  box-shadow: var(--editkit-shadow-popup);
+}
+
+[data-editkit-theme="light"] .editkit-dec-div-tb-btn,
+[data-editkit-theme="light"] .editkit-sec-head-tb-btn,
+[data-editkit-theme="light"] .editkit-pq-tb-btn,
+[data-editkit-theme="light"] .editkit-btn-tb-btn,
+[data-editkit-theme="light"] .editkit-btn-align-item,
+[data-editkit-theme="light"] .editkit-btn-align-item-icon,
+[data-editkit-theme="light"] .editkit-btn-edit-close {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-dec-div-tb-btn:hover,
+[data-editkit-theme="light"] .editkit-sec-head-tb-btn:hover,
+[data-editkit-theme="light"] .editkit-pq-tb-btn:hover,
+[data-editkit-theme="light"] .editkit-btn-tb-btn:hover,
+[data-editkit-theme="light"] .editkit-btn-align-item:hover,
+[data-editkit-theme="light"] .editkit-btn-edit-close:hover {
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-sec-head-tb-btn--active,
+[data-editkit-theme="light"] .editkit-pq-tb-btn--active,
+[data-editkit-theme="light"] .editkit-btn-tb-btn--active {
+  background: var(--editkit-surface-active);
+  color: var(--editkit-text);
+  box-shadow: none;
+}
+
+[data-editkit-theme="light"] .editkit-dec-div-tb-divider,
+[data-editkit-theme="light"] .editkit-sec-head-tb-divider,
+[data-editkit-theme="light"] .editkit-pq-tb-divider,
+[data-editkit-theme="light"] .editkit-btn-tb-divider,
+[data-editkit-theme="light"] .editkit-btn-edit-divider {
+  background: var(--editkit-divider);
+}
+
+[data-editkit-theme="light"] .editkit-sec-head-tb-btn--text,
+[data-editkit-theme="light"] .editkit-btn-tb-color-a,
+[data-editkit-theme="light"] .editkit-sec-title {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-sec-badge:focus,
+[data-editkit-theme="light"] .editkit-btn-edit-icon:hover {
+  background: var(--editkit-primary-light);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-btn-color-picker-popover {
+  background: var(--editkit-popup-bg) !important;
+  border-color: var(--editkit-popup-border) !important;
+  box-shadow: var(--editkit-shadow-popup) !important;
+}
+
+[data-editkit-theme="light"] .editkit-btn-edit-input {
+  background: var(--editkit-content-bg);
+  border-color: var(--editkit-border);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-btn-edit-input--url,
+[data-editkit-theme="light"] .editkit-btn-edit-input--url:focus {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-alt-input::placeholder,
+[data-editkit-theme="light"] .editkit-sig-name-input::placeholder,
+[data-editkit-theme="light"] .editkit-dec-dvm-search-input::placeholder,
+[data-editkit-theme="light"] .editkit-btn-edit-input::placeholder {
+  color: var(--editkit-placeholder);
+}
+
+[data-editkit-theme="light"] .editkit-image-caption,
+[data-editkit-theme="light"] .editkit-sig-baseline-text {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-image--framed {
+  border-color: var(--editkit-border-hover);
+}
+
+[data-editkit-theme="light"] .editkit-tb-panel-item--info .editkit-tb-panel-item-icon {
+  color: #0369a1;
+}
+
+[data-editkit-theme="light"] .editkit-tb-panel-item--warning .editkit-tb-panel-item-icon,
+[data-editkit-theme="light"] .editkit-faq-add-btn,
+[data-editkit-theme="light"] .editkit-fip-icon,
+[data-editkit-theme="light"] .editkit-cta-trust-stars {
+  color: #b45309;
+}
+
+[data-editkit-theme="light"] .editkit-tb-panel-item--error .editkit-tb-panel-item-icon {
+  color: #b91c1c;
+}
+
+[data-editkit-theme="light"] .editkit-tb-panel-item--success .editkit-tb-panel-item-icon {
+  color: #047857;
+}
+
+[data-editkit-theme="light"] .editkit-tb-panel-item--note .editkit-tb-panel-item-icon {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-sec-badge,
+[data-editkit-theme="light"] .editkit-cta-card-badge {
+  color: #b45309;
+}
+
+[data-editkit-theme="light"] .editkit-content code {
+  color: #be185d;
+}
+
+[data-editkit-theme="light"] .editkit-content pre {
+  background: var(--editkit-surface-hover);
+}
+
+/* FAQ and multi-column inserted blocks */
+[data-editkit-theme="light"] .editkit-faq-item {
+  background: var(--editkit-card-bg);
+  border-color: var(--editkit-border);
+  box-shadow: var(--editkit-shadow-floating);
+}
+
+[data-editkit-theme="light"] .editkit-faq-item:hover {
+  background: var(--editkit-surface-hover);
+  border-color: var(--editkit-border-hover);
+}
+
+[data-editkit-theme="light"] .editkit-faq-question {
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-faq-answer,
+[data-editkit-theme="light"] .editkit-faq-item-delete {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-columns-container {
+  background: rgba(245, 158, 11, 0.035);
+}
+
+[data-editkit-theme="light"] .editkit-column-item {
+  background: var(--editkit-card-bg);
+  border-color: var(--editkit-border);
+  box-shadow: var(--editkit-shadow-floating);
+}
+
+[data-editkit-theme="light"] .editkit-column-label {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-column-add-btn {
+  background: #fffbeb;
+  border-color: #fcd34d;
+  color: #b45309;
+}
+
+[data-editkit-theme="light"] .editkit-column-add-btn:hover {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+[data-editkit-theme="light"] .editkit-columns-controls {
+  background: var(--editkit-popup-bg);
+  border-color: var(--editkit-popup-border);
+  box-shadow: var(--editkit-shadow-floating);
+}
+
+[data-editkit-theme="light"] .editkit-columns-ctrl-btn {
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-columns-ctrl-btn:hover,
+[data-editkit-theme="light"] .editkit-columns-ctrl-btn--active {
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text);
+}
+
+[data-editkit-theme="light"] .editkit-columns-ctrl-divider {
+  background: var(--editkit-divider);
+}
+
+/* The column command menu is portalled to body and carries its own theme. */
+.editkit-block-command-menu[data-editkit-theme="light"] {
+  background: var(--editkit-popup-bg);
+  border-color: var(--editkit-popup-border);
+  box-shadow: var(--editkit-shadow-popup);
+}
+
+.editkit-block-command-menu[data-editkit-theme="light"] .editkit-bcm-search-wrap {
+  background: var(--editkit-content-bg);
+  border-color: var(--editkit-divider);
+}
+
+.editkit-block-command-menu[data-editkit-theme="light"] .editkit-bcm-search-icon,
+.editkit-block-command-menu[data-editkit-theme="light"] .editkit-bcm-category,
+.editkit-block-command-menu[data-editkit-theme="light"] .editkit-bcm-item-icon,
+.editkit-block-command-menu[data-editkit-theme="light"] .editkit-bcm-empty {
+  color: var(--editkit-text-muted);
+}
+
+.editkit-block-command-menu[data-editkit-theme="light"] .editkit-bcm-search-input,
+.editkit-block-command-menu[data-editkit-theme="light"] .editkit-bcm-item {
+  color: var(--editkit-text);
+}
+
+.editkit-block-command-menu[data-editkit-theme="light"] .editkit-bcm-search-input::placeholder {
+  color: var(--editkit-placeholder);
+}
+
+.editkit-block-command-menu[data-editkit-theme="light"] .editkit-bcm-list {
+  scrollbar-color: var(--editkit-border-hover) transparent;
+}
+
+.editkit-block-command-menu[data-editkit-theme="light"] .editkit-bcm-list::-webkit-scrollbar-thumb {
+  background: var(--editkit-border-hover);
+}
+
+.editkit-block-command-menu[data-editkit-theme="light"] .editkit-bcm-item:hover,
+.editkit-block-command-menu[data-editkit-theme="light"] .editkit-bcm-item:focus {
+  background: var(--editkit-surface-hover);
+  color: var(--editkit-text);
+}
+
+.editkit-block-command-menu[data-editkit-theme="light"] .editkit-bcm-item-badge {
+  background: var(--editkit-surface-active);
+  color: var(--editkit-text-muted);
+}
+
+[data-editkit-theme="light"] .editkit-cta-band-card:hover {
+  box-shadow: 0 20px 48px -10px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 0 20px rgba(245, 158, 11, 0.08);
 }
 
 /* ==========================================================================

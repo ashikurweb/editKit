@@ -381,7 +381,7 @@ export class DividerModal extends Modal {
     this.thicknessSlider.value = validIdx.toString();
 
     const sliderPercent = (validIdx / (TICK_VALUES.length - 1)) * 100;
-    this.thicknessSlider.style.background = `linear-gradient(to right, #6366f1 0%, #6366f1 ${sliderPercent}%, #232636 ${sliderPercent}%, #232636 100%)`;
+    this.thicknessSlider.style.background = `linear-gradient(to right, #6366f1 0%, #6366f1 ${sliderPercent}%, var(--editkit-divider-slider-track, #232636) ${sliderPercent}%, var(--editkit-divider-slider-track, #232636) 100%)`;
 
     this.thicknessTicks.forEach((tick, idx) => {
       tick.classList.toggle('editkit-dvm-tick--active', idx === validIdx);

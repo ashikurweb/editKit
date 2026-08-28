@@ -108,7 +108,9 @@ export class Modal {
 
   show(): void {
     if (this._isDestroyed) return;
-    const theme = (this.editor as any).getTheme?.() || (this.editor as any)._config?.theme || 'dark';
+    const theme = this.editor.root.getAttribute('data-editkit-theme')
+      || this.editor.getTheme()
+      || 'dark';
     this.overlayEl.setAttribute('data-editkit-theme', theme);
     this.overlayEl.setAttribute('data-editkit', '');
     if (!this._isMounted || !this.overlayEl.parentElement) {

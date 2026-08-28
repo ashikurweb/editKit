@@ -538,6 +538,11 @@ export class ColumnBlockManager {
   private _buildMenu(targetBody: HTMLElement): HTMLElement {
     const menu = document.createElement('div');
     menu.classList.add('editkit-block-command-menu');
+    const theme = this.editor.root.getAttribute('data-editkit-theme')
+      || this.editor.getTheme()
+      || 'dark';
+    menu.setAttribute('data-editkit-theme', theme);
+    menu.setAttribute('data-editkit', '');
     menu.setAttribute('contenteditable', 'false');
     menu.addEventListener('mousedown', (e) => e.stopPropagation());
 
